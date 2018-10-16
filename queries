@@ -1,0 +1,38 @@
+getEmailUtenti
+sql = "SELECT email"
+				+ "FROM Utente JOIN AccessoA ON matricola JOIN Corso ON CodCorso"
+				+ "WHERE CodCorso="+codCorso;
+getCorsi
+SELECT codCorso"
+					+ "FROM Corso"
+setContenuti
+sql = "INSERT INTO Sezione(Titolo, Descrizione, isPubblica, CodCorso, PadreDi) "
+					+ "VALUES( "+titoli+", "+descrizioni+", "+visibilita+", "+codiciCorso+", "+PadreDi+")";
+			ResultSet rs = stmt.executeQuery(sql);
+			sql2 = "INSERT INTO Risorsa(Nome, Descrizione, Path, CodSezione) "
+					+ "VALUES( "+nomi+", "+descrizioni2+", "+paths+", "+codiciSezione+")";
+getContenutoCorso
+"SELECT codSezione, descrizione"
+				+ " FROM Sezione JOIN Corso ON codCorso"
+				+ " WHERE codCorso="+c.codCorso;
+SELECT descrizione,path"
+					+ " FROM Risorsa JOIN Sezione ON codSezione"
+					+ " WHERE codSezione="+codSezione
+modificaTitolo
+UPDATE Sezione"
+				+ " SET titolo="+titolo
+				+ " WHERE codSezione="+codSezione;
+modificaVisibilita
+UPDATE Sezione"
+				+ "SET isPubblica=true"
+				+ "WHERE codSezione="+codSezione;
+createFolder
+INSERT INTO Risorsa(CodRisorsa, Nome, Path, CodSezione) "
+				+ "VALUES ("+name+", "+path+", "+codSezione+")";
+cancelFolder
+DELETE FROM Risorsa"
+				+ "WHERE codRisorsa="+codRisorsa;
+getCorso
+SELECT *"
+				+ "FROM Corso"
+				+ "WHERE Nome = "+cor;
