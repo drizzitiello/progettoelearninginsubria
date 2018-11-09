@@ -3,8 +3,8 @@ package socketDb;
 import java.sql.*;
 
 public class SocketDb {
-	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
-	static final String DB_URL = "jdbc:mysql://localhost/EMP";
+	static final String JDBC_DRIVER = "org.postgresql.Driver";  
+	static final String DB_URL = "jdbc:postgresql://localhost/postgres";
 	static final String USER = "username";
 	static final String PASS = "password";
 	public static SocketDb socketDb;
@@ -37,7 +37,7 @@ public class SocketDb {
 	
 	private void createSql() throws ClassNotFoundException, SQLException {
 		conn = null;
-		Class.forName("com.mysql.jdbc.Driver");
+		Class.forName(JDBC_DRIVER);
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		stmt = conn.createStatement();
 	}
