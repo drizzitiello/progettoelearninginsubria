@@ -28,7 +28,7 @@ public class Notifier {
 	private int getCorso(String cor) throws ClassNotFoundException, SQLException {
 		String sql= "{call getCorsi(?)}";
 		String[] params = {cor};
-		ResultSet cc= socket.function(sql,params);
+		ResultSet cc= socket.function("getCorsi", params);
 		int codCorso=cc.getInt(0);
 		return codCorso;
 	}

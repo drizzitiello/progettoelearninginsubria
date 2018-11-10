@@ -1,6 +1,10 @@
 package socketDb;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SocketDb {
 	static final String JDBC_DRIVER = "org.postgresql.Driver";  
@@ -9,10 +13,8 @@ public class SocketDb {
 	static final String PASS = "password";
 	public static SocketDb socketDb;
 	private Connection conn;
-	private Statement stmt;
 	private ResultSet rs;
 	private static int nTentativi;
-	private PreparedStatement ps;
 	private CallableStatement cs;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException{
@@ -26,7 +28,7 @@ public class SocketDb {
 				nTentativi=0;
 			} catch (SQLException e) {
 				nTentativi++;
-				if(nTentativi>=25)
+				if(nTentativi<=25)
 				getInstanceDb();
 				else
 				return null;
@@ -39,55 +41,48 @@ public class SocketDb {
 		conn = null;
 		Class.forName(JDBC_DRIVER);
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
-		stmt = conn.createStatement();
 	}
 	
 	private void destroySql() throws ClassNotFoundException, SQLException {
 		rs.close();
-		stmt.close();
+		cs.close();
 		conn.close();
 	}
 	
-	public ResultSet query(String sql, String[] params) throws ClassNotFoundException, SQLException {
+	public ArrayList<Map<String,Object>> query(String sql, String[] params) throws ClassNotFoundException, SQLException {		
 		createSql();
-		if(checkParams(params).equals(params)) {
-			ps=conn.prepareStatement(sql);
-			int i=0;
-			for(String p : params) {
-				i++;
-				ps.setObject(i, p);
-			}
-			rs = ps.executeQuery(sql);
-			}
-		else {
-			return null;
+		params=checkParams(params);
+		cs=conn.prepareCall(sql);
+		for(int i=0; i<params.length;i++) {
+			cs.setObject(i, params[i]);
 		}
-		destroySql();
-		return rs;
+		rs = cs.executeQuery(sql);
+		return getResults();
 	}
 	
-	public ResultSet function(String sql, String[] params) throws ClassNotFoundException, SQLException {
-		createSql();
-		if(checkParams(params).equals(params)) {
-			cs=conn.prepareCall(sql);
-			int i=0;
-			for(String p : params) {
-				i++;
-				cs.setObject(i, p);
-			}
-			rs = cs.executeQuery(sql);
-			}
-		else {
-			return null;
-		}
-		destroySql();
-		return rs;
+	public ArrayList<Map<String,Object>> query(String sql) throws ClassNotFoundException, SQLException{
+		return query(sql,null);
 	}
 	
-	public void dmlQuery(String sql) throws ClassNotFoundException, SQLException {
-		createSql();
-		rs = stmt.executeQuery(sql);
+	public ArrayList<Map<String,Object>> function(String funcName, String[] params) throws ClassNotFoundException, SQLException {
+		String[] qmarks=new String[params.length];
+		Arrays.fill(qmarks, '?');
+		String sql= "{call "+funcName+"(" + String.join(", ", qmarks)+")}";
+		return this.query(sql, params);
+	}
+	
+	private ArrayList<Map<String,Object>> getResults() throws SQLException, ClassNotFoundException {
+		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
+		ResultSetMetaData rsmd= rs.getMetaData();
+		while(rs.next()) {
+			Map<String, Object> m = new HashMap<String, Object>();
+			for(int i=0; i<rsmd.getColumnCount();i++) {
+				m.put(rsmd.getColumnName(i), rs.getObject(i));
+				hm.add(m);
+			}
+		}
 		destroySql();
+		return hm;
 	}
 	
 	public String[] checkParams(String[] params) {
