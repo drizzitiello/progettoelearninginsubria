@@ -56,7 +56,8 @@ public class SocketDb {
 		for(int i=0; i<params.length;i++) {
 			cs.setObject(i, params[i]);
 		}
-		rs = cs.executeQuery(sql);
+		cs.registerOutParameter(1, Types.REF_CURSOR);
+		if(cs.execute()) {rs=cs.getResultSet();}
 		return getResults();
 	}
 	
