@@ -49,7 +49,7 @@ public class SocketDb {
 		conn.close();
 	}
 	
-	public ArrayList<Map<String,Object>> query(String sql, String[] params) throws ClassNotFoundException, SQLException {		
+	private ArrayList<Map<String,Object>> query(String sql, String[] params) throws ClassNotFoundException, SQLException {		
 		createSql();
 		params=checkParams(params);
 		conn.setAutoCommit(false);
@@ -57,8 +57,14 @@ public class SocketDb {
 		for(int i=0; i<params.length;i++) {
 			cs.setObject(i, params[i]);
 		}
-		cs.registerOutParameter(1, Types.OTHER);
-		if(cs.execute()) {rs = (ResultSet) cs.getObject(1);}
+		if(sql.startsWith(" ?")) {
+			cs.registerOutParameter(1, Types.OTHER);
+			if(cs.execute()) {rs = (ResultSet) cs.getObject(1);}
+		}
+		else { 
+			cs.execute();
+			return null;
+		}
 		return getResults();
 	}
 	
