@@ -52,6 +52,7 @@ public class SocketDb {
 	public ArrayList<Map<String,Object>> query(String sql, String[] params) throws ClassNotFoundException, SQLException {		
 		createSql();
 		params=checkParams(params);
+		conn.setAutoCommit(false);
 		cs=conn.prepareCall(sql);
 		for(int i=0; i<params.length;i++) {
 			cs.setObject(i, params[i]);
