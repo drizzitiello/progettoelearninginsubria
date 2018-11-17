@@ -57,20 +57,14 @@ public class SocketDb {
 		for(int i=0; i<params.length;i++) {
 			cs.setObject(i, params[i]);
 		}
-		if(sql.startsWith(" ?")) {
-			cs.registerOutParameter(1, Types.OTHER);
-			if(cs.execute()) {rs = (ResultSet) cs.getObject(1);}
-		}
-		else { 
-			cs.execute();
-			return null;
-		}
-		return getResults();
+		cs.registerOutParameter(1, Types.OTHER);	
+		return cs.execute() ? getResults((ResultSet) cs.getObject(1)) : null;
 	}
 	
 	public ArrayList<Map<String,Object>> query(String sql) throws ClassNotFoundException, SQLException{
 		return query(sql,null);
 	}
+	
 	
 	public ArrayList<Map<String,Object>> function(String funcName, String[] params) throws ClassNotFoundException, SQLException {
 		String[] qmarks=new String[params.length];
@@ -79,7 +73,9 @@ public class SocketDb {
 		return this.query(sql, params);
 	}
 	
-	private ArrayList<Map<String,Object>> getResults() throws SQLException, ClassNotFoundException {
+	
+	private ArrayList<Map<String,Object>> getResults(ResultSet ObjResults) throws SQLException, ClassNotFoundException {
+		rs = ObjResults;
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
 		ResultSetMetaData rsmd= rs.getMetaData();
 		while(rs.next()) {
