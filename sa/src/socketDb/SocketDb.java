@@ -8,14 +8,13 @@ import java.util.Map;
 
 public class SocketDb {
 	static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	static final String DB_URL = "jdbc:postgresql://localhost/postgres";
-	static final String USER = "username";
-	static final String PASS = "password";
+	static final String DB_URL = "jdbc:postgresql://localhost/dbdb";
+	static final String USER = "postgres";
+	static final String PASS = "makaay";
 	public static SocketDb socketDb;
 	private Connection conn;
-	private ResultSet rs;
 	private static int nTentativi;
-	private CallableStatement cs;
+	private PreparedStatement stmt;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException{
 		createSql();
@@ -29,9 +28,9 @@ public class SocketDb {
 			} catch (SQLException e) {
 				nTentativi++;
 				if(nTentativi<=25)
-				getInstanceDb();
+					getInstanceDb();
 				else
-				return null;
+					return null;
 			}
 		}
 		return socketDb;
@@ -44,58 +43,70 @@ public class SocketDb {
 	}
 	
 	private void destroySql() throws ClassNotFoundException, SQLException {
-		rs.close();
-		cs.close();
+		stmt.close();
 		conn.close();
 	}
 	
-	private ArrayList<Map<String,Object>> query(String sql, String[] params) throws ClassNotFoundException, SQLException {		
-		createSql();
-		params=checkParams(params);
-		conn.setAutoCommit(false);
-		cs=conn.prepareCall(sql);
-		for(int i=0; i<params.length;i++) {
-			cs.setObject(i, params[i]);
-		}
-		cs.registerOutParameter(1, Types.OTHER);	
-		return cs.execute() ? getResults((ResultSet) cs.getObject(1)) : null;
+	private ArrayList<Map<String,Object>> executeSql(String sql) throws SQLException, ClassNotFoundException {
+		ResultSet rs = null;
+		if(sql.toUpperCase().startsWith("SELECT")) 
+			rs = stmt.executeQuery();
+		else stmt.execute();
+		
+		return rs==null ? null : getResults(rs);
+	}
+	
+	public ArrayList<Map<String,Object>> query(String sql, Object[] params) throws ClassNotFoundException, SQLException {			
+		stmt=conn.prepareStatement(sql);
+		bindParams(params);
+		return executeSql(sql);
 	}
 	
 	public ArrayList<Map<String,Object>> query(String sql) throws ClassNotFoundException, SQLException{
-		return query(sql,null);
+		return query(sql,new String[0]);
 	}
 	
 	
-	public ArrayList<Map<String,Object>> function(String funcName, String[] params) throws ClassNotFoundException, SQLException {
+	public ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException {
 		String[] qmarks=new String[params.length];
-		Arrays.fill(qmarks, '?');
-		String sql= "{ ? = call "+funcName+"(" + String.join(", ", qmarks)+")}";
-		return this.query(sql, params);
+		Arrays.fill(qmarks, "?");
+		String sql= "SELECT * FROM "+funcName+"(" + String.join(", ", qmarks)+")";
+		stmt=conn.prepareStatement(sql);
+		bindParams(params);
+		return executeSql(sql);
 	}
 	
 	
 	private ArrayList<Map<String,Object>> getResults(ResultSet ObjResults) throws SQLException, ClassNotFoundException {
-		rs = ObjResults;
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
-		ResultSetMetaData rsmd= rs.getMetaData();
-		while(rs.next()) {
+		ResultSetMetaData rsmd= ObjResults.getMetaData();
+		while(ObjResults.next()) {			
 			Map<String, Object> m = new HashMap<String, Object>();
-			for(int i=0; i<rsmd.getColumnCount();i++) {
-				m.put(rsmd.getColumnName(i), rs.getObject(i));
+			for(int i=1; i<=rsmd.getColumnCount();i++) {
+				m.put(rsmd.getColumnName(i), ObjResults.getObject(i));
 				hm.add(m);
 			}
 		}
+		ObjResults.close();
 		destroySql();
 		return hm;
 	}
 	
-	public String[] checkParams(String[] params) {
-		String[] paramsCorrected=new String[params.length];
+	private void bindParams(Object[] params) throws SQLException {
+		//CHECK PARAMETRI
+		/*String[] paramsCorrected=new String[params.length];
 		for(String p : params) {
 			if(p.contains("drop")||p.contains("DROP")||(p.contains("delete")||p.contains("DELETE"))) {
 				return null;
 			}
+		}		
+		*/
+		
+		for(int i=0; i<params.length;i++) {
+			stmt.setObject(i+1, params[i]);
 		}
-		return paramsCorrected;
+		
+		
+
 	}
 }
