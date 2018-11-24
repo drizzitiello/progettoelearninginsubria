@@ -5,18 +5,22 @@ import java.util.List;
 
 public class Sezione {
 
-	public Integer PadreDi;
+	public int PadreDi;
 	public String titolo;
 	public String descrizione;
 	public Boolean visibilita;
 	public Integer codCorso;
 	List<Risorse> risorse=new ArrayList<Risorse>();
 	int indice=0;
+	public int codSezione;
+	public int matricola;
 	public Sezione(String titolo, String descr, boolean visibilita, Integer codCorso) {
 		this.titolo=titolo;
+		this.codSezione=codSezione;
 		this.descrizione=descr;
 		this.visibilita=visibilita;
 		this.codCorso=codCorso;
+		this.matricola=matricola;
 	}
 
 	public boolean hasMoreResources() {
