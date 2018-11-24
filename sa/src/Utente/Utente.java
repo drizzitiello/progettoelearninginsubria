@@ -1,5 +1,9 @@
 package uniserver;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
 * Gestione delle informazioni utente.
 * 
@@ -108,18 +112,18 @@ public class Utente {
 
 
      /**
-	 * Getter del flag di avvenuta creazione della sessione
+	 * Getter del flag di avvenuta creazione dell'Utente
 	 *
-	 * @return	flag di avvenuta creazione della sessione
+	 * @return	flag di avvenuta creazione dell'Utente
 	 */
     public boolean created(){
         return this.isCreated;
     }
 
      /**
-	 * Getter dell'oggetto Utente autenticato nella piattaforma
+	 * Getter delle informazioni relative all'Utente
 	 *
-	 * @return	Oggetto Utente autenticato nella piattaforma
+	 * @return	Informazioni dell'Utente
 	 */
     public int getInfo(){
         if(!this.isCreated) return null;
@@ -135,10 +139,18 @@ public class Utente {
  STORED FUNCTION: getDatiUtente(matricola)
  --------------------------------------------------------------
 
-    CREATE OR REPLACE FUNCTION get_film (p_matricola VARCHAR) 
+    CREATE OR REPLACE FUNCTION getDatiUtente (p_matricola VARCHAR) 
         RETURNS TABLE (
-            film_title VARCHAR,
-            film_release_year INT
+                        matricola INT,
+                        nome VARCHAR,
+                        cognome VARCHAR,
+                        email VARCHAR,
+                        userLevel INT,
+                        annoImmatricolazione INT,
+                        corsoLaurea VARCHAR,
+                        facolta VARCHAR,
+                        statoCarriera VARCHAR,
+                        strutturaRiferimnto VARCHAR
         ) 
     AS $$
     BEGIN
