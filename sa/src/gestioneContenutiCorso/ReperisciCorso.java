@@ -8,10 +8,10 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import socketDb.SocketDb;
 
@@ -19,11 +19,11 @@ public class ReperisciCorso {
 	SocketDb socket;
 	public List<String> getCorsi() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		String sql = "{call getCorsi}";
-		ResultSet obj=socket.function(sql,null);
+		String sql = "getCorsi";
+		ArrayList<Map<String, Object>> obj=socket.function(sql,null);
 		ArrayList<String> corsi = new ArrayList<String>();
-		while(obj.next()) {
-			corsi.add(obj.getString(0));
+		for(Map<String, Object> m : obj) {
+			corsi.add((String) m.get("corso"));
 		}
 		return corsi;
 	}
@@ -31,31 +31,22 @@ public class ReperisciCorso {
 		Contenuto cont=new Contenuto();
 		socket=SocketDb.getInstanceDb();
 		String sql,sql2;
-		int i=0;
-		sql = "{call getContenutoCorso1(?)}";
+		sql = "getContenutoCorso";
 		String[] s= {String.valueOf(c.codCorso)};
-		ResultSet obj=socket.function(sql,s);
-		while(obj.next()) {
-			int codSezione=(int) obj.getInt(i);
-			i++;
-			String descr=(String) obj.getString(i);
-			i++;
-			String titolo=(String) obj.getString(i);
-			i++;
-			Boolean visibilita=(Boolean) obj.getBoolean(i);
-			i++;
+		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
+		for(Map<String, Object> m : obj) {
+			int codSezione=(int) m.get("codiceSezione");
+			String descr=(String) m.get("descrizione");
+			String titolo=(String) m.get("titolo");
+			Boolean visibilita=(Boolean) m.get("visibilita");
 			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione);
-			sql2 = "{call getContenutoCorso1}";
+			sql2 = "getContenutoCorso1";
 			String[] s2= {String.valueOf(codSezione)};
-			ResultSet obj2=socket.function(sql2,s2);
-			int k=0;
-			while(obj2.next()) {
-				String nome=(String) obj2.getString(k);
-				k++;
-				String descr2=(String) obj2.getString(k);
-				k++;
-				String path=(String) obj2.getString(k);
-				k++;
+			ArrayList<Map<String, Object>> obj2=socket.function(sql2,s2);
+			for(Map<String, Object> ms : obj2) {
+				String nome=(String) ms.get("nome");
+				String descr2=(String) ms.get("descrizione");
+				String path=(String) ms.get("percorso");
 				sez.addResource(nome, descr2, path, codSezione);
 			}
 		}

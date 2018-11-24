@@ -1,8 +1,8 @@
 package notifier;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.mail.Message;
@@ -26,20 +26,17 @@ public class Notifier {
 		}
 	}
 	private int getCorso(String cor) throws ClassNotFoundException, SQLException {
-		String sql= "{call getCorsi(?)}";
 		String[] params = {cor};
-		ResultSet cc= socket.function("getCorsi", params);
-		int codCorso=cc.getInt(0);
+		ArrayList<Map<String, Object>> cc= socket.function("getCorsi", params);
+		int codCorso=(int) cc.get(0).get("codiceCorso");
 		return codCorso;
 	}
 	private ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
-		String sql="{call getEmailUtenti(?)}";
-		ResultSet emailObj;
 		ArrayList<String> email=new ArrayList<String>();
 		String[] s= {String.valueOf(codCorso)};
-		emailObj= socket.function(sql,s);
-		while(emailObj.next()) {
-			email.add(emailObj.getString(0));
+		ArrayList<Map<String, Object>> emailObj = socket.function("getEmailUtenti", s);
+		for(Map<String, Object> m : emailObj) {
+			email.add((String) m.get("email"));
 		}
 		return email;
 	}
