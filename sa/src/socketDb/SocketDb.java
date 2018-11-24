@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SocketDb {
 	static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	static final String DB_URL = "jdbc:postgresql://localhost/dbdb";
+	static final String DB_URL = "jdbc:postgresql://localhost/sss";
 	static final String USER = "postgres";
 	static final String PASS = "makaay";
 	public static SocketDb socketDb;
@@ -83,9 +83,9 @@ public class SocketDb {
 		while(ObjResults.next()) {			
 			Map<String, Object> m = new HashMap<String, Object>();
 			for(int i=1; i<=rsmd.getColumnCount();i++) {
-				m.put(rsmd.getColumnName(i), ObjResults.getObject(i));
-				hm.add(m);
+				m.put(rsmd.getColumnName(i).toLowerCase(), ObjResults.getObject(i));
 			}
+			hm.add(m);
 		}
 		ObjResults.close();
 		destroySql();
