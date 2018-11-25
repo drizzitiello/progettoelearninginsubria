@@ -134,7 +134,7 @@ CREATE OR REPLACE FUNCTION getDatiUtente (p_matricola INT)
                         nome VARCHAR,
                         cognome VARCHAR,
                         email VARCHAR,
-                        tipoUtente SMALLINT
+                        tipoutente SMALLINT
         ) 
     AS $$
     BEGIN
@@ -151,4 +151,4 @@ CREATE OR REPLACE FUNCTION getDatiUtente (p_matricola INT)
     END; $$ 
     
     LANGUAGE 'plpgsql';
-=======*/
+ */
