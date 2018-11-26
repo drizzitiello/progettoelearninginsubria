@@ -33,7 +33,7 @@ public class Utente {
 	       public String corsoLaurea;
 	       public String facolta;
 	       public String statoCarriera;
-	       public String strutturaRiferimnto;
+	       public String strutturaRiferimento;
 	}
     
     /* Dichiarazione dei componenti di servizio: */
@@ -92,7 +92,7 @@ public class Utente {
         this.myInfo.corsoLaurea             = "";
         this.myInfo.facolta                 = "";
         this.myInfo.statoCarriera           = "";
-        this.myInfo.strutturaRiferimnto     = "";
+        this.myInfo.strutturaRiferimento    = "";
         
         this.isCreated = true;
     }
