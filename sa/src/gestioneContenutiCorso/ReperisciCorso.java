@@ -20,7 +20,8 @@ public class ReperisciCorso {
 	public List<String> getCorsi() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "getCorsi";
-		ArrayList<Map<String, Object>> obj=socket.function(sql,null);
+		Object[] s= {};
+		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
 		ArrayList<String> corsi = new ArrayList<String>();
 		for(Map<String, Object> m : obj) {
 			corsi.add((String) m.get("corso"));
@@ -32,7 +33,7 @@ public class ReperisciCorso {
 		socket=SocketDb.getInstanceDb();
 		String sql,sql2;
 		sql = "getContenutoCorso";
-		String[] s= {String.valueOf(c.codCorso)};
+		Object[] s= {c.codCorso};
 		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
 		for(Map<String, Object> m : obj) {
 			int codSezione=(int) m.get("codiceSezione");
@@ -41,7 +42,7 @@ public class ReperisciCorso {
 			Boolean visibilita=(Boolean) m.get("visibilita");
 			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione);
 			sql2 = "getContenutoCorso1";
-			String[] s2= {String.valueOf(codSezione)};
+			Object[] s2= {codSezione};
 			ArrayList<Map<String, Object>> obj2=socket.function(sql2,s2);
 			for(Map<String, Object> ms : obj2) {
 				String nome=(String) ms.get("nome");

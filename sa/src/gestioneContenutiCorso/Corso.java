@@ -50,12 +50,12 @@ public class Corso {
 				visibilita2.add(risorsa.visibilita);
 			}
 		}
-		String sql = "INSERT INTO Sezione(codiceSezione, Titolo, Descrizione, isPubblica, "
-				+ "CodCorso, figlioDi, matricola) "
+		String sql = "INSERT INTO \"Sezione\"(\"codiceSezione\", Titolo, Descrizione, \"isPubblica\", "
+				+ "\"codiceCorso\", \"figlioDi\", matricola) "
 				+ "VALUES( "+codiciSezione+", "+titoli+", "+descrizioni+", "+visibilita+", "
 				+codiciCorso+", "+PadreDi+", "+matricole+")";
-		String sql2 = "INSERT INTO Risorsa(codiceRisorsa, nome, descrizione, percorso, tipo, "
-				+ "codiceSezione, isPubblica) "
+		String sql2 = "INSERT INTO \"Risorsa\"(\"codiceRisorsa\", nome, descrizione, percorso, tipo, "
+				+ "\"codiceSezione\", \"isPubblica\") "
 				+ "VALUES ("+codiciRisorse+", "+nomi+", "+descrizioni2+", "+paths+","+tipi+", "
 						+ " "+codiciSezione2+""+visibilita2+", )";
 		socket.query(sql);

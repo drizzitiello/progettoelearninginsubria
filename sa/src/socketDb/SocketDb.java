@@ -66,7 +66,6 @@ public class SocketDb {
 		return query(sql,new String[0]);
 	}
 	
-	
 	public ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException {
 		String[] qmarks=new String[params.length];
 		Arrays.fill(qmarks, "?");
@@ -75,7 +74,6 @@ public class SocketDb {
 		bindParams(params);
 		return executeSql(sql);
 	}
-	
 	
 	private ArrayList<Map<String,Object>> getResults(ResultSet ObjResults) throws SQLException, ClassNotFoundException {
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
