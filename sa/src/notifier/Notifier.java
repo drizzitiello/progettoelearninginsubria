@@ -25,15 +25,15 @@ public class Notifier {
 			send_uninsubria_email(usr, pwd, s, subject, body);
 		}
 	}
-	private int getCorso(String cor) throws ClassNotFoundException, SQLException {
-		String[] params = {cor};
-		ArrayList<Map<String, Object>> cc= socket.function("getCorsi", params);
+	private int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+		Object[] params = {nomeCorso};
+		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
 		int codCorso=(int) cc.get(0).get("codiceCorso");
 		return codCorso;
 	}
 	private ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
 		ArrayList<String> email=new ArrayList<String>();
-		String[] s= {String.valueOf(codCorso)};
+		Object[] s= {codCorso};
 		ArrayList<Map<String, Object>> emailObj = socket.function("getEmailUtenti", s);
 		for(Map<String, Object> m : emailObj) {
 			email.add((String) m.get("email"));
