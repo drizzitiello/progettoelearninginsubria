@@ -77,6 +77,7 @@ public class SocketDb {
 		return executeSql(sql);
 	}
 	
+	
 	private ArrayList<Map<String,Object>> getResults(ResultSet ObjResults) throws SQLException, ClassNotFoundException {
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
 		ResultSetMetaData rsmd= ObjResults.getMetaData();
@@ -109,4 +110,4 @@ public class SocketDb {
 		
 
 	}
-}
+}}
