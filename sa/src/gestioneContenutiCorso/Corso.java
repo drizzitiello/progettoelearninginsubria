@@ -42,10 +42,10 @@ public class Corso {
 				Risorse risorsa=sezione.nextResource();
 				risorse.add(risorsa);
 				codiciRisorse.add(risorsa.codRisorsa);
-				nomi.add(risorsa.titolo);
+				nomi.add(risorsa.nome);
 				descrizioni2.add(risorsa.descrizione);
 				paths.add(risorsa.path);
-				nomi.add(risorsa.titolo);
+				nomi.add(risorsa.nome);
 				codiciSezione2.add(risorsa.codSezione);
 				visibilita2.add(risorsa.visibilita);
 			}

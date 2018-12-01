@@ -14,7 +14,7 @@ public class Sezione {
 	int indice=0;
 	public int codSezione;
 	public int matricola;
-	public Sezione(String titolo, String descr, boolean visibilita, Integer codCorso) {
+	public Sezione(String titolo, String descr, boolean visibilita, Integer codSezione) {
 		this.titolo=titolo;
 		this.codSezione=codSezione;
 		this.descrizione=descr;

@@ -22,16 +22,18 @@ public class Notifier {
 		int codCorso=getCorso(cor);
 		ArrayList<String> l=getEmailUtenti(codCorso);
 		for(String s : l) {
-			send_uninsubria_email(usr, pwd, s, subject, body);
+			//send_uninsubria_email(usr, pwd, s, subject, body);
 		}
 	}
-	private int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+	public int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+		socket=SocketDb.getInstanceDb();
 		Object[] params = {nomeCorso};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
-		int codCorso=(int) cc.get(0).get("codiceCorso");
+		int codCorso=(int) cc.get(0).get("codicecorso");
 		return codCorso;
 	}
-	private ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
+	public ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
+		socket=SocketDb.getInstanceDb();
 		ArrayList<String> email=new ArrayList<String>();
 		Object[] s= {codCorso};
 		ArrayList<Map<String, Object>> emailObj = socket.function("getEmailUtenti", s);

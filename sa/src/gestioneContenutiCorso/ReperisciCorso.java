@@ -17,14 +17,14 @@ import socketDb.SocketDb;
 
 public class ReperisciCorso {
 	SocketDb socket;
-	public List<String> getCorsi() throws ClassNotFoundException, SQLException {
+	public List<Integer> getCorsi() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "getCorsi";
 		Object[] s= {};
 		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
-		ArrayList<String> corsi = new ArrayList<String>();
+		ArrayList<Integer> corsi = new ArrayList<Integer>();
 		for(Map<String, Object> m : obj) {
-			corsi.add((String) m.get("corso"));
+			corsi.add((Integer) m.get("codicecorso"));
 		}
 		return corsi;
 	}
@@ -36,10 +36,10 @@ public class ReperisciCorso {
 		Object[] s= {c.codCorso};
 		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
 		for(Map<String, Object> m : obj) {
-			int codSezione=(int) m.get("codiceSezione");
+			int codSezione=(int) m.get("codicesezione");
 			String descr=(String) m.get("descrizione");
 			String titolo=(String) m.get("titolo");
-			Boolean visibilita=(Boolean) m.get("visibilita");
+			Boolean visibilita=(Boolean) m.get("ispubblica");
 			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione);
 			sql2 = "getContenutoCorso1";
 			Object[] s2= {codSezione};

@@ -4,7 +4,6 @@ public class Risorse {
 	String nome, descrizione, path;
 	int codSezione;
 	public int codRisorsa;
-	public String titolo;
 	public Boolean visibilita;
 	public Risorse(String nome, String descr2, String path, int codSezione) {
 		this.nome=nome;
@@ -12,5 +11,4 @@ public class Risorse {
 		this.path=path;
 		this.codSezione=codSezione;
 	}
-
 }
