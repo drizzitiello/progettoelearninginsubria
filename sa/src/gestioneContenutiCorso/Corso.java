@@ -9,57 +9,27 @@ public class Corso {
 	public int codCorso;
 	public String nome,anno,laurea,descrizione,contenuti;
 	SocketDb socket;
-	public void setContenuti(Contenuto con, Corso cor) throws ClassNotFoundException, SQLException {
+	public void setContenuti(Contenuto con) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		ArrayList<Sezione> sezioni=new ArrayList<Sezione>();
-		ArrayList<Integer> codiciSezione=new ArrayList<Integer>();
-		ArrayList<String> titoli=new ArrayList<String>();
-		ArrayList<String> descrizioni=new ArrayList<String>();
-		ArrayList<Boolean> visibilita=new ArrayList<Boolean>();
-		ArrayList<Integer> codiciCorso=new ArrayList<Integer>();
-		ArrayList<Integer> PadreDi=new ArrayList<Integer>();
-		ArrayList<Integer> matricole=new ArrayList<Integer>();
-		
 		ArrayList<Risorse> risorse=new ArrayList<Risorse>();
-		ArrayList<Integer> codiciRisorse=new ArrayList<Integer>();
-		ArrayList<String> nomi=new ArrayList<String>();
-		ArrayList<String> descrizioni2=new ArrayList<String>();
-		ArrayList<String> paths=new ArrayList<String>();
-		ArrayList<String> tipi=new ArrayList<String>();
-		ArrayList<Integer> codiciSezione2=new ArrayList<Integer>();
-		ArrayList<Boolean> visibilita2=new ArrayList<Boolean>();
-		while(con.hasMoreSections()) {
-			Sezione sezione=con.nextSection();
+		for(Sezione sezione : con.sezioni) {
 			sezioni.add(sezione);
-			codiciSezione.add(sezione.codSezione);
-			titoli.add(sezione.titolo);
-			descrizioni.add(sezione.descrizione);
-			visibilita.add(sezione.visibilita);
-			codiciCorso.add(sezione.codCorso);
-			PadreDi.add(sezione.PadreDi);
-			matricole.add(sezione.matricola);
-			while(sezione.hasMoreResources()) {
-				Risorse risorsa=sezione.nextResource();
+			String sql = "INSERT INTO \"Sezione\" "
+					+ "VALUES(?, ?, ?, ?, ?, ?, ?);";
+			Object[] p = {sezione.codSezione, sezione.titolo, sezione.descrizione,
+					sezione.visibilita, sezione.codCorso, sezione.figlioDi,
+					sezione.matricola};
+			socket.query(sql,p);
+			for(Risorse risorsa : sezione.risorse) {
 				risorse.add(risorsa);
-				codiciRisorse.add(risorsa.codRisorsa);
-				nomi.add(risorsa.nome);
-				descrizioni2.add(risorsa.descrizione);
-				paths.add(risorsa.path);
-				nomi.add(risorsa.nome);
-				codiciSezione2.add(risorsa.codSezione);
-				visibilita2.add(risorsa.visibilita);
+				String sql2 = "INSERT INTO \"Risorsa\" " + 
+						"VALUES (?, ?, ?, ?, ?, ?, ?)";
+				Object[] p2 = {risorsa.codRisorsa, risorsa.nome, risorsa.descrizione, 
+						risorsa.path, risorsa.tipo, risorsa.codSezione, risorsa.visibilita};
+				socket.query(sql2,p2);
 			}
 		}
-		String sql = "INSERT INTO \"Sezione\"(\"codiceSezione\", Titolo, Descrizione, \"isPubblica\", "
-				+ "\"codiceCorso\", \"figlioDi\", matricola) "
-				+ "VALUES( "+codiciSezione+", "+titoli+", "+descrizioni+", "+visibilita+", "
-				+codiciCorso+", "+PadreDi+", "+matricole+")";
-		String sql2 = "INSERT INTO \"Risorsa\"(\"codiceRisorsa\", nome, descrizione, percorso, tipo, "
-				+ "\"codiceSezione\", \"isPubblica\") "
-				+ "VALUES ("+codiciRisorse+", "+nomi+", "+descrizioni2+", "+paths+","+tipi+", "
-						+ " "+codiciSezione2+""+visibilita2+", )";
-		socket.query(sql);
-		socket.query(sql2);
 	}
 	public void setCodCorso(String cC) {
 		this.codCorso=Integer.parseInt(cC);

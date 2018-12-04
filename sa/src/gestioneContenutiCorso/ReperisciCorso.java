@@ -37,18 +37,25 @@ public class ReperisciCorso {
 		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
 		for(Map<String, Object> m : obj) {
 			int codSezione=(int) m.get("codicesezione");
-			String descr=(String) m.get("descrizione");
 			String titolo=(String) m.get("titolo");
+			String descr=(String) m.get("descrizione");
 			Boolean visibilita=(Boolean) m.get("ispubblica");
-			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione);
+			int matricola=(int) m.get("matricola");
+			int codCorso=(int) m.get("codcorso");
+			Integer figlioDi=(Integer) m.get("figlioDi");
+			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione, matricola, codCorso, figlioDi);
 			sql2 = "getContenutoCorso1";
 			Object[] s2= {codSezione};
 			ArrayList<Map<String, Object>> obj2=socket.function(sql2,s2);
 			for(Map<String, Object> ms : obj2) {
 				String nome=(String) ms.get("nome");
 				String descr2=(String) ms.get("descrizione");
-				String path=(String) ms.get("percorso");
-				sez.addResource(nome, descr2, path, codSezione);
+				int codCorso2=(int) m.get("matricola");
+				int codSezione2=(int) m.get("codicesezione");
+				Boolean visibilita2=(Boolean) m.get("ispubblica");
+				String path2=(String) m.get("percorso");
+				String tipo=(String) m.get("tipo");
+				sez.addResource(nome, descr2, path2, codSezione2, codCorso2, visibilita2, tipo);
 			}
 		}
 		return cont;

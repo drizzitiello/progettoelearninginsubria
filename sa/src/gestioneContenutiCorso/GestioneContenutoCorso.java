@@ -6,12 +6,10 @@ import socketDb.SocketDb;
 
 public class GestioneContenutoCorso {
 	SocketDb socket;
-	/*public void uploadMatCorso(Corso cor, Contenuto ... con) throws Exception {
+	public void uploadMatCorso(Corso cor, Contenuto con) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		for(Contenuto cont : con) {
-			cor.setContenuti(cont,cor);
-		}
-	}*/
+		cor.setContenuti(con);
+	}
 	public void createFolder(String name, String path, int codSezione, int codRisorsa, String descr, String tipo, boolean pubblica) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "INSERT INTO \"Risorsa\"(\"codiceRisorsa\", nome, descrizione, percorso, tipo, "

@@ -22,7 +22,7 @@ public class Notifier {
 		int codCorso=getCorso(cor);
 		ArrayList<String> l=getEmailUtenti(codCorso);
 		for(String s : l) {
-			//send_uninsubria_email(usr, pwd, s, subject, body);
+			send_uninsubria_email(usr, pwd, s, subject, body);
 		}
 	}
 	public int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
