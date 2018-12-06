@@ -173,7 +173,7 @@ public class AuthenticationService {
 		if (codice=='1') 
 			risposta = "Utente non trovato.";
 		else if (codice=='2')
-			risposta = "Attenzione: il profilo utente Ã¨ stato bloccato. Contattare un amministratore per riattivarlo.";
+			risposta = "Attenzione: il profilo utente è stato bloccato. Contattare un amministratore per riattivarlo.";
 		return risposta;
 	}
 	
@@ -195,13 +195,8 @@ public class AuthenticationService {
 	private String toHash(String stringa) throws NoSuchAlgorithmException {
 		MessageDigest m = MessageDigest.getInstance("MD5"); 	// creiamo un'istanza e passiamo come riferimento la funzione di hash da usare sulla stringa (MD5 nel nostro caso)
 		byte [] p = m.digest(stringa.getBytes()); 				// computiamo la password fornita 
-<<<<<<< HEAD
 		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perchè un oggetto BigInteger è immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
 		return number.toString(16).toUpperCase(); 							// convertiamo infine il BigInteger in formato testuale (l'argomento '16' indica la base esadecimale)
-=======
-		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perchÃ¨ un oggetto BigInteger Ã¨ immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
-		return number.toString(16); 							// convertiamo infine il BigInteger in formato testuale (l'argomento '16' indica la base esadecimale)
->>>>>>> branch 'dbcomplete' of https://github.com/drizzitiello/progettoelearninginsubria
 	}
 	
 	
@@ -526,4 +521,4 @@ $BODY$;
 ALTER FUNCTION public.controllo_mail(character varying)
     OWNER TO postgres;
 
- */
+*/
