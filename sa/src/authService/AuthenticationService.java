@@ -151,8 +151,8 @@ public class AuthenticationService {
 				        String newPasswordHash = this.toHash(newPassword);	// prima di salvare la password nel database, la convertiamo in hashcode
 				        Object[] arg = {newPasswordHash, email};
 						this.socket.function("reset_password", arg);
-						//Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", mail,
-							//	 "NUOVA PWD", "PWD: "+newPassword+" CODATTIVAZIONE: "+ codiceAttivazione);
+						Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", mail,
+								 "NUOVA PWD", "PWD: "+newPassword+" CODATTIVAZIONE: "+ codiceAttivazione);
 						Object[] argomento = {newPasswordHash};
 						this.socket.function("reset_login", argomento); 	// resettiamo infine i tentativi di login
 					}
