@@ -42,7 +42,7 @@ public class Notifier {
 		}
 		return email;
 	}
-	private static void send_uninsubria_email(String usr, String pwd, String to, String subject, String body) throws SendFailedException, MessagingException{
+	public static void send_uninsubria_email(String usr, String pwd, String to, String subject, String body) throws SendFailedException, MessagingException{
 		String password=pwd;
 		String username=usr;
 	    	       

@@ -14,6 +14,11 @@ package authService;
 
 import java.sql.SQLException;
 import java.util.*;
+
+import Sessione.Sessione;
+import notifier.Notifier;
+import socketDb.SocketDb;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.security.*;
@@ -110,7 +115,7 @@ public class AuthenticationService {
 					this.socket.function("reset_password", arg); 				// salviamo la password nel database
 						Object[] argomento = {passwordhash};
 						this.socket.function("reset_login", argomento); 		// resettiamo i tentativi di login
-						this.createSession(); 									// si crea una nuova sessione
+						this.createSession(matricola); 									// si crea una nuova sessione
 					}	else {
 							String[] credenziali_reinserite = this.inserisciCredenziali();		
 							this.login(credenziali_reinserite[0], credenziali_reinserite[1]);
@@ -120,7 +125,7 @@ public class AuthenticationService {
 				if (controlloCredenziali(pass)) {
 					Object[] argomento = {passwordhash};
 					this.socket.function("reset_login", argomento); // resettiamo i tentativi di login
-					this.createSession();							// creiamo una nuova sessione
+					this.createSession(matricola);							// creiamo una nuova sessione
 					}
 				else {
 					Object[] codice = {codiceAttivazione};
@@ -146,10 +151,11 @@ public class AuthenticationService {
 				        String newPasswordHash = this.toHash(newPassword);	// prima di salvare la password nel database, la convertiamo in hashcode
 				        Object[] arg = {newPasswordHash, email};
 						this.socket.function("reset_password", arg);
-						//NOTA BENE: Mandare via mail newPassword e newCodiceAttivazione
+						Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", mail,
+								 "NUOVA PWD", "PWD: "+newPassword+" CODATTIVAZIONE: "+ codiceAttivazione);
 						Object[] argomento = {newPasswordHash};
 						this.socket.function("reset_login", argomento); 	// resettiamo infine i tentativi di login
-						this.createSession(); } 							// si crea una nuova sessione
+						this.createSession(matricola); } 							// si crea una nuova sessione
 					if (forgot_pwd.equalsIgnoreCase("No")) {
 						String[] credenziali_reinserite = this.inserisciCredenziali();		
 						this.login(credenziali_reinserite[0], credenziali_reinserite[1]);	
@@ -177,9 +183,10 @@ public class AuthenticationService {
 	/**
 	 * Genera una nuova sessione
 	 * @return sessione
+	 * @throws Exception 
 	 */
-	private Sessione createSession() throws ClassNotFoundException {
-		return Sessione.getInstance(); // NOTA: Va bene cosi' o bisogna passare email e livelloUtente?
+	private boolean createSession(int matricola) throws Exception {
+		return Sessione.getInstance().create(matricola);
 	}
 	
 	
@@ -191,7 +198,7 @@ public class AuthenticationService {
 		MessageDigest m = MessageDigest.getInstance("MD5"); 	// creiamo un'istanza e passiamo come riferimento la funzione di hash da usare sulla stringa (MD5 nel nostro caso)
 		byte [] p = m.digest(stringa.getBytes()); 				// computiamo la password fornita 
 		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perchè un oggetto BigInteger è immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
-		return number.toString(16); 							// convertiamo infine il BigInteger in formato testuale (l'argomento '16' indica la base esadecimale)
+		return number.toString(16).toUpperCase(); 							// convertiamo infine il BigInteger in formato testuale (l'argomento '16' indica la base esadecimale)
 	}
 	
 	
@@ -232,11 +239,11 @@ public class AuthenticationService {
 	 */
 	private int getLoginAttempts () throws ClassNotFoundException, SQLException {
 		int tentativi=0;
-		String sqlScript = "SELECT tentativiLogin FROM Utente WHERE matricola = '" + this.matricola + "';";
+		String sqlScript = "SELECT \"tentativiLogin\" FROM \"Utente\" WHERE matricola = '" + this.matricola + "';";
 		ArrayList<Map<String, Object>> takeAttempts = new ArrayList<Map<String, Object>>();
 		takeAttempts = socket.query(sqlScript);
 		for (Map<String, Object> a : takeAttempts) 
-			tentativi = (int) a.get("tentativiLogin");
+			tentativi = (int) a.get("tentativilogin");
 		return tentativi;
 	}
 	
@@ -297,7 +304,7 @@ public class AuthenticationService {
 	 * @return check di controllo
 	 */
 	private boolean controlloUtenteAttivo() throws ClassNotFoundException, SQLException { 
-		String sqlScript = "SELECT tentativiLogin FROM Utente WHERE matricola = '" + this.matricola + "';";
+		String sqlScript = "SELECT \"tentativiLogin\" FROM \"Utente\" WHERE matricola = '" + this.matricola + "';";
 		ArrayList<Map<String, Object>> takeAttempts = new ArrayList<Map<String, Object>>();
 		takeAttempts = socket.query(sqlScript);
 		if (!takeAttempts.isEmpty())  //Se il result set non contiene NULL allora l'utente e' attivato
@@ -314,7 +321,7 @@ public class AuthenticationService {
 	private boolean controlloCredenziali (String pass) throws Exception { 
 		String passwordhash = this.toHash(pass); 	// Convertiamo la password fornita in hashcode, usando l'algoritmo MD5
 	    Object[] o = {passwordhash, email }; 		// Eseguiamo la stored procedure per confrontare le credenziali
-		ArrayList<Map<String,Object>> result_set = socket.function("queryDati", o);
+		ArrayList<Map<String,Object>> result_set = socket.function("\"queryDati\"", o);
 		boolean risultato = false;
 		for (Map<String, Object> a : result_set) {
 			risultato = a.containsValue(true) ? true : false; 
@@ -330,6 +337,7 @@ public class AuthenticationService {
 		String [] v = auth.inserisciCredenziali();
 		auth.login(v[0], v[1]);
 		System.out.println("Procedura di login eseguita correttamente! ");
+		auth.in.close(); // chiusura dello stream
 	}
 }
 

@@ -68,15 +68,5 @@ public class ReperisciCorso {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		//or
-		try {
-			ReadableByteChannel rbc=Channels.newChannel(new URL(r.path).openStream());
-			FileOutputStream fos=new FileOutputStream(r.nome);
-			FileChannel fc=fos.getChannel();
-			fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 }
