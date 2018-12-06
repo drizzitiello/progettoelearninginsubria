@@ -128,7 +128,7 @@ public class AuthenticationService {
 					this.createSession(matricola);							// creiamo una nuova sessione
 					}
 				else {
-					Object[] codice = {codiceAttivazione};
+					Object[] codice = {(short) codiceAttivazione};
 					this.socket.function("incremento_login", codice);
 					System.out.println("Password dimenticata? Si / No ");
 					forgot_pwd = in.readLine();
@@ -151,15 +151,13 @@ public class AuthenticationService {
 				        String newPasswordHash = this.toHash(newPassword);	// prima di salvare la password nel database, la convertiamo in hashcode
 				        Object[] arg = {newPasswordHash, email};
 						this.socket.function("reset_password", arg);
-						Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", mail,
-								 "NUOVA PWD", "PWD: "+newPassword+" CODATTIVAZIONE: "+ codiceAttivazione);
+						//Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", mail,
+							//	 "NUOVA PWD", "PWD: "+newPassword+" CODATTIVAZIONE: "+ codiceAttivazione);
 						Object[] argomento = {newPasswordHash};
 						this.socket.function("reset_login", argomento); 	// resettiamo infine i tentativi di login
-						this.createSession(matricola); } 							// si crea una nuova sessione
-					if (forgot_pwd.equalsIgnoreCase("No")) {
-						String[] credenziali_reinserite = this.inserisciCredenziali();		
-						this.login(credenziali_reinserite[0], credenziali_reinserite[1]);	
 					}
+					String[] credenziali_reinserite = this.inserisciCredenziali();		
+					this.login(credenziali_reinserite[0], credenziali_reinserite[1]);	
 				}
 			}
 		}
