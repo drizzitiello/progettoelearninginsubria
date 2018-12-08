@@ -12,27 +12,27 @@ public class GestioneContenutoCorso {
 	}
 	public void createFolder(String name, String path, int codSezione, int codRisorsa, String descr, String tipo, boolean pubblica) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		String sql = "INSERT INTO \"Risorsa\"(\"codiceRisorsa\", nome, descrizione, percorso, tipo, "
-				+ "\"codiceSezione\", \"isPubblica\") "
+		String sql = "INSERT INTO risorsa(codice_risorsa, nome, descrizione, percorso, tipo, "
+				+ "codice_sezione, is_pubblica) "
 				+ "VALUES ("+codRisorsa+", '"+name+"', '"+descr+"', '"+path+"','"+tipo+"', "
 						+ " "+codSezione+", "+pubblica+");";
 		socket.query(sql);
 	}
 	public void cancelFolder(int codRisorsa) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		String sql = "DELETE FROM \"Risorsa\""
-				+ " WHERE \"codiceRisorsa\" = "+codRisorsa;
+		String sql = "DELETE FROM risorsa"
+				+ " WHERE codice_risorsa = "+codRisorsa;
 		socket.query(sql);
 	}
 	public void modificaTitolo(int codSezione, String titolo) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		String sql = "UPDATE \"Sezione\""+ " SET titolo = '"+titolo+
-				"' WHERE \"codiceSezione\" = "+codSezione;
+		String sql = "UPDATE sezione"+ " SET titolo = '"+titolo+
+				"' WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
 	public void modificaVisibilita(int codSezione) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		String sql = "UPDATE \"Sezione\""+ " SET \"isPubblica\" = true"+ " WHERE \"codiceSezione\" = "+codSezione;
+		String sql = "UPDATE sezione"+ " SET is_pubblica = true"+ " WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
 	public void visualizaAsStudent() {

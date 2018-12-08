@@ -63,8 +63,14 @@ public class ReperisciCorso {
 	public void download(Risorse r) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		try {
+			String extension = "";
+			int i = r.path.lastIndexOf('.');
+			if (i > 0) {
+			    extension = r.path.substring(i+1);
+			}
 			BufferedInputStream in =new BufferedInputStream(new URL(r.path).openStream());
-			Files.copy(in, Paths.get(r.nome),StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(in, Paths.get("C:/Users/macri/Desktop/nini."+extension),StandardCopyOption.REPLACE_EXISTING);
+		
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

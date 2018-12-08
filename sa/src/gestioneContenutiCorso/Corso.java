@@ -15,7 +15,7 @@ public class Corso {
 		ArrayList<Risorse> risorse=new ArrayList<Risorse>();
 		for(Sezione sezione : con.sezioni) {
 			sezioni.add(sezione);
-			String sql = "INSERT INTO \"Sezione\" "
+			String sql = "INSERT INTO sezione "
 					+ "VALUES(?, ?, ?, ?, ?, ?, ?);";
 			Object[] p = {sezione.codSezione, sezione.titolo, sezione.descrizione,
 					sezione.visibilita, sezione.codCorso, sezione.figlioDi,
@@ -23,7 +23,7 @@ public class Corso {
 			socket.query(sql,p);
 			for(Risorse risorsa : sezione.risorse) {
 				risorse.add(risorsa);
-				String sql2 = "INSERT INTO \"Risorsa\" " + 
+				String sql2 = "INSERT INTO risorsa " + 
 						"VALUES (?, ?, ?, ?, ?, ?, ?)";
 				Object[] p2 = {risorsa.codRisorsa, risorsa.nome, risorsa.descrizione, 
 						risorsa.path, risorsa.tipo, risorsa.codSezione, risorsa.visibilita};
