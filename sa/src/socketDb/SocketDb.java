@@ -95,15 +95,6 @@ public class SocketDb {
 	}
 	
 	private void bindParams(Object[] params) throws SQLException {
-		//CHECK PARAMETRI
-		/*String[] paramsCorrected=new String[params.length];
-		for(String p : params) {
-			if(p.contains("drop")||p.contains("DROP")||(p.contains("delete")||p.contains("DELETE"))) {
-				return null;
-			}
-		}		
-		*/
-		
 		for(int i=0; i<params.length;i++) {
 			stmt.setObject(i+1, params[i]);
 		}
