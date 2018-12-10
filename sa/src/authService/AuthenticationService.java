@@ -107,14 +107,14 @@ public class AuthenticationService {
 	private String toHash(String stringa) throws NoSuchAlgorithmException {
 		MessageDigest m = MessageDigest.getInstance("MD5"); 	// creiamo un'istanza e passiamo come riferimento la funzione di hash da usare sulla stringa (MD5 nel nostro caso)
 		byte [] p = m.digest(stringa.getBytes()); 				// computiamo la password fornita 
-		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perche' un oggetto BigInteger è immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
+		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perche' un oggetto BigInteger Ã¨ immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
 		return number.toString(16).toUpperCase(); 				// convertiamo infine il BigInteger in formato testuale e in maiuscolo (l'argomento '16' indica la base esadecimale)
 	}
 	
 	/**	Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
 	 * @return stringa random */
 	private String randomString () {
-		StringBuilder finale= new StringBuilder();
+		StringBuilder finale = new StringBuilder();
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
