@@ -7,7 +7,7 @@ package authService;
 *	<P>	Obiettivo: Realizzazione di una semplice piattaforma di elearning
 *
 * @author Davide Stagno - Daniele Rizzitiello - Marco Macri'
-* @version 2.0
+* @version 2.1
 */
 
 import java.sql.SQLException;
@@ -111,9 +111,10 @@ public class AuthenticationService {
 		return number.toString(16).toUpperCase(); 				// convertiamo infine il BigInteger in formato testuale e in maiuscolo (l'argomento '16' indica la base esadecimale)
 	}
 	
-	/**	Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre)
+	/**	Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
 	 * @return stringa random */
 	private String randomString () {
+		StringBuilder finale= new StringBuilder();
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
@@ -121,8 +122,19 @@ public class AuthenticationService {
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index)); 
         }
-        return salt.toString();	
-	}
+        String risultato = new String(salt.toString());
+        char [] chr= risultato.toCharArray();
+        for(int i=0; i<16; i++)	{
+        	if (Character.isLetter(chr[i]) && i%2==0) 
+        		chr[i] = Character.toUpperCase(chr[i]); 
+        	if (Character.isLetter(chr[i]) && i%2!=0) 
+        		chr[i] = Character.toLowerCase(chr[i]);
+       	}
+        for(int i=0; i<16; i++)	
+        	finale.append(Character.toString(chr[i]));
+	    return finale.toString();	
+	}	
+	
 	
 	/** Fornisce le informazioni dell'utente dal database, usando la matricola 
 	 * @return void */
