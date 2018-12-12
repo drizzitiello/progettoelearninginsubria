@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import socketDb.SocketDb;
 
 public class Corso {
-	public int codCorso;
-	public String nome,anno,laurea,descrizione,contenuti;
+	
+	public int codCorso, peso, creatore;
+	public String nome, anno, laurea, descrizione, contenuti;
 	SocketDb socket;
+	
 	public void setContenuti(Contenuto con) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		ArrayList<Sezione> sezioni=new ArrayList<Sezione>();
@@ -46,7 +48,10 @@ public class Corso {
 	public void setDescrizione(String descrizione) {
 		this.descrizione=descrizione;
 	}
-	public void setContenuti(String contenuti) {
-		this.contenuti=contenuti;
+	public void setPeso(String pesoCFU) {
+		this.peso=Integer.parseInt(pesoCFU);
+	}
+	public void setCreatore(String creator) {
+		this.creatore=Integer.parseInt(creator);
 	}
 }
