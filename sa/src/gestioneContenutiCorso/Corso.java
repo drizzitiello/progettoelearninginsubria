@@ -13,8 +13,8 @@ public class Corso {
 	
 	public void setContenuti(Contenuto con) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		ArrayList<Sezione> sezioni=new ArrayList<Sezione>();
-		ArrayList<Risorse> risorse=new ArrayList<Risorse>();
+		ArrayList<Sezione> sezioni = new ArrayList<Sezione>();
+		ArrayList<Risorse> risorse = new ArrayList<Risorse>();
 		for(Sezione sezione : con.sezioni) {
 			sezioni.add(sezione);
 			String sql = "INSERT INTO sezione "
@@ -34,24 +34,24 @@ public class Corso {
 		}
 	}
 	public void setCodCorso(String cC) {
-		this.codCorso=Integer.parseInt(cC);
+		this.codCorso = Integer.parseInt(cC);
 	}
 	public void setNome(String nome) {
-		this.nome=nome;
+		this.nome = nome;
 	}
 	public void setAnno(String anno) {
-		this.anno=anno;
+		this.anno = anno;
 	}
 	public void setLaurea(String laurea) {
-		this.laurea=laurea;
+		this.laurea = laurea;
 	}
 	public void setDescrizione(String descrizione) {
-		this.descrizione=descrizione;
+		this.descrizione = descrizione;
 	}
 	public void setPeso(String pesoCFU) {
-		this.peso=Integer.parseInt(pesoCFU);
+		this.peso = Integer.parseInt(pesoCFU);
 	}
 	public void setCreatore(String creator) {
-		this.creatore=Integer.parseInt(creator);
+		this.creatore = Integer.parseInt(creator);
 	}
 }
