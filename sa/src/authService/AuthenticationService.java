@@ -16,6 +16,8 @@ import java.math.BigInteger;
 import java.security.*;
 import javax.mail.*;
 
+import socketDb.SocketDb;
+
 public class AuthenticationService {
 	
 	class InfoFromDb {
