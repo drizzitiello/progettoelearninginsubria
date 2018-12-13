@@ -16,21 +16,40 @@ import java.math.BigInteger;
 import java.security.*;
 import javax.mail.*;
 
+import Sessione.Sessione;
+import notifier.Notifier;
 import socketDb.SocketDb;
 
 public class AuthenticationService {
 	
 	class InfoFromDb {
 		private int attivation_code;
-		private String login_attempts;
+		private Integer login_attempts;
 		private String pwd_hash;
-		private String mail;
-		private boolean isBlocked = false;	}
+		private int matricola;
+		private boolean isBlocked = false;	
+		
+		/** Fornisce le informazioni dell'utente dal database, usando la matricola 
+		 * @return void */
+		private void getInfoFromDb (String email) throws ClassNotFoundException, SQLException {
+			AuthenticationService.email=email;
+			String sqlScript = "SELECT password_hash, codice_attivazione, tentativi_login, matricola FROM utente WHERE email = '" + email + "';";
+			ArrayList<Map<String, Object>> takeInfo = new ArrayList<Map<String, Object>>();
+			takeInfo = socket.query(sqlScript);
+			for (Map<String, Object> a : takeInfo) {
+				user.pwd_hash = (String) a.get("password_hash");
+				user.attivation_code = (int) a.get("codice_attivazione");
+				user.login_attempts = (Integer) a.get("tentativi_login");
+				user.matricola = (int) a.get("matricola");
+			}
+		}
+	}
 	
 	//CAMPI
 	InfoFromDb user = new InfoFromDb();
 	private SocketDb socket;
 	private int matricola;
+	private static String email;
 	
 	/** Costruttore: assegnamento del socket */
 	public AuthenticationService (SocketDb s) throws ClassNotFoundException, SQLException {
@@ -39,15 +58,29 @@ public class AuthenticationService {
 	
 	/** Effettua il login dell'utente con la piattaforma
 	 * @return flag di avvenuta creazione di una nuova sessione */
-	public boolean login (String mail, String pass) throws Exception { 
+	public String login (String mail, String pass) throws Exception { 
+		this.email=email;
 		if (controlloEsistenzaUtente(mail)) {
-			this.getInfoFromDb();
-			if (controlloTentativi())
-				if (controlloUtenteAttivo())
-					if (controlloCredenziali(pass, mail)) 
-						return Sessione.getInstance().create(matricola);
+			user.getInfoFromDb(mail);
+			if (controlloTentativi()) {
+				if (controlloUtenteAttivo()) {
+					if (controlloCredenziali(pass, mail)) {
+						Sessione.getInstance().create(user.matricola);
+						return "Credenziali corrette";
+					}
+					else return "Password errata";
+				}
+				else {
+					return "L'utente non è stato attivato";
+				}
+			}
+			else {
+				return "Numero eccessivo di tentativi: profilo bloccato, contattare l'admin";
+			}
 		}
-		return false;
+		else {
+			return "L'email inserita non è registrata";
+		}
 	}
 	
 	/** Verifica se i dati inseriti sono corretti e se si tratta del primo tentativo di accesso
@@ -59,7 +92,7 @@ public class AuthenticationService {
 	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata)
 	 * @return void	*/
 	private void storeNewPassword (String new_pass) throws Exception {
-		Object[] arg = {this.toHash(new_pass), user.mail};
+		Object[] arg = {this.toHash(new_pass), this.email};
 		this.socket.function("reset_password", arg);
 	}
 	
@@ -73,7 +106,7 @@ public class AuthenticationService {
 	/** Incrementa di un'unita' i tentativi di accesso dell'utente
 	 * @return void	*/
 	private void loginAttemptsIncrease () throws Exception {
-		Object[] arg = {user.mail};
+		Object[] arg = {this.email};
 		this.socket.function("incremento_login", arg);
 	}
 	
@@ -86,9 +119,9 @@ public class AuthenticationService {
 	
 	/** Invia via mail un nuovo codice di attivazione e una nuova password
 	 * @return void */
-	private void sendNewLoginCredentials (String codice_att, String new_pass) throws SendFailedException, MessagingException {
-		Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", user.mail,
-				 "NUOVA PWD", "PWD: "+new_pass+" CODATTIVAZIONE: "+ codice_att);
+	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
+		Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", email,
+				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createAttivationCode());
 	}
 	
 	/** Controlla se il codice di attivazione inserito e' corretto
@@ -138,20 +171,6 @@ public class AuthenticationService {
 	}	
 	
 	
-	/** Fornisce le informazioni dell'utente dal database, usando la matricola 
-	 * @return void */
-	private void getInfoFromDb () throws ClassNotFoundException, SQLException {
-		String sqlScript = "SELECT passwordHash, codice_attivazione, tentativi_login, email FROM utente WHERE matricola = '" + matricola + "';";
-		ArrayList<Map<String, Object>> takeInfo = new ArrayList<Map<String, Object>>();
-		takeInfo = socket.query(sqlScript);
-		for (Map<String, Object> a : takeInfo) {
-			user.pwd_hash = (String) a.get("password_hash");
-			user.attivation_code = (int) a.get("codice_attivazione");
-			user.login_attempts = (String) a.get("tentativi_login");
-			user.mail = (String) a.get("email");
-		}
-	}
-	
 	/** Verifica che l'utente sia memorizzato nel database 
 	 * @return check di controllo */
 	private boolean controlloEsistenzaUtente (String email_digitata) throws Exception { 
@@ -168,7 +187,7 @@ public class AuthenticationService {
 	/** Verifica che il numero di tentativi di accesso sia inferiore o uguale a 10
 	 * @return check di controllo */
 	private boolean controlloTentativi() throws ClassNotFoundException, SQLException {
-		return (Integer.parseInt(user.login_attempts) <= 10);
+		return (user.login_attempts <= 10);
 	}
 	
 	/**  Verifica che il profilo dell'utente sia gia' attivo
@@ -179,7 +198,7 @@ public class AuthenticationService {
 	
 	/** Verifica che le credenziali inserite coincidano con quelle presenti nel database
 	 * @return check di controllo */
-	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception { 
-		return (this.toHash(pass) == user.pwd_hash && mail_digitata == user.mail);
+	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception {
+		return (this.toHash(pass).equals(user.pwd_hash) && mail_digitata == this.email);
 	}
 }
