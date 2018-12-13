@@ -22,7 +22,7 @@ import socketDb.SocketDb;
 
 public class Utente {
 	
-	class InfoUtente {
+	public class InfoUtente {
 	       /* Dichiarazione delle info utente: */
 	       public int matricola;
 	       public String nome;
@@ -87,7 +87,7 @@ public class Utente {
         this.myInfo.nome                    = (String)	row.get("nome");
         this.myInfo.cognome                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
-        this.myInfo.tipoUtente              = (int)		row.get("tipoutente");
+        this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
         this.myInfo.annoImmatricolazione    = 0;
         this.myInfo.corsoLaurea             = "";
         this.myInfo.facolta                 = "";

@@ -16,8 +16,8 @@ import javax.mail.internet.MimeMessage;
 import socketDb.SocketDb;
 
 public class Notifier {
-	SocketDb socket;
-	public void sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
+	static SocketDb socket;
+	public static void sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		int codCorso=getCorso(cor);
 		ArrayList<String> l=getEmailUtenti(codCorso);
@@ -25,14 +25,14 @@ public class Notifier {
 			send_uninsubria_email(usr, pwd, s, subject, body);
 		}
 	}
-	public int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+	public static int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		Object[] params = {nomeCorso};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
 		int codCorso=(int) cc.get(0).get("codicecorso");
 		return codCorso;
 	}
-	public ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
+	public static ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		ArrayList<String> email=new ArrayList<String>();
 		Object[] s= {codCorso};

@@ -84,7 +84,6 @@ public class SocketDb {
 		while(ObjResults.next()) {			
 			Map<String, Object> m = new HashMap<String, Object>();
 			for(int i=1; i<=rsmd.getColumnCount();i++) {
-				//System.out.println(rsmd.getColumnName(i));
 				m.put(rsmd.getColumnName(i).toLowerCase(), ObjResults.getObject(i));
 			}
 			hm.add(m);
