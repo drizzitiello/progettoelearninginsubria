@@ -57,7 +57,7 @@ public class AuthenticationService {
 	}
 	
 	/** Effettua il login dell'utente con la piattaforma
-	 * @return flag di avvenuta creazione di una nuova sessione */
+	 * @return messaggio con esito dell'operazione di login */
 	public String login (String mail, String pass) throws Exception { 
 		this.email=email;
 		if (controlloEsistenzaUtente(mail)) {
@@ -71,7 +71,7 @@ public class AuthenticationService {
 					else return "Password errata";
 				}
 				else {
-					return "L'utente non � stato attivato";
+					return "L'utente non è stato attivato";
 				}
 			}
 			else {
@@ -79,7 +79,7 @@ public class AuthenticationService {
 			}
 		}
 		else {
-			return "L'email inserita non � registrata";
+			return "L'email inserita non è registrata";
 		}
 	}
 	
@@ -142,7 +142,7 @@ public class AuthenticationService {
 	private String toHash(String stringa) throws NoSuchAlgorithmException {
 		MessageDigest m = MessageDigest.getInstance("MD5"); 	// creiamo un'istanza e passiamo come riferimento la funzione di hash da usare sulla stringa (MD5 nel nostro caso)
 		byte [] p = m.digest(stringa.getBytes()); 				// computiamo la password fornita 
-		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perche' un oggetto BigInteger è immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
+		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perche' un oggetto BigInteger Ã¨ immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
 		return number.toString(16).toUpperCase(); 				// convertiamo infine il BigInteger in formato testuale e in maiuscolo (l'argomento '16' indica la base esadecimale)
 	}
 	
