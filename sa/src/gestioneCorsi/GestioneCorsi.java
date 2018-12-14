@@ -13,7 +13,7 @@ import java.util.*;
 *	<P>	Obiettivo: Realizzazione di una semplice piattaforma di elearning
 *
 * @author Davide Stagno - Daniele Rizzitiello - Marco Macri'
-* @version 1.0	*/
+* @version 1.1	*/
 
 public class GestioneCorsi {
 	
@@ -80,10 +80,26 @@ public class GestioneCorsi {
 		socket.function("assegna_studenti", params);
 	}
 	
+	/** Assegnamento dei corsi di competenza di piu' studenti al loro piano di studi	*/
+	protected void assegnamentoCorsi(List<Utente> studenti) throws ClassNotFoundException, SQLException {
+		for (Utente studente : studenti) {
+			Object[] params = {studente.getInfo().matricola};
+			socket.function("assegna_studenti", params);
+		}
+	}
+	
 	/** Assegnamento di un corso di competenza ad un docente	*/
-	protected void assegnamentoCorsi(Utente docente, String nome_corso) throws ClassNotFoundException, SQLException {
-		Object[] params = {docente.getInfo().matricola, nome_corso };
+	protected void assegnamentoCorsi(Utente docente, Corso c) throws ClassNotFoundException, SQLException {
+		Object[] params = {docente.getInfo().matricola, c.nome };
 		socket.function("assegna_docente", params);
+	}
+	
+	/** Assegnamento di piu' corsi ad un docente	*/
+	protected void assegnamentoCorsi(Utente docente, List<Corso> lista_corsi) throws ClassNotFoundException, SQLException {
+		for (Corso a : lista_corsi) {
+			Object[] params = {docente.getInfo().matricola, a.nome };
+			socket.function("assegna_docente", params);
+		}
 	}
 }
 
