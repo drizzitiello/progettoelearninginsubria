@@ -199,6 +199,6 @@ public class AuthenticationService {
 	/** Verifica che le credenziali inserite coincidano con quelle presenti nel database
 	 * @return check di controllo */
 	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception {
-		return (this.toHash(pass).equals(user.pwd_hash) && mail_digitata == this.email);
+		return (this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email));
 	}
 }
