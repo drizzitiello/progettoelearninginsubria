@@ -23,7 +23,7 @@ import socketDb.SocketDb;
 public class AuthenticationService {
 	
 	class InfoFromDb {
-		private int attivation_code;
+		private int activation_code;
 		private Integer login_attempts;
 		private String pwd_hash;
 		private int matricola;
@@ -38,7 +38,7 @@ public class AuthenticationService {
 			takeInfo = socket.query(sqlScript);
 			for (Map<String, Object> a : takeInfo) {
 				user.pwd_hash = (String) a.get("password_hash");
-				user.attivation_code = (int) a.get("codice_attivazione");
+				user.activation_code = (int) a.get("codice_attivazione");
 				user.login_attempts = (Integer) a.get("tentativi_login");
 				user.matricola = (int) a.get("matricola");
 			}
@@ -85,7 +85,7 @@ public class AuthenticationService {
 	
 	/** Verifica se i dati inseriti sono corretti e se si tratta del primo tentativo di accesso
 	 * @return check di controllo */
-	private boolean attivation (String mail, String pass) throws Exception {
+	private boolean activation (String mail, String pass) throws Exception {
 		return (this.controlloCredenziali(pass, mail) && user.login_attempts == null);
 	}
 	
@@ -112,7 +112,7 @@ public class AuthenticationService {
 	
 	/** Genera un codice di attivazione generico a 8 cifre
 	 * @return codice di attivazione */
-	private int createAttivationCode () {
+	private int createActivationCode () {
 		SecureRandom n = new SecureRandom();				
 		return n.nextInt(99999999);
     }
@@ -121,13 +121,13 @@ public class AuthenticationService {
 	 * @return void */
 	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
 		Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", email,
-				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createAttivationCode());
+				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createActivationCode());
 	}
 	
 	/** Controlla se il codice di attivazione inserito e' corretto
 	 * @return check di controllo */
 	private boolean controlloCodiceAttivazione (int codice_inserito) {
-		return (codice_inserito == user.attivation_code);
+		return (codice_inserito == user.activation_code);
 	}
 	
 	/** Verifica se un utente e' bloccato
