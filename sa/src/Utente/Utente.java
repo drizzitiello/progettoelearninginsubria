@@ -24,7 +24,7 @@ public class Utente {
 	
 	public class InfoUtente {
 	       /* Dichiarazione delle info utente: */
-	       public int matricola;
+	       public Integer matricola;
 	       public String nome;
 	       public String cognome;
 	       public String email;

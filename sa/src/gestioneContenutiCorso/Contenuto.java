@@ -3,7 +3,7 @@ package gestioneContenutiCorso;
 import java.util.*;
 
 public class Contenuto {
-	List<Sezione> sezioni;
+	public List<Sezione> sezioni;
 	public Contenuto() {
 		sezioni=new ArrayList<Sezione>();
 	}

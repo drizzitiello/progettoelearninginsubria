@@ -10,7 +10,7 @@ public class Sezione {
 	public String descrizione;
 	public Boolean visibilita;
 	public Integer codCorso;
-	List<Risorse> risorse=new ArrayList<Risorse>();
+	public List<Risorse> risorse=new ArrayList<Risorse>();
 	public int codSezione;
 	public int matricola;
 	public Sezione(String titolo, String descr, boolean visibilita, Integer codSezione,

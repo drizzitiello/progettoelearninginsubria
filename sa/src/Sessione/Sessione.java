@@ -18,7 +18,7 @@ public class Sessione {
     
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
-    private Utente utente;    
+    public Utente utente;    
     public static Sessione s;
     
     /**

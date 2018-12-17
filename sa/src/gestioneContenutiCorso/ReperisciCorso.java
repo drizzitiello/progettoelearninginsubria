@@ -17,14 +17,16 @@ import socketDb.SocketDb;
 
 public class ReperisciCorso {
 	SocketDb socket;
-	public List<Integer> getCorsi() throws ClassNotFoundException, SQLException {
+	public ArrayList<Corso> getCorsi() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "getCorsi";
 		Object[] s= {};
 		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
-		ArrayList<Integer> corsi = new ArrayList<Integer>();
+		ArrayList<Corso> corsi = new ArrayList<Corso>();
 		for(Map<String, Object> m : obj) {
-			corsi.add((Integer) m.get("codicecorso"));
+			corsi.add(new Corso((String) m.get("codicecorso"), (String) m.get("nome"),
+					(String) m.get("anno_attivazione"), (String) m.get("facolta"), 
+					(String) m.get("descrizione"), (String) m.get("peso"), (String) m.get("creatore")));
 		}
 		return corsi;
 	}
@@ -36,13 +38,13 @@ public class ReperisciCorso {
 		Object[] s= {c.codCorso};
 		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
 		for(Map<String, Object> m : obj) {
-			int codSezione=(int) m.get("codicesezione");
+			int codSezione=(int) m.get("codice_sezione");
 			String titolo=(String) m.get("titolo");
 			String descr=(String) m.get("descrizione");
-			Boolean visibilita=(Boolean) m.get("ispubblica");
+			Boolean visibilita=(Boolean) m.get("is_pubblica");
 			int matricola=(int) m.get("matricola");
-			int codCorso=(int) m.get("codcorso");
-			Integer figlioDi=(Integer) m.get("figlioDi");
+			int codCorso=(int) m.get("cod_corso");
+			Integer figlioDi=(Integer) m.get("figlio_di");
 			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione, matricola, codCorso, figlioDi);
 			sql2 = "getContenutoCorso1";
 			Object[] s2= {codSezione};
@@ -51,8 +53,8 @@ public class ReperisciCorso {
 				String nome=(String) ms.get("nome");
 				String descr2=(String) ms.get("descrizione");
 				int codCorso2=(int) m.get("matricola");
-				int codSezione2=(int) m.get("codicesezione");
-				Boolean visibilita2=(Boolean) m.get("ispubblica");
+				int codSezione2=(int) m.get("codice_sezione");
+				Boolean visibilita2=(Boolean) m.get("is_pubblica");
 				String path2=(String) m.get("percorso");
 				String tipo=(String) m.get("tipo");
 				sez.addResource(nome, descr2, path2, codSezione2, codCorso2, visibilita2, tipo);

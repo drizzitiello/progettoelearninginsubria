@@ -1,7 +1,7 @@
 package gestioneContenutiCorso;
 
 public class Risorse {
-	String nome, descrizione, path;
+	public String nome, descrizione, path;
 	int codSezione;
 	public int codRisorsa;
 	public Boolean visibilita;

@@ -1,29 +1,33 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
 import notifier.Notifier;
+import socketDb.SocketDb;
 
 import javax.swing.JLabel;
+import javax.swing.JList;
+
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 import java.awt.event.ActionEvent;
-import javax.swing.JList;
+import javax.swing.JOptionPane;
 
 public class HomePage extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField corso;
-	private JList<JButton> list ;
+	private JButton last;
+	private ArrayList<JButton> la;
 
 	/**
 	 * Create the frame.
@@ -48,14 +52,58 @@ public class HomePage extends JFrame {
 		cercaCorsi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					if(last!=null)contentPane.remove(last);
 					Integer i = Notifier.getCorso(corso.getText());
-					if(i!=null) {list.add(new JButton(corso.getText()));}
+					if(i!=null) {
+						JButton b = new JButton(corso.getText());
+						b.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								PaginaCorso pc = new PaginaCorso(ses, corso.getText());
+							}
+						});
+						last=b;
+						contentPane.add(b);
+						contentPane.revalidate();
+					    validate();
+					}
+					else {
+						JOptionPane.showMessageDialog(cercaCorsi, "Il corso cercato non esiste");
+					}
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		contentPane.add(cercaCorsi);
+		
+		JButton corsiAssegnati = new JButton("I miei corsi");
+		corsiAssegnati.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					if(la!=null) for(JButton j : la) {
+						contentPane.remove(j);contentPane.revalidate();validate();
+					}
+					ArrayList<Map<String, Object>> hm;
+					Object[] param = {ses.getUtente().getInfo().matricola};
+					hm = SocketDb.getInstanceDb().function("getcorsiutente", param);
+					for(Map<String,Object> m : hm) {
+						JButton b = new JButton((String) m.get("nome"));
+						b.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								PaginaCorso pc = new PaginaCorso(ses, b.getText());
+							}
+						});
+						la.add(b);
+						contentPane.add(b);
+						}
+					contentPane.revalidate();
+					validate();
+				} catch (ClassNotFoundException | SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		contentPane.add(corsiAssegnati);
 		
 		JButton email = new JButton("Accedi all'email");
 		email.addActionListener(new ActionListener() {
@@ -65,8 +113,41 @@ public class HomePage extends JFrame {
 		});
 		contentPane.add(email);
 		
-		list = new JList<JButton>();
-		contentPane.add(list);
+		JButton visualizzaInfo = new JButton("Informazioni personali");
+		visualizzaInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				InfoUtente eh = new InfoUtente(ses, pwd);
+			}
+		});
+		contentPane.add(visualizzaInfo);
+		
+		if(ses.getUtente().getInfo().tipoUtente==3) {
+			JButton modificaDatiUtenti = new JButton("Informazioni personali");
+			modificaDatiUtenti.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ModificaDatiUtenti mdu = new ModificaDatiUtenti(ses, pwd);
+				}
+			});
+			contentPane.add(modificaDatiUtenti);
+			
+			JButton aggiungiCorsi = new JButton("Informazioni personali");
+			aggiungiCorsi.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					GestisciCorsi mdu = new GestisciCorsi(ses, pwd);
+				}
+			});
+			contentPane.add(modificaDatiUtenti);
+			
+			JButton statistiche = new JButton("Analisi statistiche");
+			statistiche.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					Statistiche mdu = new Statistiche(ses);
+				}
+			});
+			contentPane.add(statistiche);
+		}
+		
+		la=new ArrayList<JButton>();
 		setVisible(true);
 	}
 

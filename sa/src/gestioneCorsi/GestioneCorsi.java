@@ -7,6 +7,10 @@ import java.nio.file.*;
 import java.sql.SQLException;
 import java.util.*;
 
+import Utente.Utente;
+import gestioneContenutiCorso.Corso;
+import socketDb.SocketDb;
+
 /** Gestione dei corsi.
 * 
 *	<P>	Progetto d'esame: SeatIn.
@@ -22,7 +26,7 @@ public class GestioneCorsi {
 	protected List<Corso> corsi = new ArrayList<Corso>();
 	
 	/** Costruttore: assegnamento del socket */
-	GestioneCorsi (SocketDb s) throws ClassNotFoundException {
+	public GestioneCorsi () throws ClassNotFoundException {
 		socket = SocketDb.getInstanceDb();
 	}
 	
@@ -35,8 +39,9 @@ public class GestioneCorsi {
                 StandardCharsets.US_ASCII)) {		// creiamo un'istanza di BufferedReader
             String line = br.readLine();			// leggiamo la prima riga del file
             while (line != null) {					// fino a quando non abbiamo letto tutte le righe
-            	Corso corso = new Corso();
                 String[] attributi = line.split(",");
+                Corso corso = new Corso(attributi[0], attributi[1], attributi[2], attributi[3], 
+                		attributi[4], attributi[5], attributi[6]);
                 corso.setCodCorso(attributi[0]);
                 corso.setNome(attributi[1]);
                 corso.setAnno(attributi[2]);
@@ -57,7 +62,7 @@ public class GestioneCorsi {
 	}
 	
 	/** Creazione di un nuovo corso nel database	*/
-	protected void creazioneCorso (Corso c) throws ClassNotFoundException, SQLException {				
+	public void creazioneCorso (Corso c) throws ClassNotFoundException, SQLException {				
         Object[] params = {c.codCorso, c.nome, c.anno, c.laurea, c.descrizione, c.peso, c.creatore};
         socket.function("import_dati_corsi", params);
 	} 
@@ -69,7 +74,7 @@ public class GestioneCorsi {
 	} 
 	
 	/** Modifica dei dati relativi ad un corso presente nel database	*/
-	protected void modificaCorso (Corso c) throws ClassNotFoundException, SQLException {
+	public void modificaCorso (Corso c) throws ClassNotFoundException, SQLException {
 		Object[] params = {c.codCorso, c.nome, c.anno, c.laurea, c.descrizione, c.peso, c.creatore};
 		socket.function("modifica_dati_corsi", params);
 	} 

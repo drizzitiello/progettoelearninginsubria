@@ -25,11 +25,12 @@ public class Notifier {
 			send_uninsubria_email(usr, pwd, s, subject, body);
 		}
 	}
-	public static int getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+	public static Integer getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		Object[] params = {nomeCorso};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
-		int codCorso=(int) cc.get(0).get("codicecorso");
+		Integer codCorso = null;
+		if(cc.size()>0) codCorso=(int) cc.get(0).get("codicecorso");
 		return codCorso;
 	}
 	public static ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
