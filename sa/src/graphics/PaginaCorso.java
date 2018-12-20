@@ -23,6 +23,7 @@ import gestioneContenutiCorso.ReperisciCorso;
 import gestioneContenutiCorso.Risorse;
 import gestioneContenutiCorso.Sezione;
 import notifier.Notifier;
+import socketDb.SocketDb;
 
 public class PaginaCorso extends JFrame {
 
@@ -30,8 +31,6 @@ public class PaginaCorso extends JFrame {
 	private Corso cor;
 	private Contenuto c;
 	private ArrayList<Component> ac;
-	private String sss;
-	private int click;
 
 	/**
 	 * Create the frame.
@@ -46,25 +45,33 @@ public class PaginaCorso extends JFrame {
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		ac=new ArrayList<Component>();
-		sss="";
-		click=0;
 		
-		JLabel titoloCorso = new JLabel(corso);
+	
+			try {
+				cor= new Corso();
+				cor.codCorso=Notifier.getCorso(corso);
+				ReperisciCorso rc = new ReperisciCorso();
+				c = rc.getContenutoCorso(cor);
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			}
+		
+		JLabel titoloCorso = new JLabel(cor.nome);
 		contentPane.add(titoloCorso);
 		
-		//docenti e descrizione
+		JLabel descrizioneCorso = new JLabel(cor.descrizione);
+		contentPane.add(descrizioneCorso);
 		
-		try {
-			cor= new Corso();
-			cor.codCorso=Notifier.getCorso(corso);
-			ReperisciCorso rc = new ReperisciCorso();
-			c = rc.getContenutoCorso(cor);
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
+		String elencoDocenti="";
+		//getDocenti
 		
-		JLabel decsrizioneCorso = new JLabel(cor.descrizione);
-		contentPane.add(decsrizioneCorso);
+		JLabel docentiCorso = new JLabel(elencoDocenti);
+		contentPane.add(docentiCorso);
+		
+		boolean registrato=true;
+		Object[] params = {};
+		
+		if(ses.getUtente().getInfo().tipoUtente!=3&&registrato) {
 		
 		for(Sezione s : c.sezioni) {
 			JLabel sezione = new JLabel(s.titolo);
@@ -137,6 +144,7 @@ public class PaginaCorso extends JFrame {
 		}
 		
 		setVisible(true);
+	}
 	}
 
 }

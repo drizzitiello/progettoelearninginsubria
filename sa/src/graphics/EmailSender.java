@@ -8,6 +8,7 @@ import Sessione.Sessione;
 import notifier.Notifier;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.FlowLayout;
 
@@ -63,10 +64,16 @@ public class EmailSender extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(!destinatari.getText().contains("@")) {
-						Notifier.sendEmail(ses.getUtente().getInfo().email, pwd, destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
+						if(!Notifier.sendEmail(ses.getUtente().getInfo().email, pwd,
+								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText())) {
+							JOptionPane.showMessageDialog(bottoneInvio, "Destinatario non valido");
+						}
 					}
-					Notifier.send_uninsubria_email(ses.getUtente().getInfo().email, pwd, destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
-				} catch (MessagingException e1) {
+					else{
+						Notifier.send_uninsubria_email(ses.getUtente().getInfo().email, pwd,
+								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
+					}
+					} catch (MessagingException e1) {
 					e1.printStackTrace();
 				} catch (Exception e1) {
 					e1.printStackTrace();

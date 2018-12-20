@@ -17,13 +17,17 @@ import socketDb.SocketDb;
 
 public class Notifier {
 	static SocketDb socket;
-	public static void sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
+	public static boolean sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		int codCorso=getCorso(cor);
-		ArrayList<String> l=getEmailUtenti(codCorso);
-		for(String s : l) {
-			send_uninsubria_email(usr, pwd, s, subject, body);
+		Integer codCorso=getCorso(cor);
+		if(codCorso!=null) {
+			ArrayList<String> l=getEmailUtenti(codCorso);
+			for(String s : l) {
+				send_uninsubria_email(usr, pwd, s, subject, body);
+			}
+			return true;
 		}
+		return false;
 	}
 	public static Integer getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
@@ -43,7 +47,9 @@ public class Notifier {
 		}
 		return email;
 	}
-	public static void send_uninsubria_email(String usr, String pwd, String to, String subject, String body) throws SendFailedException, MessagingException{
+	public static void send_uninsubria_email(String usr, String pwd, String too, String subject, String body) throws SendFailedException, MessagingException{
+		String to = controlloValiditaEmail(too);
+		
 		String password=pwd;
 		String username=usr;
 	    	       
@@ -64,5 +70,8 @@ public class Notifier {
 	    msg.setText(body);
 	    
 	    Transport.send(msg,username,password);
+	}
+	private static String controlloValiditaEmail(String to) {
+		return to;
 	}
 }
