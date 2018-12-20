@@ -80,6 +80,8 @@ public class InfoUtente extends JFrame {
 		
 		JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUtente().getInfo().strutturaRiferimento);
 		contentPane.add(strutturaRiferimento);
+		
+		setVisible(true);
 	}
 
 	public InfoUtente(Sessione ses, String pwd, Map<String, Object> m) {
@@ -164,6 +166,8 @@ public class InfoUtente extends JFrame {
 				}
 			}
 		});
+		
+		setVisible(true);
 	}
 
 }

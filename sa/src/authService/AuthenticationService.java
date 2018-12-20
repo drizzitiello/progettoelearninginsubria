@@ -52,34 +52,36 @@ public class AuthenticationService {
 	private static String email;
 	
 	/** Costruttore: assegnamento del socket */
-	public AuthenticationService (SocketDb s) throws ClassNotFoundException, SQLException {
+	public AuthenticationService () throws ClassNotFoundException, SQLException {
 		socket = SocketDb.getInstanceDb();
 	}
 	
 	/** Effettua il login dell'utente con la piattaforma
 	 * @return messaggio con esito dell'operazione di login */
 	public String login (String mail, String pass) throws Exception { 
-		this.email=email;
+		email=mail;
 		if (controlloEsistenzaUtente(mail)) {
 			user.getInfoFromDb(mail);
-			if (controlloTentativi()) {
-				if (controlloUtenteAttivo()) {
+			if (controlloUtenteAttivo()) {
+				if (controlloTentativi()) {
 					if (controlloCredenziali(pass, mail)) {
+						resetLoginAttempts();
 						Sessione.getInstance().create(user.matricola);
 						return "Credenziali corrette";
 					}
 					else return "Password errata";
 				}
 				else {
-					return "L'utente non è stato attivato";
+					return "Numero eccessivo di tentativi: profilo bloccato, contattare l'admin";
 				}
 			}
 			else {
-				return "Numero eccessivo di tentativi: profilo bloccato, contattare l'admin";
+				if(activation(mail, pass)) return "Procedura Attivazione";
+				else return "L'utente non e' stato attivato e la password temporanea fornita e' errata";
 			}
 		}
 		else {
-			return "L'email inserita non è registrata";
+			return "L'email inserita non e' registrata";
 		}
 	}
 	
@@ -91,23 +93,24 @@ public class AuthenticationService {
 	
 	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata)
 	 * @return void	*/
-	private void storeNewPassword (String new_pass) throws Exception {
-		Object[] arg = {this.toHash(new_pass), this.email};
+	public void storeNewPassword (String new_pass) throws Exception {
+		Object[] arg = {this.toHash(new_pass), email};
 		this.socket.function("reset_password", arg);
 	}
 	
 	/** Azzera i tentativi di accesso dell'utente
 	 * @return void	*/
-	private void resetLoginAttempts () throws Exception {
-		Object[] arg = {user.pwd_hash};
+	public void resetLoginAttempts () throws Exception {
+		Object[] arg = {email};
 		this.socket.function("reset_login", arg);
 	}
 	
 	/** Incrementa di un'unita' i tentativi di accesso dell'utente
 	 * @return void	*/
 	private void loginAttemptsIncrease () throws Exception {
-		Object[] arg = {this.email};
-		this.socket.function("incremento_login", arg);
+		Object[] arg = {email};
+		if(user.login_attempts!=null)user.login_attempts++;
+		if(controlloTentativi()) this.socket.function("incremento_login", arg);
 	}
 	
 	/** Genera un codice di attivazione generico a 8 cifre
@@ -187,7 +190,7 @@ public class AuthenticationService {
 	/** Verifica che il numero di tentativi di accesso sia inferiore o uguale a 10
 	 * @return check di controllo */
 	private boolean controlloTentativi() throws ClassNotFoundException, SQLException {
-		return (user.login_attempts <= 10);
+		return (user.login_attempts < 10);
 	}
 	
 	/**  Verifica che il profilo dell'utente sia gia' attivo
@@ -199,6 +202,8 @@ public class AuthenticationService {
 	/** Verifica che le credenziali inserite coincidano con quelle presenti nel database
 	 * @return check di controllo */
 	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception {
-		return (this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email));
+		if(this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email)) {return true;}
+		else if(user.login_attempts != null) {loginAttemptsIncrease(); return false;}
+		else return false;
 	}
 }

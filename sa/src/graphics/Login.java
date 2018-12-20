@@ -51,7 +51,7 @@ public class Login {
 	 */
 	public Login() throws ClassNotFoundException, SQLException {
 		initialize();
-		as = new AuthenticationService(SocketDb.getInstanceDb());
+		as = new AuthenticationService();
 	}
 
 	/**
@@ -79,8 +79,12 @@ public class Login {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
 					String log = as.login(email.getText(), pwd.getText());
+					System.out.println(log);
 					if(log.equals("Credenziali corrette")) {
 						new HomePage(Sessione.getInstance(), pwd.getText());
+					}
+					else if(log.equals("Procedura Attivazione")) {
+						new ResetPassword();
 					}
 					else {
 						JOptionPane.showMessageDialog(loginButton, log);

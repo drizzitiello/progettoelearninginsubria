@@ -122,7 +122,7 @@ public class HomePage extends JFrame {
 		contentPane.add(visualizzaInfo);
 		
 		if(ses.getUtente().getInfo().tipoUtente==3) {
-			JButton modificaDatiUtenti = new JButton("Informazioni personali");
+			JButton modificaDatiUtenti = new JButton("Modifica dati utenti");
 			modificaDatiUtenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					ModificaDatiUtenti mdu = new ModificaDatiUtenti(ses, pwd);
@@ -130,13 +130,13 @@ public class HomePage extends JFrame {
 			});
 			contentPane.add(modificaDatiUtenti);
 			
-			JButton aggiungiCorsi = new JButton("Informazioni personali");
+			JButton aggiungiCorsi = new JButton("Gestiscti corsi");
 			aggiungiCorsi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					GestisciCorsi mdu = new GestisciCorsi(ses, pwd);
 				}
 			});
-			contentPane.add(modificaDatiUtenti);
+			contentPane.add(aggiungiCorsi);
 			
 			JButton statistiche = new JButton("Analisi statistiche");
 			statistiche.addActionListener(new ActionListener() {

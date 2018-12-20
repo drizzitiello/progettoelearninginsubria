@@ -70,6 +70,7 @@ public class GestisciCorsi extends JFrame {
 			}
 		});
 		contentPane.add(aggiungiCorso);
+		setVisible(true);
 	}
 
 }
