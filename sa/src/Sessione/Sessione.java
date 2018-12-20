@@ -73,10 +73,20 @@ public class Sessione {
 	 *
 	 * @return	Oggetto Utente autenticato nella piattaforma
 	 */
-    public Utente
-    getUtente(){
+    public Utente getUtente(){
         if(!this.isCreated) return null;
         return this.utente;
+    }
+
+
+     /**
+	 * Getter delle info utente autenticato nella piattaforma
+	 *
+	 * @return	Oggetto Utente autenticato nella piattaforma
+	 */
+    public InfoUtente info(){
+        if(!this.isCreated) return null;
+        return this.utente.getInfo();
     }
 
 }
