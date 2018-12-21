@@ -130,10 +130,10 @@ public class GestioneCorsi {
 			objectMatricole.add(nuovo);
 		}
 		ArrayList<Map<String,Object>> datiDocente;
+		int j=0;
 		for (Object[] a: objectMatricole) {
 			datiDocente = socket.function("get_dati_docente", a);
 			for (Map<String, Object> b : datiDocente) {
-				int j=0;
 				Utente u = new Utente();
 				u.getInfo().matricola = matricole[j];
 				u.getInfo().nome = (String) b.get("nome");
