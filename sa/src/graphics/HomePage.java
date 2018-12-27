@@ -105,13 +105,15 @@ public class HomePage extends JFrame {
 		});
 		contentPane.add(corsiAssegnati);
 		
-		JButton email = new JButton("Accedi all'email");
-		email.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				EmailSender eh = new EmailSender(ses, pwd);
-			}
-		});
-		contentPane.add(email);
+		if(ses.getUtente().getInfo().tipoUtente!=1) {
+			JButton email = new JButton("Accedi all'email");
+			email.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					EmailSender eh = new EmailSender(ses, pwd);
+				}
+			});
+			contentPane.add(email);
+		}
 		
 		JButton visualizzaInfo = new JButton("Informazioni personali");
 		visualizzaInfo.addActionListener(new ActionListener() {

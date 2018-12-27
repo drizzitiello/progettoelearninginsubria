@@ -112,7 +112,7 @@ public class GestioneCorsi {
 	public List<Utente> chiTieneCorso (Corso c) throws Exception {
 		Object[] params = {c.codCorso};
 		ArrayList<Map<String, Object>> matricolaDocente = socket.function("ricerca_docenti", params);
-		int[] matricole = {};
+		Integer[] matricole = {};
 		int i=0;
 		for (Map<String, Object> a : matricolaDocente) {
 			matricole[i] = (int) a.get("docente"); 
@@ -122,17 +122,18 @@ public class GestioneCorsi {
 	
 	/** Estrae i dati principali di un docente dal database e li memorizza 
 	 * 	@return lista dei docenti	*/
-	private List<Utente> datiDeiDocenti(int[] matricole) throws Exception {
+	private List<Utente> datiDeiDocenti(Integer[] matricole) throws Exception {
+		
+		Object[] queryparams = (Object[]) matricole;
+		
+		
 		List<Utente> docenti = new ArrayList<Utente>();
-		ArrayList<Object[]> objectMatricole = new ArrayList<Object[]>();
-		for (int i=0;i<matricole.length;i++) {
-			Object[] nuovo = {matricole[i]};
-			objectMatricole.add(nuovo);
-		}
+	
 		ArrayList<Map<String,Object>> datiDocente;
+		
 		int j=0;
-		for (Object[] a: objectMatricole) {
-			datiDocente = socket.function("get_dati_docente", a);
+		for (Object a: queryparams) {
+			datiDocente = socket.function("get_dati_docente", new Object[] {a});
 			for (Map<String, Object> b : datiDocente) {
 				Utente u = new Utente();
 				u.getInfo().matricola = matricole[j];

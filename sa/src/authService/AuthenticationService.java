@@ -69,7 +69,11 @@ public class AuthenticationService {
 						Sessione.getInstance().create(user.matricola);
 						return "Credenziali corrette";
 					}
-					else return "Password errata";
+					else 
+						{
+							loginAttemptsIncrease();
+							return "Password errata";
+						}
 				}
 				else {
 					return "Numero eccessivo di tentativi: profilo bloccato, contattare l'admin";
@@ -110,7 +114,7 @@ public class AuthenticationService {
 	private void loginAttemptsIncrease () throws Exception {
 		Object[] arg = {email};
 		if(user.login_attempts!=null)user.login_attempts++;
-		if(controlloTentativi()) this.socket.function("incremento_login", arg);
+		this.socket.function("incremento_login", arg);
 	}
 	
 	/** Genera un codice di attivazione generico a 8 cifre
@@ -203,7 +207,7 @@ public class AuthenticationService {
 	 * @return check di controllo */
 	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception {
 		if(this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email)) {return true;}
-		else if(user.login_attempts != null) {loginAttemptsIncrease(); return false;}
+		//else if(user.login_attempts != null) {loginAttemptsIncrease(); return false;}
 		else return false;
 	}
 }
