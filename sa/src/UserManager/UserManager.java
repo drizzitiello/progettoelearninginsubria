@@ -23,7 +23,7 @@ import Sessione.Sessione;
 
 public class UserManager {
     
-    /* Dichiarazione dei componenti di servizio: */
+    /* Dichiarazione dei componenti di servizio */
     private SocketDb socket;
     private Sessione session;
     private enabled = false;
