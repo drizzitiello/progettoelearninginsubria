@@ -1,6 +1,7 @@
 package Sessione;
 
 import Utente.Utente;
+import Utente.Utente.InfoUtente;
 
 /**
 * Gestione della sessione utente.

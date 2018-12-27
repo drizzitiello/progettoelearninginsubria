@@ -37,9 +37,9 @@ public class Utente {
 	}
     
     /* Dichiarazione livelli utente */
-    static final int admin = 1;
-    static final int docente = 2;
-    static final int studente = 3;
+    static public final int admin = 1;
+    static public final int docente = 2;
+    static public final int studente = 3;
 
     /* Dichiarazione dei componenti di servizio: */
     private SocketDb socket;

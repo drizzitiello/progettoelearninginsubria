@@ -7,8 +7,8 @@ import socketDb.SocketDb;
 
 public class Corso {
 	
-	public int codCorso, peso, creatore;
-	public String nome, anno, laurea, descrizione, contenuti;
+	public int codCorso, peso, creatore, anno;
+	public String nome, laurea, descrizione, contenuti;
 	SocketDb socket;
 	
 	public Corso(String string, String string2, String string3, String string4, String string5, String string6, String attributi) {
@@ -48,7 +48,7 @@ public class Corso {
 		this.nome = nome;
 	}
 	public void setAnno(String anno) {
-		this.anno = anno;
+		this.anno = Integer.parseInt(anno);
 	}
 	public void setLaurea(String laurea) {
 		this.laurea = laurea;

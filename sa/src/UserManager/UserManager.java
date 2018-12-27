@@ -7,6 +7,7 @@ import java.util.Map;
 
 import socketDb.SocketDb;
 import Sessione.Sessione;
+import Utente.Utente;
 
 /**
 * Modifica e inserimento massivo delle informazioni utente.
@@ -26,7 +27,7 @@ public class UserManager {
     /* Dichiarazione dei componenti di servizio */
     private SocketDb socket;
     private Sessione session;
-    private enabled = false;
+    private boolean enabled = false;
     
     /**
 	 * Istanzia l'oggetto relativo al SocketDb di sistema.
@@ -36,7 +37,7 @@ public class UserManager {
     public UserManager() throws Exception {
         this.socket = SocketDb.getInstanceDb();
         this.session = Sessione.getInstance();
-        this.enabled = this.session.info().tipoUtente == Utente.admin
+        this.enabled = this.session.info().tipoUtente == Utente.admin;
     }
 
 
@@ -64,6 +65,7 @@ public class UserManager {
                        user.getInfo().matricola
                      };
         
+        //DA FARE STORED
         this.socket.query("UPDATE TABLE utente 
                            SET nome                     = ?,
                                congome                  = ?,
@@ -87,8 +89,9 @@ public class UserManager {
 	 *
 	 * @return	flag di avvenuta eliminazione utente
      * @throws SQLException
+     * @throws ClassNotFoundException 
 	 */
-    public boolean eliminaUtente(Utente user) throws SQLException{
+    public boolean eliminaUtente(Utente user) throws SQLException, ClassNotFoundException{
         if(!user.created() || !this.enabled)
             return false;
 
@@ -106,8 +109,9 @@ public class UserManager {
 	 *
 	 * @return	flag di avvenuta eliminazione utente
      * @throws SQLException
+     * @throws ClassNotFoundException 
 	 */
-    public boolean sbloccaUtente(Utente user) throws SQLException{
+    public boolean sbloccaUtente(Utente user) throws SQLException, ClassNotFoundException{
         if(!user.created() || !this.enabled)
             return false;
 
@@ -153,7 +157,7 @@ public class UserManager {
                                                       anno_immatricolazione,corso_laurea,facolta,
                                                       stato_carriera,struttura_riferimento)
                             FROM ?
-                            WITH (FORMAT CSV, DELIMITER(';'))", p);
+                            WITH (FORMAT CSV, DELIMITER(','))", p);
 
 
         this.socket.query(" INSERT INTO utente (matricola,nome,cognome,email,
