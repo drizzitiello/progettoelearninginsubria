@@ -7,16 +7,23 @@ import socketDb.SocketDb;
 
 public class Corso {
 	
-	public int codCorso, peso, creatore, anno;
-	public String nome, laurea, descrizione, contenuti;
+	public int codCorso, peso, creatore, anno_attivazione;
+	public String nome, laurea, descrizione, contenuti, facolta;
 	SocketDb socket;
-	
-	public Corso(String string, String string2, String string3, String string4, String string5, String string6, String attributi) {
-		
-	}
 	
 	public Corso() {
 		// TODO Auto-generated constructor stub
+	}
+
+	public Corso(int codCorso, String nome, int anno_attivazione, String facolta, String descrizione,
+			int peso, int creatore) {
+		this.codCorso=codCorso;
+		this.nome=nome;
+		this.anno_attivazione=anno_attivazione;
+		this.facolta=facolta;
+		this.descrizione=descrizione;
+		this.peso=peso;
+		this.creatore=creatore;
 	}
 
 	public void setContenuti(Contenuto con) throws ClassNotFoundException, SQLException {
@@ -41,14 +48,14 @@ public class Corso {
 			}
 		}
 	}
-	public void setCodCorso(String cC) {
-		this.codCorso = Integer.parseInt(cC);
+	public void setCodCorso(int i) {
+		this.codCorso = i;
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-	public void setAnno(String anno) {
-		this.anno = Integer.parseInt(anno);
+	public void setAnno(int anno) {
+		this.anno_attivazione = anno;
 	}
 	public void setLaurea(String laurea) {
 		this.laurea = laurea;
@@ -56,10 +63,10 @@ public class Corso {
 	public void setDescrizione(String descrizione) {
 		this.descrizione = descrizione;
 	}
-	public void setPeso(String pesoCFU) {
-		this.peso = Integer.parseInt(pesoCFU);
+	public void setPeso(int i) {
+		this.peso = i;
 	}
-	public void setCreatore(String creator) {
-		this.creatore = Integer.parseInt(creator);
+	public void setCreatore(int i) {
+		this.creatore = i;
 	}
 }

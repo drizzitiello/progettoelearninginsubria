@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -29,33 +30,32 @@ public class GestisciCorsi extends JFrame {
 	 */
 	public GestisciCorsi(Sessione ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		ReperisciCorso rc = new ReperisciCorso();
 		try {
-			//cambiare getCorsi e testo JLabel
 			ArrayList<Corso> ali = rc.getCorsi();
 			for(Corso c : ali) {
-				JLabel codiceCorso = new JLabel(((Integer) c.codCorso).toString());
+				JLabel codiceCorso = new JLabel("Codice corso: "+((Integer) c.codCorso).toString());
 				contentPane.add(codiceCorso);
-				JLabel nome = new JLabel(c.nome);
+				JLabel nome = new JLabel("Nome: "+c.nome);
 				contentPane.add(nome);
-				JLabel annoAttivazione = new JLabel(c.anno);
+				JLabel annoAttivazione = new JLabel("Anno attivazione: "+String.valueOf(c.anno_attivazione));
 				contentPane.add(annoAttivazione);
-				JLabel facolta = new JLabel(c.laurea);
+				JLabel facolta = new JLabel("Facolta: "+c.laurea);
 				contentPane.add(facolta);
-				JLabel descrizione = new JLabel(c.descrizione);
+				JLabel descrizione = new JLabel("Descrizione: "+c.descrizione);
 				contentPane.add(descrizione);
-				JLabel peso = new JLabel(((Integer) c.peso).toString());
+				JLabel peso = new JLabel("CFU: "+((Integer) c.peso).toString());
 				contentPane.add(peso);
-				JButton modificaCorso = new JButton("Cerca");
+				JButton modificaCorso = new JButton("Modifica Corso");
 				modificaCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModificaCorso ac = new ModificaCorso(ses);
+						ModificaCorso ac = new ModificaCorso(ses, c);
 					}
 				});
 				contentPane.add(modificaCorso);
@@ -63,7 +63,7 @@ public class GestisciCorsi extends JFrame {
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
-		JButton aggiungiCorso = new JButton("Cerca");
+		JButton aggiungiCorso = new JButton("Aggiungi corso");
 		aggiungiCorso.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AggiungiCorso ac = new AggiungiCorso(ses, pwd);

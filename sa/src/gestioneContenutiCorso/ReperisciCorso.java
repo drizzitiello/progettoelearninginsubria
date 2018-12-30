@@ -24,9 +24,9 @@ public class ReperisciCorso {
 		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
 		ArrayList<Corso> corsi = new ArrayList<Corso>();
 		for(Map<String, Object> m : obj) {
-			corsi.add(new Corso((String) m.get("codicecorso"), (String) m.get("nome"),
-					(String) m.get("anno_attivazione"), (String) m.get("facolta"), 
-					(String) m.get("descrizione"), (String) m.get("peso"), (String) m.get("creatore")));
+			corsi.add(new Corso((int) m.get("codice_corso"), (String) m.get("nome"),
+					(int) m.get("anno_attivazione"), (String) m.get("facolta"), 
+					(String) m.get("descrizione"), (int) m.get("peso"), (int) m.get("creatore")));
 		}
 		return corsi;
 	}

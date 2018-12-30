@@ -53,7 +53,7 @@ public class HomePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(last!=null)contentPane.remove(last);
-					Integer i = Notifier.getCorso(corso.getText());
+					Integer i = Notifier.getCorso(corso.getText()).codCorso;
 					if(i!=null) {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {
@@ -132,7 +132,7 @@ public class HomePage extends JFrame {
 			});
 			contentPane.add(modificaDatiUtenti);
 			
-			JButton aggiungiCorsi = new JButton("Gestiscti corsi");
+			JButton aggiungiCorsi = new JButton("Gestisci corsi");
 			aggiungiCorsi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					GestisciCorsi mdu = new GestisciCorsi(ses, pwd);

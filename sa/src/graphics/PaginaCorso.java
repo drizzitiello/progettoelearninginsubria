@@ -17,11 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
+import Utente.Utente;
 import gestioneContenutiCorso.Contenuto;
 import gestioneContenutiCorso.Corso;
 import gestioneContenutiCorso.ReperisciCorso;
 import gestioneContenutiCorso.Risorse;
 import gestioneContenutiCorso.Sezione;
+import gestioneCorsi.GestioneCorsi;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
@@ -46,32 +48,35 @@ public class PaginaCorso extends JFrame {
 		
 		ac=new ArrayList<Component>();
 		
-	
 			try {
-				cor= new Corso();
-				cor.codCorso=Notifier.getCorso(corso);
+				cor= Notifier.getCorso(corso);
 				ReperisciCorso rc = new ReperisciCorso();
 				c = rc.getContenutoCorso(cor);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}
-		
+			
 		JLabel titoloCorso = new JLabel(cor.nome);
 		contentPane.add(titoloCorso);
 		
 		JLabel descrizioneCorso = new JLabel(cor.descrizione);
 		contentPane.add(descrizioneCorso);
 		
-		String elencoDocenti="";
-		//getDocenti
+		ArrayList<Utente> u=new ArrayList<Utente>();
+		try {
+			GestioneCorsi gc =new GestioneCorsi();
+			u=gc.chiTieneCorso(cor);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 		
+		String elencoDocenti="";
+		for(Utente ut : u) {
+			elencoDocenti=elencoDocenti+ut.getInfo().nome+" "+ut.getInfo().cognome+" ";
+		}
 		JLabel docentiCorso = new JLabel(elencoDocenti);
 		contentPane.add(docentiCorso);
-		
-		boolean registrato=true;
 		Object[] params = {};
-		
-		if(ses.getUtente().getInfo().tipoUtente!=3&&registrato) {
 		
 		for(Sezione s : c.sezioni) {
 			JLabel sezione = new JLabel(s.titolo);
@@ -142,9 +147,7 @@ public class PaginaCorso extends JFrame {
 			});
 			contentPane.add(analisiCorso);
 		}
-		
 		setVisible(true);
-	}
 	}
 
 }

@@ -13,13 +13,15 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import gestioneContenutiCorso.Corso;
 import socketDb.SocketDb;
 
 public class Notifier {
 	static SocketDb socket;
 	public static boolean sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		Integer codCorso=getCorso(cor);
+		Corso c = getCorso(cor);
+		Integer codCorso=c.codCorso;
 		if(codCorso!=null) {
 			ArrayList<String> l=getEmailUtenti(codCorso);
 			for(String s : l) {
@@ -29,13 +31,21 @@ public class Notifier {
 		}
 		return false;
 	}
-	public static Integer getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
+	public static Corso getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
+		Corso c=new Corso();
 		Object[] params = {nomeCorso};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
-		Integer codCorso = null;
-		if(cc.size()>0) codCorso=(int) cc.get(0).get("codicecorso");
-		return codCorso;
+		for(Map<String, Object> m : cc) {
+			c.setAnno((int) m.get("anno_attivazione"));
+			c.setCodCorso((int) m.get("codice_corso"));
+			c.setCreatore((int) m.get("creatore"));
+			c.setDescrizione((String) m.get("descrizione"));
+			c.setLaurea((String) m.get("facolta"));
+			c.setNome((String) m.get("nome"));
+			c.setPeso((int) m.get("peso"));
+		}
+		return c;
 	}
 	public static ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();

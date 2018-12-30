@@ -48,7 +48,7 @@ public class UserManager {
 	 * @return	flag di avvenuta modifica dei dati
      * @throws SQLException
 	 */
-    public boolean modificaDatiUtente(Utente user) throws SQLException{
+    public static boolean modificaDatiUtente(Utente user) throws SQLException{
         if(!user.created() || !this.enabled)
             return false;
 

@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -32,8 +33,8 @@ public class AggiungiCorso extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JLabel codice = new JLabel("Codice corso: ");
 		contentPane.add(codice);
@@ -76,14 +77,22 @@ public class AggiungiCorso extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					GestioneCorsi gc = new GestioneCorsi();
-					Corso c = new Corso(codiceCorso.getText(), insNome.getText(), annoAttiv.getText(),
-							fac.getText(), desc.getText(), pes.getText(), (String) (ses.getUtente().getInfo().matricola).toString());
-					gc.creazioneCorso(c);
+					Corso corso = new Corso();
+					corso.setCodCorso(Integer.parseInt(codiceCorso.getText()));
+	                corso.setNome(insNome.getText());
+	                corso.setAnno(Integer.parseInt(annoAttiv.getText()));
+	                corso.setLaurea(fac.getText());
+	                corso.setDescrizione(desc.getText());
+	                corso.setPeso(Integer.parseInt(pes.getText()));
+	                corso.setCreatore(ses.getUtente().getInfo().matricola);
+					gc.creazioneCorso(corso);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
+		contentPane.add(aggiungiCorso);
+		setVisible(true);
 	}
 
 }

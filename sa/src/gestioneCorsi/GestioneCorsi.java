@@ -40,15 +40,14 @@ public class GestioneCorsi {
             String line = br.readLine();			// leggiamo la prima riga del file
             while (line != null) {					// fino a quando non abbiamo letto tutte le righe
                 String[] attributi = line.split(",");
-                Corso corso = new Corso(attributi[0], attributi[1], attributi[2], attributi[3], 
-                		attributi[4], attributi[5], attributi[6]);
-                corso.setCodCorso(attributi[0]);
+                Corso corso = new Corso();
+                corso.setCodCorso(Integer.parseInt(attributi[0]));
                 corso.setNome(attributi[1]);
-                corso.setAnno(attributi[2]);
+                corso.setAnno(Integer.parseInt(attributi[2]));
                 corso.setLaurea(attributi[3]);
                 corso.setDescrizione(attributi[4]);
-                corso.setPeso(attributi[5]);
-                corso.setCreatore(attributi[6]);
+                corso.setPeso(Integer.parseInt(attributi[5]));
+                corso.setCreatore(Integer.parseInt(attributi[6]));
                 corsi.add(corso);					// aggiungiamo il corso all'array list
                 line = br.readLine();				// leggiamo la prossima riga
             }
@@ -56,14 +55,14 @@ public class GestioneCorsi {
             ioe.printStackTrace();
         }
         for (Corso a: corsi) {						// memorizziamo ogni corso nel database
-        	Object[] params = {a.codCorso, a.nome, (Integer) a.anno, a.laurea, a.descrizione, a.peso, a.creatore};
+        	Object[] params = {a.codCorso, a.nome, (Integer) a.anno_attivazione, a.laurea, a.descrizione, a.peso, a.creatore};
         	socket.function("import_dati_corsi", params);
         }
 	}
 	
 	/** Creazione di un nuovo corso nel database	*/
 	public void creazioneCorso (Corso c) throws ClassNotFoundException, SQLException {				
-        Object[] params = {c.codCorso, c.nome, c.anno, c.laurea, c.descrizione, c.peso, c.creatore};
+        Object[] params = {c.codCorso, c.nome, c.anno_attivazione, c.laurea, c.descrizione, c.peso, c.creatore};
         socket.function("import_dati_corsi", params);
 	} 
 	
@@ -75,7 +74,7 @@ public class GestioneCorsi {
 	
 	/** Modifica dei dati relativi ad un corso presente nel database	*/
 	public void modificaCorso (Corso c) throws ClassNotFoundException, SQLException {
-		Object[] params = {c.codCorso, c.nome, c.anno, c.laurea, c.descrizione, c.peso, c.creatore};
+		Object[] params = {c.codCorso, c.nome, c.anno_attivazione, c.laurea, c.descrizione, c.peso, c.creatore};
 		socket.function("modifica_dati_corsi", params);
 	} 
 	
