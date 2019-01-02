@@ -79,13 +79,13 @@ public class GestioneCorsi {
 	} 
 	
 	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
-	protected void assegnamentoCorsi(Utente studente) throws ClassNotFoundException, SQLException {
+	public void assegnamentoCorsi(Utente studente) throws ClassNotFoundException, SQLException {
 		Object[] params = {studente.getInfo().matricola};
 		socket.function("assegna_studenti", params);
 	}
 	
 	/** Assegnamento dei corsi di competenza di piu' studenti al loro piano di studi	*/
-	protected void assegnamentoCorsi(List<Utente> studenti) throws ClassNotFoundException, SQLException {
+	public void assegnamentoCorsi(List<Utente> studenti) throws ClassNotFoundException, SQLException {
 		for (Utente studente : studenti) {
 			Object[] params = {studente.getInfo().matricola};
 			socket.function("assegna_studenti", params);
@@ -93,13 +93,13 @@ public class GestioneCorsi {
 	}
 	
 	/** Assegnamento di un corso di competenza ad un docente	*/
-	protected void assegnamentoCorsi(Utente docente, Corso c) throws ClassNotFoundException, SQLException {
+	public void assegnamentoCorsi(Utente docente, Corso c) throws ClassNotFoundException, SQLException {
 		Object[] params = {docente.getInfo().matricola, c.nome };
 		socket.function("assegna_docente", params);
 	}
 	
 	/** Assegnamento di piu' corsi ad un docente	*/
-	protected void assegnamentoCorsi(Utente docente, List<Corso> lista_corsi) throws ClassNotFoundException, SQLException {
+	public void assegnamentoCorsi(Utente docente, List<Corso> lista_corsi) throws ClassNotFoundException, SQLException {
 		for (Corso a : lista_corsi) {
 			Object[] params = {docente.getInfo().matricola, a.nome };
 			socket.function("assegna_docente", params);
@@ -148,4 +148,8 @@ public class GestioneCorsi {
 			risposta = a.containsValue(true); 	}
 		return risposta;
 	}
+	public void iscriviAlCorso (Utente studente, Corso c) throws SQLException, ClassNotFoundException {
+		Object[] params = {studente.getInfo().matricola, c.codCorso};
+		socket.function("iscrivi_studente_al_corso", params);
+}
 }

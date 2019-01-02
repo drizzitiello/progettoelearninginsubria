@@ -1,6 +1,8 @@
 package graphics;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -15,29 +17,18 @@ import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
+import Utente.Utente;
+import gestioneContenutiCorso.Contenuto;
 import gestioneContenutiCorso.Corso;
+import gestioneContenutiCorso.GestioneContenutoCorso;
+import gestioneContenutiCorso.ReperisciCorso;
+import gestioneContenutiCorso.Risorse;
+import gestioneContenutiCorso.Sezione;
 import gestioneCorsi.GestioneCorsi;
 
 public class ModificaCorso extends JFrame {
-	
-	//codice corso, facolta e creatore ???
 
 	private JPanel contentPane;
-
-	/**
-	 * Create the frame.
-	 * @param ses 
-	 */
-	public ModificaCorso(Sessione ses) {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
-		contentPane = new JPanel();
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
-		setContentPane(contentPane);
-		
-		setVisible(true);
-	}
 
 	public ModificaCorso(Sessione ses, Corso cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,7 +76,7 @@ public class ModificaCorso extends JFrame {
 		JLabel laurea = new JLabel("Facolta: ");
 		contentPane.add(laurea);
 		
-		JTextField facolta = new JTextField(cor.facolta);
+		JTextField facolta = new JTextField(cor.laurea);
 		contentPane.add(facolta);
 		facolta.setColumns(10);
 		
@@ -96,8 +87,8 @@ public class ModificaCorso extends JFrame {
 		contentPane.add(peso);
 		peso.setColumns(10);
 		
-		JButton cercaCorsi = new JButton("Modifica");
-		cercaCorsi.addActionListener(new ActionListener() {
+		JButton modifica = new JButton("Modifica");
+		modifica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cor.setAnno(Integer.parseInt(annoo.getText()));
 				cor.setCodCorso(Integer.parseInt(codice.getText()));
@@ -115,7 +106,55 @@ public class ModificaCorso extends JFrame {
 				}
 			}
 		});
-		contentPane.add(cercaCorsi);
+		contentPane.add(modifica);
+		
+		ReperisciCorso rc = new ReperisciCorso();
+		Contenuto c=null;
+			try {
+				c = rc.getContenutoCorso(cor);
+			} catch (ClassNotFoundException | SQLException e1) {
+				e1.printStackTrace();
+			}
+		for(Sezione s : c.sezioni) {
+			
+			JTextField sezione = new JTextField(s.codSezione);
+			contentPane.add(sezione);
+			nomeCorso.setColumns(10);
+			JButton modificaSezione = new JButton("Modifica sezione");
+			modificaSezione.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					ModificaSezione ms = new ModificaSezione(ses, cor, Integer.parseInt(sezione.getText()));
+				}
+			});
+			contentPane.add(modificaSezione);
+			for(Risorse r : s.risorse) {
+				JTextField risorsa = new JTextField(r.codRisorsa);
+				contentPane.add(risorsa);
+				nomeCorso.setColumns(10);
+				JButton modificaRisorsa = new JButton("Modifica risorsa");
+				modificaRisorsa.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						ModificaRisorsa ms = new ModificaRisorsa(Integer.parseInt(risorsa.getText()));
+					}
+				});
+				contentPane.add(modificaRisorsa);
+			}
+		}
+		
+		JButton creaSezione = new JButton("Crea sezione");
+		creaSezione.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				CreaSezione ms = new CreaSezione(ses, cor);
+			}
+		});
+		
+		JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
+		visualizzaComeStudente.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				GestioneContenutoCorso.visualizaAsStudent(cor.nome);
+			}
+		});
+		contentPane.add(visualizzaComeStudente);
 		
 		setVisible(true);
 	}

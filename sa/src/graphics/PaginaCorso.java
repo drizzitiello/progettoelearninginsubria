@@ -1,3 +1,4 @@
+
 package graphics;
 
 import java.awt.BorderLayout;
@@ -37,8 +38,9 @@ public class PaginaCorso extends JFrame {
 	/**
 	 * Create the frame.
 	 * @param corso 
+	 * @throws ClassNotFoundException 
 	 */
-	public PaginaCorso(Sessione ses, String corso) {
+	public PaginaCorso(Sessione ses, String corso, boolean visualComeStudente) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -76,60 +78,150 @@ public class PaginaCorso extends JFrame {
 		}
 		JLabel docentiCorso = new JLabel(elencoDocenti);
 		contentPane.add(docentiCorso);
-		Object[] params = {};
 		
-		for(Sezione s : c.sezioni) {
-			JLabel sezione = new JLabel(s.titolo);
-			contentPane.add(sezione);
-			JButton accessoRisorse = new JButton("Cerca");
-			accessoRisorse.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					boolean set=true;
-					for(Component c : ac) {
-						Container parent = c.getParent();
-						System.out.println(c);
-						parent.remove(c);
-						contentPane.revalidate();
-						validate();
-						repaint();
-						accessoRisorse.add(c);
-						c.setVisible(false);
-						set=false;
-					}
-					if(!set) {ac.clear();}
-					if(set) {
-						for(Component c : accessoRisorse.getComponents()) {
-							contentPane.add(c);
-							c.setVisible(true);
-							ac.add(c);
-							System.out.println("agg");
+		
+		try {
+			GestioneCorsi gc = new GestioneCorsi();
+			if(ses.info().tipoUtente==1||visualComeStudente) {
+			if(gc.studenteIscrittoAlCorso(ses.getUtente(), cor)||visualComeStudente) {
+				for(Sezione s : c.sezioni) {
+					if(s.visibilita) {
+					JLabel sezione = new JLabel(s.titolo);
+					contentPane.add(sezione);
+					JButton accessoRisorse = new JButton("Cerca");
+					accessoRisorse.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							boolean set=true;
+							for(Component c : ac) {
+								Container parent = c.getParent();
+								System.out.println(c);
+								parent.remove(c);
+								contentPane.revalidate();
+								validate();
+								repaint();
+								accessoRisorse.add(c);
+								c.setVisible(false);
+								set=false;
+							}
+							if(!set) {ac.clear();}
+							if(set) {
+								for(Component c : accessoRisorse.getComponents()) {
+									contentPane.add(c);
+									c.setVisible(true);
+									ac.add(c);
+									System.out.println("agg");
+								}
+							}
 						}
+					});
+					contentPane.add(accessoRisorse);
+					for(Risorse r : s.risorse) {
+						if(r.visibilita) {
+						JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+						descrizioneRisorsa.setVisible(false);
+						accessoRisorse.add(descrizioneRisorsa);
+						JButton risorsa = new JButton(r.nome);
+						risorsa.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								ReperisciCorso rc = new ReperisciCorso();
+								try {
+									rc.download(r);
+								} catch (ClassNotFoundException | SQLException e1) {
+									e1.printStackTrace();
+								}
+							}
+						});
+						risorsa.setVisible(false);
+						accessoRisorse.add(risorsa);
+					}
+					}
 					}
 				}
-			});
-			contentPane.add(accessoRisorse);
-			for(Risorse r : s.risorse) {
-				JLabel descrizioneRisorsa = new JLabel(r.descrizione);
-				descrizioneRisorsa.setVisible(false);
-				accessoRisorse.add(descrizioneRisorsa);
-				JButton risorsa = new JButton(r.nome);
-				risorsa.addActionListener(new ActionListener() {
+			}
+			else {
+				JLabel nonIscritto = new JLabel("Non sei iscritto al corso");
+				contentPane.add(nonIscritto);
+				
+				JButton iscriviti = new JButton("Iscriviti al corso");
+				iscriviti.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ReperisciCorso rc = new ReperisciCorso();
 						try {
-							rc.download(r);
+							GestioneCorsi gc = new GestioneCorsi();
+							gc.iscriviAlCorso(ses.getUtente(), cor);
 						} catch (ClassNotFoundException | SQLException e1) {
 							e1.printStackTrace();
 						}
 					}
 				});
-				risorsa.setVisible(false);
-				accessoRisorse.add(risorsa);
+				contentPane.add(iscriviti);
 			}
-		}
-		if(ses.getUtente().getInfo().tipoUtente==2) {
-			
-			if(ses.getUtente().getInfo().tipoUtente==3){
+			}
+			else if(!visualComeStudente&&ses.info().tipoUtente==2) {
+				boolean docenteCorso=false;
+				for(Utente utente : gc.chiTieneCorso(cor)) {
+					if(utente.getInfo().matricola==ses.info().matricola) {
+						docenteCorso=true;
+						break;
+					}
+				}
+				if(docenteCorso||gc.studenteIscrittoAlCorso(ses.getUtente(), cor)) {//se docente iscritto. funziona ma mettere a posto
+				for(Sezione s : c.sezioni) {
+					JLabel sezione = new JLabel(s.titolo);
+					contentPane.add(sezione);
+					JButton accessoRisorse = new JButton("Cerca");
+					accessoRisorse.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							boolean set=true;
+							for(Component c : ac) {
+								Container parent = c.getParent();
+								System.out.println(c);
+								parent.remove(c);
+								contentPane.revalidate();
+								validate();
+								repaint();
+								accessoRisorse.add(c);
+								c.setVisible(false);
+								set=false;
+							}
+							if(!set) {ac.clear();}
+							if(set) {
+								for(Component c : accessoRisorse.getComponents()) {
+									contentPane.add(c);
+									c.setVisible(true);
+									ac.add(c);
+									System.out.println("agg");
+								}
+							}
+						}
+					});
+					contentPane.add(accessoRisorse);
+					for(Risorse r : s.risorse) {
+						JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+						descrizioneRisorsa.setVisible(false);
+						accessoRisorse.add(descrizioneRisorsa);
+						JButton risorsa = new JButton(r.nome);
+						risorsa.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								ReperisciCorso rc = new ReperisciCorso();
+								try {
+									rc.download(r);
+								} catch (ClassNotFoundException | SQLException e1) {
+									e1.printStackTrace();
+								}
+							}
+						});
+						risorsa.setVisible(false);
+						accessoRisorse.add(risorsa);
+					}
+				}
+				if(docenteCorso) {
+				JButton analisiCorso = new JButton("Analisi statistiche corso");
+				analisiCorso.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						StatisticheCorso mc = new StatisticheCorso(ses, cor);
+					}
+				});
+				contentPane.add(analisiCorso);
 				JButton modificaCorso = new JButton("Modifica corso");
 				modificaCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -137,16 +229,81 @@ public class PaginaCorso extends JFrame {
 					}
 				});
 				contentPane.add(modificaCorso);
-			}
-			
-			JButton analisiCorso = new JButton("Analisi statistiche corso");
-			analisiCorso.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					StatisticheCorso mc = new StatisticheCorso(ses, cor);
 				}
-			});
-			contentPane.add(analisiCorso);
+				}
+			}
+			else if(visualComeStudente&&ses.info().tipoUtente==3) {
+					for(Sezione s : c.sezioni) {
+						JLabel sezione = new JLabel(s.titolo);
+						contentPane.add(sezione);
+						JButton accessoRisorse = new JButton("Cerca");
+						accessoRisorse.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								boolean set=true;
+								for(Component c : ac) {
+									Container parent = c.getParent();
+									System.out.println(c);
+									parent.remove(c);
+									contentPane.revalidate();
+									validate();
+									repaint();
+									accessoRisorse.add(c);
+									c.setVisible(false);
+									set=false;
+								}
+								if(!set) {ac.clear();}
+								if(set) {
+									for(Component c : accessoRisorse.getComponents()) {
+										contentPane.add(c);
+										c.setVisible(true);
+										ac.add(c);
+										System.out.println("agg");
+									}
+								}
+							}
+						});
+						contentPane.add(accessoRisorse);
+						for(Risorse r : s.risorse) {
+							JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+							descrizioneRisorsa.setVisible(false);
+							accessoRisorse.add(descrizioneRisorsa);
+							JButton risorsa = new JButton(r.nome);
+							risorsa.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									ReperisciCorso rc = new ReperisciCorso();
+									try {
+										rc.download(r);
+									} catch (ClassNotFoundException | SQLException e1) {
+										e1.printStackTrace();
+									}
+								}
+							});
+							risorsa.setVisible(false);
+							accessoRisorse.add(risorsa);
+						}
+					}
+					JButton analisiCorso = new JButton("Analisi statistiche corso");
+					analisiCorso.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							StatisticheCorso mc = new StatisticheCorso(ses, cor);
+						}
+					});
+					contentPane.add(analisiCorso);
+					JButton modificaCorso = new JButton("Modifica corso");
+					modificaCorso.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							ModificaCorso mc = new ModificaCorso(ses, cor);
+						}
+					});
+					contentPane.add(modificaCorso);
+					
+			}
+		} catch (SQLException | ClassNotFoundException e2) {
+			e2.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		
 		setVisible(true);
 	}
 

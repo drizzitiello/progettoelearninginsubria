@@ -130,6 +130,8 @@ public class UserManager {
 	 * @return	flag di avvenuta importazione
      * @throws SQLException
 	 */
+    //bisogna mettere anche la registrazione degli utenti caricati(usando i metodi di 
+    //authService)
     public boolean csvImportUtente(String path) throws SQLException{
         if(!this.enabled)
             return false;

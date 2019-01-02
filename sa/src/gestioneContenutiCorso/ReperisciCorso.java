@@ -56,7 +56,7 @@ public class ReperisciCorso {
 				int codSezione2=(int) m.get("codice_sezione");
 				Boolean visibilita2=(Boolean) m.get("is_pubblica");
 				String path2=(String) m.get("percorso");
-				String tipo=(String) m.get("tipo");
+				int tipo=(int) m.get("tipo_utente");
 				sez.addResource(nome, descr2, path2, codSezione2, codCorso2, visibilita2, tipo);
 			}
 		}

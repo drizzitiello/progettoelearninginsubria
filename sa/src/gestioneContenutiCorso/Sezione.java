@@ -25,7 +25,7 @@ public class Sezione {
 	}
 
 	public void addResource(String nome, String descr2, String path, int codSezione, int codRisorsa,
-			boolean visibilita, String tipo) {
+			boolean visibilita, int tipo) {
 		Risorse ris=new Risorse(nome, descr2, path, codSezione, codRisorsa, visibilita, tipo);
 		risorse.add(ris);
 	}

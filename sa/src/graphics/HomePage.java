@@ -58,7 +58,7 @@ public class HomePage extends JFrame {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(ses, corso.getText());
+								PaginaCorso pc = new PaginaCorso(ses, corso.getText(), false);
 							}
 						});
 						last=b;
@@ -90,7 +90,7 @@ public class HomePage extends JFrame {
 						JButton b = new JButton((String) m.get("nome"));
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(ses, b.getText());
+								PaginaCorso pc = new PaginaCorso(ses, b.getText(), false);
 							}
 						});
 						la.add(b);
@@ -147,6 +147,22 @@ public class HomePage extends JFrame {
 				}
 			});
 			contentPane.add(statistiche);
+			
+			JButton registraUtenti = new JButton("Registra nuovi utenti");
+			registraUtenti.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					RegistrazioneUtenti mdu = new RegistrazioneUtenti(ses);
+				}
+			});
+			contentPane.add(registraUtenti);
+			
+			JButton assegnaDocenti = new JButton("Assegna docenti a corsi");
+			assegnaDocenti.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					AssegnazioneDocenti mdu = new AssegnazioneDocenti(ses);
+				}
+			});
+			contentPane.add(assegnaDocenti);
 		}
 		
 		la=new ArrayList<JButton>();

@@ -2,12 +2,12 @@ package gestioneContenutiCorso;
 
 public class Risorse {
 	public String nome, descrizione, path;
-	int codSezione;
+	public int codSezione;
 	public int codRisorsa;
 	public Boolean visibilita;
-	public String tipo;
+	public int tipo;
 	public Risorse(String nome, String descr2, String path, int codSezione, int codRisorsa,
-			Boolean visibilita, String tipo) {
+			Boolean visibilita, int tipo) {
 		this.nome=nome;
 		this.descrizione=descr2;
 		this.path=path;
