@@ -17,7 +17,7 @@ import socketDb.SocketDb;
 *	<P>	Obiettivo: Realizzazione di una semplice piattaforma di elearning
 *
 * @author Davide Stagno - Daniele Rizzitiello - Marco Macri'
-* @version 1.2	*/
+* @version 1.3	*/
 
 public class GestioneCorsi {
 	
@@ -33,7 +33,6 @@ public class GestioneCorsi {
 	/** Importazione dei dati dei corsi da file CSV e salvataggio 
 	 * 	degli stessi all'interno del database  */
 	public void dataInput (String CSV_fileName) throws ClassNotFoundException, SQLException {
-		
         Path pathToFile = Paths.get(CSV_fileName);
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
                 StandardCharsets.US_ASCII)) {		// creiamo un'istanza di BufferedReader
@@ -122,11 +121,8 @@ public class GestioneCorsi {
 	/** Estrae i dati principali di un docente dal database e li memorizza 
 	 * 	@return lista dei docenti	*/
 	private ArrayList<Utente> datiDeiDocenti(ArrayList<Object> matricole) throws Exception {
-		
 		ArrayList<Utente> docenti = new ArrayList<Utente>();
-	
 		ArrayList<Map<String,Object>> datiDocente;
-		
 		for (Object a: matricole) {
 			datiDocente = socket.function("get_dati_docente", new Object[] {a});
 			for (Map<String, Object> b : datiDocente) {
@@ -148,8 +144,36 @@ public class GestioneCorsi {
 			risposta = a.containsValue(true); 	}
 		return risposta;
 	}
+	
+	/** Permette a uno studente di iscriversi a un corso	*/
 	public void iscriviAlCorso (Utente studente, Corso c) throws SQLException, ClassNotFoundException {
 		Object[] params = {studente.getInfo().matricola, c.codCorso};
 		socket.function("iscrivi_studente_al_corso", params);
+	}
 }
-}
+// STORED PROCEDURE
+/* 
+-- FUNCTION: public.iscrivi_studente_al_corso(integer, smallint)
+
+-- DROP FUNCTION public.iscrivi_studente_al_corso(integer, smallint);
+
+CREATE OR REPLACE FUNCTION public.iscrivi_studente_al_corso(
+	matr integer,
+	cod_corso smallint)
+    RETURNS void
+    LANGUAGE 'plpgsql'
+
+    COST 100
+    VOLATILE 
+AS $BODY$
+
+BEGIN
+	INSERT INTO iscritto_a (matricola, codice_corso)
+	VALUES (matr, cod_corso);
+END;
+
+$BODY$;
+
+ALTER FUNCTION public.iscrivi_studente_al_corso(integer, smallint)
+    OWNER TO postgres;
+*/
