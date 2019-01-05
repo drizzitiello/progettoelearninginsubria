@@ -5,28 +5,7 @@
 -- Dumped from database version 9.5.15
 -- Dumped by pg_dump version 9.5.15
 
--- Started on 2019-01-05 16:34:27
-
-SET statement_timeout = 0;
-SET lock_timeout = 0;
-SET client_encoding = 'UTF8';
-SET standard_conforming_strings = on;
-SELECT pg_catalog.set_config('search_path', '', false);
-SET check_function_bodies = false;
-SET client_min_messages = warning;
-SET row_security = off;
-
---
--- TOC entry 2256 (class 1262 OID 16489)
--- Name: sss; Type: DATABASE; Schema: -; Owner: postgres
---
-
-CREATE DATABASE sss WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'Italian_Italy.1252' LC_CTYPE = 'Italian_Italy.1252';
-
-
-ALTER DATABASE sss OWNER TO postgres;
-
-\connect sss
+-- Started on 2019-01-05 16:57:49
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -1631,7 +1610,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2019-01-05 16:34:28
+-- Completed on 2019-01-05 16:57:49
 
 --
 -- PostgreSQL database dump complete
