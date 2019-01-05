@@ -99,63 +99,63 @@ public class InfoUtente extends JFrame {
 		try {
 			user = new Utente();
 			user.createFromMatricola(mat);
-			JLabel matricola = new JLabel("Matricola: "+mat);
+			JLabel matricola = new JLabel("Matricola: ");
 			contentPane.add(matricola);
-			JTextField modificaMatricola = new JTextField();
+			JTextField modificaMatricola = new JTextField(""+mat);
 			contentPane.add(modificaMatricola);
 			modificaMatricola.setColumns(10);
 			
-			JLabel nome = new JLabel("Nome: "+user.getInfo().nome);
+			JLabel nome = new JLabel("Nome: ");
 			contentPane.add(nome);
-			JTextField modificaNome = new JTextField();
+			JTextField modificaNome = new JTextField(user.getInfo().nome);
 			contentPane.add(modificaNome);
 			modificaNome.setColumns(10);
 			
-			JLabel cognome = new JLabel("Cognome: "+user.getInfo().cognome);
+			JLabel cognome = new JLabel("Cognome: ");
 			contentPane.add(cognome);
-			JTextField modificaCognome = new JTextField();
+			JTextField modificaCognome = new JTextField(user.getInfo().cognome);
 			contentPane.add(modificaCognome);
 			modificaCognome.setColumns(10);
 			
-			JLabel email = new JLabel("Email: "+user.getInfo().email);
+			JLabel email = new JLabel("Email: ");
 			contentPane.add(email);
-			JTextField modificaEmail = new JTextField();
+			JTextField modificaEmail = new JTextField(user.getInfo().email);
 			contentPane.add(modificaEmail);
 			modificaEmail.setColumns(10);
 			
-			JLabel tipoUtente = new JLabel("Tipo Utente: "+user.getInfo().tipoUtente);
+			JLabel tipoUtente = new JLabel("Tipo Utente: ");
 			contentPane.add(tipoUtente);
-			JTextField modificaTipoUtente = new JTextField();
+			JTextField modificaTipoUtente = new JTextField(""+user.getInfo().tipoUtente);
 			contentPane.add(modificaTipoUtente);
 			modificaTipoUtente.setColumns(10);
 			
-			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: "+user.getInfo().annoImmatricolazione);
+			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: ");
 			contentPane.add(annoImmatricolazione);
-			JTextField modificaAnnoImmatricolazione = new JTextField();
+			JTextField modificaAnnoImmatricolazione = new JTextField(""+user.getInfo().annoImmatricolazione);
 			contentPane.add(modificaAnnoImmatricolazione);
 			modificaAnnoImmatricolazione.setColumns(10);
 			
-			JLabel corsoLaurea = new JLabel("Corso di Laurea: "+user.getInfo().corsoLaurea);
+			JLabel corsoLaurea = new JLabel("Corso di Laurea: ");
 			contentPane.add(corsoLaurea);
-			JTextField modificaCorsoLaurea = new JTextField();
+			JTextField modificaCorsoLaurea = new JTextField(user.getInfo().corsoLaurea);
 			contentPane.add(modificaCorsoLaurea);
 			modificaCorsoLaurea.setColumns(10);
 			
-			JLabel facolta = new JLabel("Facolta: "+user.getInfo().facolta);
+			JLabel facolta = new JLabel("Facolta: ");
 			contentPane.add(facolta);
-			JTextField modificaFacolta = new JTextField();
+			JTextField modificaFacolta = new JTextField(user.getInfo().facolta);
 			contentPane.add(modificaFacolta);
 			modificaFacolta.setColumns(10);
 			
-			JLabel statoCarriera = new JLabel("Stato carriera: "+user.getInfo().statoCarriera);
+			JLabel statoCarriera = new JLabel("Stato carriera: ");
 			contentPane.add(statoCarriera);
-			JTextField modificastatoCarriera = new JTextField();
+			JTextField modificastatoCarriera = new JTextField(user.getInfo().statoCarriera);
 			contentPane.add(modificastatoCarriera);
 			modificastatoCarriera.setColumns(10);
 			
-			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+user.getInfo().strutturaRiferimento);
+			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: ");
 			contentPane.add(strutturaRiferimento);
-			JTextField modificaStrutturaRiferimento = new JTextField();
+			JTextField modificaStrutturaRiferimento = new JTextField(user.getInfo().strutturaRiferimento);
 			contentPane.add(modificaStrutturaRiferimento);
 			modificaStrutturaRiferimento.setColumns(10);
 			
@@ -186,6 +186,7 @@ public class InfoUtente extends JFrame {
 					}
 				}
 			});
+			contentPane.add(modifica);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -9,6 +9,7 @@ import java.util.*;
 
 import Utente.Utente;
 import gestioneContenutiCorso.Corso;
+import notifier.Notifier;
 import socketDb.SocketDb; 
 
 /** Gestione dei corsi.
@@ -149,6 +150,14 @@ public class GestioneCorsi {
 	public void iscriviAlCorso (Utente studente, Corso c) throws SQLException, ClassNotFoundException {
 		Object[] params = {studente.getInfo().matricola, c.codCorso};
 		socket.function("iscrivi_studente_al_corso", params);
+		//invio email a utente stesso e ai docenti titolari del corso
+		//ArrayList<Utente> doc = chiTieneCorso(corso);
+		//Notifier.send_uninsubria_email("usr", "pwd", "utente", "iscrizione a corso", "iscritto a");
+		/*
+		 * for(Utente d : doc){
+		 * 		Notifier.send_uninsubria_email("usr", "pwd", "docente", "iscrizione a corso", "iscritto a");
+		 * }
+		 */
 	}
 }
 // STORED PROCEDURE
