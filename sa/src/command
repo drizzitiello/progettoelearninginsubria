@@ -1,1 +1,10 @@
-pg_dump -U postgres dbdb > C:\Users\macri\Desktop\db4.sql
+1) POSIZIONARSI NELLA FOLDER BIN DI postgres
+Es1. cd C:\PostgreSQL\pg11\bin
+Es2. cd 
+
+PER ESPORTARE:
+pg_dump -U postgres NOMEDB > C:\PATHFILE\NOMEFILE.sql
+
+
+PER IMPORT
+psql -U postgres -d NOMEDBCREATO -f C:\PATHFILE\NOMEFILE.sql
