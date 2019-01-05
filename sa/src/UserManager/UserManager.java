@@ -59,24 +59,12 @@ public class UserManager {
                        user.getInfo().tipoUtente,
                        user.getInfo().annoImmatricolazione,
                        user.getInfo().corsoLaurea,
-                       user.getInfo().facolta,
                        user.getInfo().statoCarriera,
                        user.getInfo().strutturaRiferimento,
                        user.getInfo().matricola
                      };
         
-        //DA FARE STORED
-        this.socket.query("UPDATE TABLE utente 
-                           SET nome                     = ?,
-                               congome                  = ?,
-                               email                    = ?,
-                               tipo_utente              = ?,
-                               anno_immatricolazione    = ?,
-                               corso_laurea             = ?,
-                               facolta                  = ?,
-                               stato_carriera           = ?,
-                               struttura_riferimento    = ?
-                           WHERE matricola = ?", p);
+        this.socket.function("modifica_dati_utente", p);
         
         return true;
     }
@@ -123,7 +111,7 @@ public class UserManager {
     }
 
 
-    /**
+     /**
 	 * Importa utenti
      * l'operazione e' riservata ai soli utenti amministratori
 	 *
@@ -134,7 +122,7 @@ public class UserManager {
     //AuthenticationService as = new AuthenticationService();
     //as.sendNewLoginCredentials(email);
     //bisogna aggiungere l'iscrizione ai corsi del piano di studi dell'utente
-    public boolean csvImportUtente(String path) throws SQLException{
+    /*public boolean csvImportUtente(String path) throws SQLException{
         if(!this.enabled)
             return false;
 
@@ -180,8 +168,64 @@ public class UserManager {
         
         return true;
     }
-
+*/
 
 
 
  }
+
+
+
+
+ /*
+ STORED FUNCTION: modificaDatiUtente(...)
+ --------------------------------------------------------------
+    DROP FUNCTION modifica_dati_utente(p_nome VARCHAR,
+                                    p_cognome VARCHAR,
+                                    p_email VARCHAR,
+                                    p_tipo_utente SMALLINT,
+                                    p_anno_immatricolazione SMALLINT,
+                                    p_corso_laurea VARCHAR,
+                                    p_stato_carriera VARCHAR,
+                                    p_struttura_riferimento VARCHAR,
+                                    p_matricola INTEGER
+                                    );
+
+CREATE OR REPLACE FUNCTION modifica_dati_utente (p_nome VARCHAR,
+                                               p_cognome VARCHAR,
+                                               p_email VARCHAR,
+                                               p_tipo_utente SMALLINT,
+                                               p_anno_immatricolazione SMALLINT,
+                                               p_corso_laurea VARCHAR,
+                                               p_stato_carriera VARCHAR,
+                                               p_struttura_riferimento VARCHAR,
+                                               p_matricola INTEGER
+                                               ) 
+        RETURNS VOID
+    AS $$
+    BEGIN
+        UPDATE utente SET
+                        nome = p_nome,
+                        cognome = p_cognome,
+                        email = p_email,
+                        tipo_utente = p_tipo_utente
+                    WHERE
+                        matricola = p_matricola;
+
+         UPDATE studente SET
+                        anno_immatricolazione = p_anno_immatricolazione,
+                        corso_laurea = p_corso_laurea,
+                        stato_carriera = p_stato_carriera
+                     WHERE
+                        matricola = p_matricola;
+
+        UPDATE struttura SET
+                        struttura_riferimento = p_struttura_riferimento
+                     WHERE
+                        matricola = p_matricola;
+                        
+                        
+    END; $$ 
+    
+    LANGUAGE 'plpgsql';
+ */

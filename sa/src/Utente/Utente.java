@@ -31,7 +31,6 @@ public class Utente {
 	       public int tipoUtente;
 	       public int annoImmatricolazione;
 	       public String corsoLaurea;
-	       public String facolta;
 	       public String statoCarriera;
 	       public String strutturaRiferimento;
 	}
@@ -93,11 +92,10 @@ public class Utente {
         this.myInfo.cognome                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
         this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
-        this.myInfo.annoImmatricolazione    = 0;
-        this.myInfo.corsoLaurea             = "";
-        this.myInfo.facolta                 = "";
-        this.myInfo.statoCarriera           = "";
-        this.myInfo.strutturaRiferimento    = "";
+        this.myInfo.annoImmatricolazione    = (int)     row.get("anno_immatricolazione");
+        this.myInfo.corsoLaurea             = (String)  row.get("corso_laurea");
+        this.myInfo.statoCarriera           = (String)  row.get("stato_carriera");
+        this.myInfo.strutturaRiferimento    = (String)  row.get("struttura_riferimento");
         
         this.isCreated = true;
     }
@@ -139,21 +137,33 @@ CREATE OR REPLACE FUNCTION getDatiUtente (p_matricola INT)
                         nome VARCHAR,
                         cognome VARCHAR,
                         email VARCHAR,
-                        tipoutente SMALLINT
+                        tipoutente SMALLINT,
+                        anno_immatricolazione SMALLINT,
+                        corso_laurea VARCHAR,
+                        stato_carriera VARCHAR,
+                        struttura_riferimento VARCHAR
         ) 
     AS $$
     BEGIN
         RETURN QUERY SELECT
-                        "Utente".matricola AS p1,
-                        "Utente".nome AS p2,
-                        "Utente".cognome AS p3,
-                        "Utente".email AS p4,
-                        "Utente"."tipoUtente" AS p5
+                        utente.matricola,
+                        utente.nome,
+                        utente.cognome,
+                        utente.email,
+                        utente.tipo_utente,
+                        studente.anno_immatricolazione,
+                        studente.corso_laurea,
+                        studente.stato_carriera,
+                        struttura.struttura_riferimento
                      FROM
-                        "Utente"
+                        utente
+                     LEFT JOIN studente ON studente.matricola = utente.matricola
+                     LEFT JOIN struttura ON struttura.matricola = utente.matricola
                      WHERE
-                        "Utente".matricola = p_matricola;
+                        utente.matricola = p_matricola;
     END; $$ 
     
     LANGUAGE 'plpgsql';
  */
+
+
