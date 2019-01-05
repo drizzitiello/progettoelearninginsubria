@@ -1,6 +1,6 @@
 1) POSIZIONARSI NELLA FOLDER BIN DI postgres
 Es1. cd C:\PostgreSQL\pg11\bin
-Es2. cd 
+Es2. cd "C:\Program Files\PostgreSQL\9.5\bin"
 
 PER ESPORTARE:
 pg_dump -U postgres NOMEDB > C:\PATHFILE\NOMEFILE.sql
