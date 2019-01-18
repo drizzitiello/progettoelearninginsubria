@@ -52,26 +52,23 @@ public class ModificaCorso extends JFrame {
 		contentPane.add(annoo);
 		annoo.setColumns(10);
 		
-		JLabel codCorso = new JLabel("Codice corso: ");
+		JLabel codCorso = new JLabel("Codice corso: "+String.valueOf(cor.codCorso));
 		contentPane.add(codCorso);
 		
-		JTextField codice = new JTextField(String.valueOf(cor.codCorso));
-		contentPane.add(codice);
-		codice.setColumns(10);
-		
-		JLabel creatore = new JLabel("Creatore: ");
+		JLabel creatore = new JLabel("Creatore: "+String.valueOf(cor.creatore));
 		contentPane.add(creatore);
 		
-		JTextField matrCreatore = new JTextField(String.valueOf(cor.creatore));
-		contentPane.add(matrCreatore);
-		matrCreatore.setColumns(10);
-		
-		JLabel descrizione = new JLabel("Descrizione: ");
+		JLabel descrizione = new JLabel("Descrizione: "+cor.descrizione);
+		if(ses.getUtente().getInfo().tipoUtente==3) {
+			descrizione.setText("Descrizione: ");
+		}
 		contentPane.add(descrizione);
 		
 		JTextField descr = new JTextField(cor.descrizione);
-		contentPane.add(descr);
 		descr.setColumns(10);
+		if(ses.getUtente().getInfo().tipoUtente==3) {
+			contentPane.add(descr);
+		}
 		
 		JLabel laurea = new JLabel("Facolta: ");
 		contentPane.add(laurea);
@@ -91,9 +88,12 @@ public class ModificaCorso extends JFrame {
 		modifica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cor.setAnno(Integer.parseInt(annoo.getText()));
-				cor.setCodCorso(Integer.parseInt(codice.getText()));
-				cor.setCreatore(Integer.parseInt(matrCreatore.getText()));
-				cor.setDescrizione(descr.getText());
+				if(ses.getUtente().getInfo().tipoUtente==3) {
+					cor.setDescrizione(descr.getText());
+				}
+				else {
+					cor.setDescrizione(descrizione.getText());
+				}
 				cor.setLaurea(facolta.getText());
 				cor.setNome(nomeCorso.getText());
 				cor.setPeso(Integer.parseInt(peso.getText()));
@@ -117,24 +117,26 @@ public class ModificaCorso extends JFrame {
 			}
 		for(Sezione s : c.sezioni) {
 			
-			JTextField sezione = new JTextField(s.codSezione);
+			//JTextField sezione = new JTextField(""+s.codSezione);
+			JTextField sezione = new JTextField(s.titolo);
 			contentPane.add(sezione);
 			nomeCorso.setColumns(10);
 			JButton modificaSezione = new JButton("Modifica sezione");
 			modificaSezione.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ModificaSezione ms = new ModificaSezione(ses, cor, Integer.parseInt(sezione.getText()));
+					ModificaSezione ms = new ModificaSezione(ses, cor, s.codSezione);
 				}
 			});
 			contentPane.add(modificaSezione);
 			for(Risorse r : s.risorse) {
-				JTextField risorsa = new JTextField(r.codRisorsa);
+				//JTextField risorsa = new JTextField(""+r.codRisorsa);
+				JTextField risorsa = new JTextField(r.nome);
 				contentPane.add(risorsa);
 				nomeCorso.setColumns(10);
 				JButton modificaRisorsa = new JButton("Modifica risorsa");
 				modificaRisorsa.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModificaRisorsa ms = new ModificaRisorsa(Integer.parseInt(risorsa.getText()));
+						ModificaRisorsa ms = new ModificaRisorsa(r.codRisorsa);
 					}
 				});
 				contentPane.add(modificaRisorsa);
@@ -147,14 +149,7 @@ public class ModificaCorso extends JFrame {
 				CreaSezione ms = new CreaSezione(ses, cor);
 			}
 		});
-		
-		JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
-		visualizzaComeStudente.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				GestioneContenutoCorso.visualizaAsStudent(cor.nome);
-			}
-		});
-		contentPane.add(visualizzaComeStudente);
+		contentPane.add(creaSezione);
 		
 		setVisible(true);
 	}

@@ -30,20 +30,26 @@ public class GestioneContenutoCorso {
 	}
 	public Sezione getSezione(int codSezione) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		String sql = "SELECT FROM sezione"
+		String sql = "SELECT * FROM sezione"
 				+ " WHERE codice_sezione = "+codSezione;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
 		Sezione sezione=null;
 		for(Map<String,Object> m : sez) {
+			if(m.get("figlio_di")!=null)
 			sezione = new Sezione((String) m.get("titolo"),(String)  m.get("descrizione"),
-					(boolean) m.get("is_pubblica"),(int)  m.get("codice_sezione"), 
+					(boolean) m.get("is_pubblica"), (int)  m.get("codice_sezione"), 
 					(int) m.get("matricola"),(int)  m.get("codice_corso"),(int)  m.get("figlio_di"));
+			else
+				sezione = new Sezione((String) m.get("titolo"),(String)  m.get("descrizione"),
+						(boolean) m.get("is_pubblica"), (int)  m.get("codice_sezione"), 
+						(int) m.get("matricola"),(int)  m.get("codice_corso"), null);
 		}
 		return sezione;
 	}
 	public void modificaSezione(Sezione s) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		Object[] params = {s.titolo, s.codSezione, s.codCorso, s.descrizione, s.figlioDi, s.matricola, s.visibilita};
+		Object[] params = {s.codSezione, s.titolo , s.visibilita , s.descrizione,  s.codCorso,
+				(Integer) s.figlioDi, s.matricola};
 		socket.function("modificasezione", params);
 	}
 	public void createRisorsa(Risorse r) throws Exception {

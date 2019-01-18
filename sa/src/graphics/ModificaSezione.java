@@ -2,12 +2,14 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -32,8 +34,8 @@ public class ModificaSezione extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		Sezione s = null;
 		GestioneContenutoCorso gc = new GestioneContenutoCorso();
@@ -42,30 +44,27 @@ public class ModificaSezione extends JFrame {
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
 		}
+		final int matricola=s.matricola;
+		final int codCorso=s.codCorso;
+		final Integer figlioDi=s.figlioDi;
 		
-		JTextField codSez = new JTextField(String.valueOf(s.codSezione));
-		contentPane.add(codSez);
-		codSez.setColumns(10);
+		
+		JLabel descr = new JLabel("Descrizione: ");
+		contentPane.add(descr);
 		
 		JTextField descrizione = new JTextField(s.descrizione);
 		contentPane.add(descrizione);
 		descrizione.setColumns(10);
 		
-		JTextField matricola = new JTextField(String.valueOf(s.matricola));
-		contentPane.add(matricola);
-		matricola.setColumns(10);
+		JLabel tit = new JLabel("Titolo: ");
+		contentPane.add(tit);
 		
 		JTextField titolo = new JTextField(s.titolo);
 		contentPane.add(titolo);
 		titolo.setColumns(10);
 		
-		JTextField codCorso = new JTextField(String.valueOf(s.codCorso));
-		contentPane.add(codCorso);
-		codCorso.setColumns(10);
-		
-		JTextField figlioDi = new JTextField(String.valueOf(s.figlioDi));
-		contentPane.add(figlioDi);
-		figlioDi.setColumns(10);
+		JLabel vis = new JLabel("Visibilita: ");
+		contentPane.add(vis);
 		
 		JTextField visibilita = new JTextField(String.valueOf(s.visibilita));
 		contentPane.add(visibilita);
@@ -80,9 +79,7 @@ public class ModificaSezione extends JFrame {
 						pubblica=true;
 					}
 					Sezione sezione = new Sezione(titolo.getText(),descrizione.getText(),
-							pubblica,Integer.parseInt(codSez.getText()), 
-							Integer.parseInt(matricola.getText()), Integer.parseInt(codCorso.getText()),
-							Integer.parseInt(figlioDi.getText()));
+							pubblica, codSezione, matricola, codCorso, figlioDi);
 					gc.modificaSezione(sezione);
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -91,7 +88,7 @@ public class ModificaSezione extends JFrame {
 		});
 		contentPane.add(modificaSezione);
 		
-		JButton creaRisorsa = new JButton("Crea sezione");
+		JButton creaRisorsa = new JButton("Crea risorsa");
 		creaRisorsa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CreaRisorsa ms = new CreaRisorsa(ses, cor);

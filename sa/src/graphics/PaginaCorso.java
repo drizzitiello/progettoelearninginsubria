@@ -21,6 +21,7 @@ import Sessione.Sessione;
 import Utente.Utente;
 import gestioneContenutiCorso.Contenuto;
 import gestioneContenutiCorso.Corso;
+import gestioneContenutiCorso.GestioneContenutoCorso;
 import gestioneContenutiCorso.ReperisciCorso;
 import gestioneContenutiCorso.Risorse;
 import gestioneContenutiCorso.Sezione;
@@ -229,10 +230,18 @@ public class PaginaCorso extends JFrame {
 					}
 				});
 				contentPane.add(modificaCorso);
+				JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
+				visualizzaComeStudente.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						GestioneContenutoCorso.visualizaAsStudent(cor.nome);
+					}
+				});
+				contentPane.add(visualizzaComeStudente);
 				}
 				}
 			}
-			else if(visualComeStudente&&ses.info().tipoUtente==3) {
+			//visualComeStudente&&
+			else if(ses.info().tipoUtente==3) {
 					for(Sezione s : c.sezioni) {
 						JLabel sezione = new JLabel(s.titolo);
 						contentPane.add(sezione);
