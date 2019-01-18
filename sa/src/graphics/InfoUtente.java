@@ -75,7 +75,7 @@ public class InfoUtente extends JFrame {
 		JLabel corsoLaurea = new JLabel("Corso di Laurea: "+ses.getUtente().getInfo().corsoLaurea);
 		contentPane.add(corsoLaurea);
 		
-		JLabel facolta = new JLabel("Facolta: "+ses.getUtente().getInfo().facolta);
+		JLabel facolta = new JLabel("Facolta: "+ses.getUtente().getInfo().corsoLaurea);
 		contentPane.add(facolta);
 		
 		JLabel statoCarriera = new JLabel("Stato carriera: "+ses.getUtente().getInfo().statoCarriera);
@@ -141,12 +141,6 @@ public class InfoUtente extends JFrame {
 			contentPane.add(modificaCorsoLaurea);
 			modificaCorsoLaurea.setColumns(10);
 			
-			JLabel facolta = new JLabel("Facolta: ");
-			contentPane.add(facolta);
-			JTextField modificaFacolta = new JTextField(user.getInfo().facolta);
-			contentPane.add(modificaFacolta);
-			modificaFacolta.setColumns(10);
-			
 			JLabel statoCarriera = new JLabel("Stato carriera: ");
 			contentPane.add(statoCarriera);
 			JTextField modificastatoCarriera = new JTextField(user.getInfo().statoCarriera);
@@ -173,7 +167,6 @@ public class InfoUtente extends JFrame {
 					user.getInfo().tipoUtente=Integer.parseInt(modificaTipoUtente.getText());
 					user.getInfo().annoImmatricolazione=Integer.parseInt(modificaAnnoImmatricolazione.getText());
 					user.getInfo().corsoLaurea=modificaCorsoLaurea.getText();
-					user.getInfo().facolta=modificaFacolta.getText();
 					user.getInfo().statoCarriera=modificastatoCarriera.getText();
 					user.getInfo().strutturaRiferimento=modificaStrutturaRiferimento.getText();
 					try {

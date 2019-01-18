@@ -146,18 +146,17 @@ public class GestioneCorsi {
 		return risposta;
 	}
 	
-	/** Permette a uno studente di iscriversi a un corso	*/
-	public void iscriviAlCorso (Utente studente, Corso c) throws SQLException, ClassNotFoundException {
-		Object[] params = {studente.getInfo().matricola, c.codCorso};
+	/** Permette a uno studente di iscriversi a un corso	
+	 * @throws Exception */
+	public void iscriviAlCorso (Utente studente, Corso c) throws Exception {
+		Object[] params = {studente.getInfo().matricola, (short) c.codCorso};
 		socket.function("iscrivi_studente_al_corso", params);
 		//invio email a utente stesso e ai docenti titolari del corso
-		//ArrayList<Utente> doc = chiTieneCorso(corso);
-		//Notifier.send_uninsubria_email("usr", "pwd", "utente", "iscrizione a corso", "iscritto a");
-		/*
-		 * for(Utente d : doc){
-		 * 		Notifier.send_uninsubria_email("usr", "pwd", "docente", "iscrizione a corso", "iscritto a");
-		 * }
-		 */
+		ArrayList<Utente> doc = chiTieneCorso(c);
+		Notifier.send_uninsubria_email("usr", "pwd", "utente", "iscrizione a corso", "iscritto a");
+		for(Utente d : doc){
+				Notifier.send_uninsubria_email("usr", "pwd", "docente", "iscrizione a corso", "iscritto a");
+		}
 	}
 }
 // STORED PROCEDURE

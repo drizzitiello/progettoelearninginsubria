@@ -92,10 +92,10 @@ public class Utente {
         this.myInfo.cognome                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
         this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
-        this.myInfo.annoImmatricolazione    = (int)     row.get("anno_immatricolazione");
-        this.myInfo.corsoLaurea             = (String)  row.get("corso_laurea");
-        this.myInfo.statoCarriera           = (String)  row.get("stato_carriera");
-        this.myInfo.strutturaRiferimento    = (String)  row.get("struttura_riferimento");
+        //this.myInfo.annoImmatricolazione    = (int)     row.get("anno_immatricolazione");
+        //this.myInfo.corsoLaurea             = (String)  row.get("corso_laurea");
+        //this.myInfo.statoCarriera           = (String)  row.get("stato_carriera");
+        //this.myInfo.strutturaRiferimento    = (String)  row.get("struttura_riferimento");
         
         this.isCreated = true;
     }

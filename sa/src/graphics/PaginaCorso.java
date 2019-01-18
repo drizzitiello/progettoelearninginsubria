@@ -72,7 +72,7 @@ public class PaginaCorso extends JFrame {
 			e2.printStackTrace();
 		}
 		
-		String elencoDocenti="";
+		String elencoDocenti="Elenco docenti corso : ";
 		for(Utente ut : u) {
 			elencoDocenti=elencoDocenti+ut.getInfo().nome+" "+ut.getInfo().cognome+" ";
 		}
@@ -148,7 +148,7 @@ public class PaginaCorso extends JFrame {
 						try {
 							GestioneCorsi gc = new GestioneCorsi();
 							gc.iscriviAlCorso(ses.getUtente(), cor);
-						} catch (ClassNotFoundException | SQLException e1) {
+						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
 					}

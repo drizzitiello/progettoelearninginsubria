@@ -46,7 +46,7 @@ public class GestisciCorsi extends JFrame {
 				contentPane.add(nome);
 				JLabel annoAttivazione = new JLabel("Anno attivazione: "+String.valueOf(c.anno_attivazione));
 				contentPane.add(annoAttivazione);
-				JLabel facolta = new JLabel("Facolta: "+c.laurea);
+				JLabel facolta = new JLabel("Facolta: "+c.facolta);
 				contentPane.add(facolta);
 				JLabel descrizione = new JLabel("Descrizione: "+c.descrizione);
 				contentPane.add(descrizione);

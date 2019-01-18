@@ -100,6 +100,8 @@ public class AuthenticationService {
 	public void storeNewPassword (String new_pass) throws Exception {
 		Object[] arg = {this.toHash(new_pass), email};
 		this.socket.function("reset_password", arg);
+		Notifier.send_uninsubria_email("mailIsituzionale", "pwd istituzionale",
+				email, "Nuova pwd", "La tua nuova pwd e' "+new_pass);
 	}
 	
 	/** Azzera i tentativi di accesso dell'utente

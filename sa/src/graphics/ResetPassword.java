@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import authService.AuthenticationService;
+import notifier.Notifier;
 import socketDb.SocketDb;
 
 import java.awt.FlowLayout;
@@ -66,6 +67,7 @@ public class ResetPassword extends JFrame {
 						AuthenticationService as = new AuthenticationService();
 						as.storeNewPassword(newPwd.getText());
 						as.resetLoginAttempts();
+						
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
