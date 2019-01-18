@@ -52,12 +52,12 @@ public class ReperisciCorso {
 			for(Map<String, Object> ms : obj2) {
 				String nome=(String) ms.get("nome");
 				String descr2=(String) ms.get("descrizione");
-				int codCorso2=(int) m.get("matricola");
-				int codSezione2=(int) m.get("codice_sezione");
-				Boolean visibilita2=(Boolean) m.get("is_pubblica");
-				String path2=(String) m.get("percorso");
-				String tipo=(String) m.get("tipo");
-				sez.addResource(nome, descr2, path2, codSezione2, codCorso2, visibilita2, tipo);
+				String path2=(String) ms.get("percorso");
+				int codSezione2=(int) ms.get("codice_sezione");
+				int codRisorsa=(int) ms.get("codice_risorsa");
+				Boolean visibilita2=(Boolean) ms.get("is_pubblica");
+				String tipo=(String) ms.get("tipo");
+				sez.addResource(nome, descr2, path2, codSezione2, codRisorsa, visibilita2, tipo);
 			}
 		}
 		return cont;

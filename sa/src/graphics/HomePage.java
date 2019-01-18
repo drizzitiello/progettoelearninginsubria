@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
+import gestioneContenutiCorso.Corso;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
@@ -53,7 +54,7 @@ public class HomePage extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(last!=null)contentPane.remove(last);
-					Integer i = Notifier.getCorso(corso.getText()).codCorso;
+					Corso i = Notifier.getCorso(corso.getText());
 					if(i!=null) {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {

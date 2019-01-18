@@ -157,7 +157,7 @@ public class AuthenticationService {
 	
 	/**	Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
 	 * @return stringa random */
-	private String randomString () {
+	public static String randomString () {
 		StringBuilder finale = new StringBuilder();
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();

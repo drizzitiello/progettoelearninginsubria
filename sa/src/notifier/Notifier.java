@@ -36,6 +36,7 @@ public class Notifier {
 		Corso c=new Corso();
 		Object[] params = {nomeCorso};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
+		if(cc.size()>0) {
 		for(Map<String, Object> m : cc) {
 			c.setAnno((int) m.get("anno_attivazione"));
 			c.setCodCorso((int) m.get("codice_corso"));
@@ -46,6 +47,10 @@ public class Notifier {
 			c.setPeso((int) m.get("peso"));
 		}
 		return c;
+		}
+		else {
+			return null;
+		}
 	}
 	public static ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
