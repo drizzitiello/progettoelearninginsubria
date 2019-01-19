@@ -149,10 +149,10 @@ public class HomePage extends JFrame {
 			});
 			contentPane.add(statistiche);
 			
-			JButton registraUtenti = new JButton("Registra nuovi utenti");
+			JButton registraUtenti = new JButton("Registra nuovi utenti e corsi");
 			registraUtenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					RegistrazioneUtenti mdu = new RegistrazioneUtenti(ses);
+					RegistrazioneUtentiCorsi mdu = new RegistrazioneUtentiCorsi(ses);
 				}
 			});
 			contentPane.add(registraUtenti);
