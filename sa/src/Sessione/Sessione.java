@@ -2,6 +2,7 @@ package Sessione;
 
 import Utente.Utente;
 import Utente.Utente.InfoUtente;
+import socketDb.SocketDb;
 
 /**
 * Gestione della sessione utente.
@@ -19,11 +20,14 @@ public class Sessione {
     
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
+    private SocketDb socket;
     public Utente utente;    
     public static Sessione s;
     
     /**
 	 * Ottiene l'istanza della sessione (pattern Singleton)
+     * 
+     * @return istanza della sessione o nuovo oggetto.
 	 */
     public static Sessione getInstance() throws ClassNotFoundException {
 		if(s == null)
@@ -37,6 +41,7 @@ public class Sessione {
      * della sessione a false.
 	 */	 
     private Sessione() throws ClassNotFoundException{
+        this.socket = SocketDb.getInstanceDb();
         this.isCreated = false;
 	}
 
@@ -49,11 +54,38 @@ public class Sessione {
      * @throws Exception 
 	 */
     public boolean create(int matricola) throws Exception{
-        isCreated = false;
+        this.isCreated = false;
         this.utente = new Utente();
         this.utente.createFromMatricola(matricola);
         this.isCreated = this.utente.created();
+        if(!this.isCreated) return this.isCreated;
+
+        Object[] p = { matricola };
+
+        //Purging delle sessioni non chiuse correttamente
+        this.socket.query("DELETE FROM sessione WHERE matricola = ? AND fine_sessione IS NULL", p);
+
+        //Apertura nuova sessione
+        this.socket.query("INSERT INTO sessione (matricola, inizio_sessione) VALUES (?, NOW())", p);
+
         return this.isCreated;
+    }
+
+
+
+    /**
+	 * Si occupa della chiusura della sessione in corso
+	 *
+	 * @return	flag di avvenuta distruzione della sessione
+	 */
+    public boolean destroy(){
+        if(!this.isCreated) return false;
+        
+        Object[] p = { matricola };
+        this.socket.query("UPDATE sessione SET fine_sessione = NOW() WHERE matricola = ? AND fine_sessione IS NULL", p);
+
+        this.isCreated = false;
+        return true;
     }
 
 

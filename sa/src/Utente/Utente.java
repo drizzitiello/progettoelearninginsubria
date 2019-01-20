@@ -38,7 +38,7 @@ public class Utente {
     /* Dichiarazione livelli utente */
     static public final int admin = 1;
     static public final int docente = 2;
-    static public final int studente = 3;
+    static public final int studente = 3; //modificare anche in stored crea_utente
 
     /* Dichiarazione dei componenti di servizio: */
     private SocketDb socket;
@@ -50,8 +50,7 @@ public class Utente {
      * Inizializza flag di riconoscimento di avvenuta creazione
      * dell'utente a false.
      * @throws Exception 
-	 */	
-
+	 */
     public Utente() throws Exception {
         this.socket = SocketDb.getInstanceDb();
         this.isCreated = false;
@@ -68,8 +67,7 @@ public class Utente {
 	 */
     public boolean createFromMatricola(int matricola) throws ClassNotFoundException, SQLException{
         this.isCreated = false;
-        
-        //https://stackoverflow.com/questions/14582674/java-analog-for-phps-stdclass
+
 
         Object[] p = {matricola};
         ArrayList<Map<String,Object>> response = this.socket.function("getDatiUtente", p);
@@ -92,11 +90,16 @@ public class Utente {
         this.myInfo.cognome                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
         this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
-        //this.myInfo.annoImmatricolazione    = (int)     row.get("anno_immatricolazione");
-        //this.myInfo.corsoLaurea             = (String)  row.get("corso_laurea");
-        //this.myInfo.statoCarriera           = (String)  row.get("stato_carriera");
-        //this.myInfo.strutturaRiferimento    = (String)  row.get("struttura_riferimento");
-        
+
+        if(row.containsKey("anno_immatricolazione"))
+            this.myInfo.annoImmatricolazione    = (int) row.get("anno_immatricolazione");
+        if(row.containsKey("corso_laurea"))
+            this.myInfo.corsoLaurea             = (int) row.get("corso_laurea");
+        if(row.containsKey("stato_carriera"))
+            this.myInfo.statoCarriera           = (int) row.get("stato_carriera");
+        if(row.containsKey("struttura_riferimento"))
+            this.myInfo.strutturaRiferimento    = (int) row.get("struttura_riferimento");
+       
         this.isCreated = true;
     }
 
