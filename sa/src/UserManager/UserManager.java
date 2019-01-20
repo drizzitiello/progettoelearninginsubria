@@ -10,6 +10,7 @@ import Sessione.Sessione;
 import Utente.Utente;
 import authService.AuthenticationService;
 import notifier.notifier;
+import gestioneCorsi.GestioneCorsi;
 
 /**
 * Modifica e inserimento massivo delle informazioni utente.
@@ -208,9 +209,15 @@ public class UserManager {
                 ex.printStackTrace();
             }
 
+            GestioneCorsi gc = new GestioneCorsi();
+
             int i = 1;
             for (InfoUtente user: utenti) {				// memorizziamo ogni utente nel db
-                if(!creaUtente(user)) System.err.println("Errore csv file riga " + i);
+                if(creaUtente(user)){
+                    gc.assegnamentoCorsi(user.matricola);
+                }else{
+                    System.err.println("Errore csv file riga " + i);
+                }
                 i++;
             }
 

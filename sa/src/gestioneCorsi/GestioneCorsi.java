@@ -77,6 +77,13 @@ public class GestioneCorsi {
 		Object[] params = {c.codCorso, c.nome, c.anno_attivazione, c.laurea, c.descrizione, c.peso, c.creatore};
 		socket.function("modifica_dati_corsi", params);
 	} 
+
+
+	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
+	public void assegnamentoCorsi(int matricola) throws ClassNotFoundException, SQLException {
+		Object[] params = {matricola};
+		socket.function("assegna_studenti", params);
+	}
 	
 	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
 	public void assegnamentoCorsi(Utente studente) throws ClassNotFoundException, SQLException {
