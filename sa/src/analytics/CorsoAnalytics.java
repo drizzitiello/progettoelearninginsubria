@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import Sessione.Sessione;
 import socketDb.SocketDb;
+import Utente.Utente;
 
 /**
 * Servizi di analisi delle informazioni utente.
@@ -40,29 +42,29 @@ public class CorsoAnalytics {
          this.codCorso = codCorso;
      }
 
-     public int utentiConnessi(){
-         Object[] p = {this.codCorso);  
-         ArrayList<Map<String,Object>> r = this.socket.query("SELECT COUNT(matricola) AS UC FROM accesso_corso WHERE fine_accesso IS NULL AND codice_corso = ?", p);
-         return r.get(0).get("UC");
+     public int utentiConnessi() throws ClassNotFoundException, SQLException{
+         Object[] p = {this.codCorso};  
+         ArrayList<Map<String,Object>> r = this.socket.query("SELECT CAST(COUNT(matricola) AS INTEGER) AS uc FROM accesso_corso WHERE fine_accesso IS NULL AND codice_corso = ?", p);
+         return (int) r.get(0).get("uc");
      }
 
-     public Map<Integer, Integer> downloadsIntervallo(String dateStart, String dateEnd){
+     public Map<Integer, Integer> downloadsIntervallo(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{
       
          Map<Integer, Integer> risorse = new HashMap<Integer, Integer>();
       
-         Object[] p = {this.codCorso, dateStart, dateEnd);
+         Object[] p = {this.codCorso, dateStart, dateEnd};
          ArrayList<Map<String,Object>> r = this.socket.function("get_downloads_intervallo", p);
          for (Map<String, Object> b : r) {
-           risorse.put(b.get("codice_risorsa"), b.get("conteggio_download"));
+           risorse.put((int) b.get("codice_risorsa"), (int) b.get("conteggio_download"));
          }
         
          return risorse;
      }
 
-     public String tempoMedioConn(){
-         Object[] p = {this.codCorso);  
+     public int tempoMedioConn() throws ClassNotFoundException, SQLException{
+         Object[] p = {this.codCorso};  
          ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corso", p);
-         return r.get(0).get("tempo_medio");
+         return (int) r.get(0).get("tempo_medio");
      }
 }
 
@@ -70,8 +72,8 @@ public class CorsoAnalytics {
 /*
  STORED FUNCTION: get_downloads_intervallo(codice_corso, dataStart, dataEnd)
  --------------------------------------------------------------
-   DROP FUNCTION get_downloads_intervallo(integer, timestamp, timestamp);
-   CREATE OR REPLACE FUNCTION get_downloads_intervallo (p_codice_corso INT, p_start_date TIMESTAMP, p_end_date TIMESTAMP) 
+  DROP FUNCTION get_downloads_intervallo(integer, varchar, varchar);
+   CREATE OR REPLACE FUNCTION get_downloads_intervallo (p_codice_corso INT, p_start_date varchar, p_end_date varchar) 
          RETURNS TABLE (
                            codice_risorsa INT,
                            conteggio_download INT
@@ -79,12 +81,12 @@ public class CorsoAnalytics {
       AS $$
       BEGIN
          RETURN QUERY SELECT download.codice_risorsa,
-                             COUNT(DISTINCT(download.matricola)) 
+                             CAST(COUNT(DISTINCT(download.matricola)) AS INTEGER)
                       FROM download
                       JOIN risorsa ON risorsa.codice_risorsa = download.codice_risorsa
                       JOIN sezione ON sezione.codice_sezione = risorsa.codice_sezione
-                      WHERE codice_corso = p_codice_corso AND data_e_ora BETWEEN p_start_date AND p_end_date
-                      GROUP BY download.codice_risorsa
+                      WHERE codice_corso = p_codice_corso AND data_e_ora BETWEEN to_timestamp(p_start_date, 'YYYY-MM-DD HH24:MI') AND to_timestamp(p_end_date, 'YYYY-MM-DD HH24:MI')
+                      GROUP BY download.codice_risorsa;
       END; $$ 
       
       LANGUAGE 'plpgsql';

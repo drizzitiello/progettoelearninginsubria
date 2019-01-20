@@ -22,7 +22,7 @@ import socketDb.SocketDb;
 
 public class Utente {
 	
-	public class InfoUtente {
+	public static class InfoUtente {
 	       /* Dichiarazione delle info utente: */
 	       public Integer matricola;
 	       public String nome;
@@ -94,11 +94,11 @@ public class Utente {
         if(row.containsKey("anno_immatricolazione"))
             this.myInfo.annoImmatricolazione    = (int) row.get("anno_immatricolazione");
         if(row.containsKey("corso_laurea"))
-            this.myInfo.corsoLaurea             = (int) row.get("corso_laurea");
+            this.myInfo.corsoLaurea             = (String) row.get("corso_laurea");
         if(row.containsKey("stato_carriera"))
-            this.myInfo.statoCarriera           = (int) row.get("stato_carriera");
+            this.myInfo.statoCarriera           = (String) row.get("stato_carriera");
         if(row.containsKey("struttura_riferimento"))
-            this.myInfo.strutturaRiferimento    = (int) row.get("struttura_riferimento");
+            this.myInfo.strutturaRiferimento    = (String) row.get("struttura_riferimento");
        
         this.isCreated = true;
     }

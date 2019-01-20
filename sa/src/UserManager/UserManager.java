@@ -1,15 +1,23 @@
 package UserManager;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import socketDb.SocketDb;
 import Sessione.Sessione;
 import Utente.Utente;
+import Utente.Utente.InfoUtente;
 import authService.AuthenticationService;
-import notifier.notifier;
+import notifier.Notifier;
 import gestioneCorsi.GestioneCorsi;
 
 /**
@@ -50,9 +58,10 @@ public class UserManager {
 	 *
 	 * @return	flag di avvenuta modifica dei dati
      * @throws SQLException
+     * @throws ClassNotFoundException 
 	 */
-    public static boolean modificaDatiUtente(Utente user) throws SQLException{
-        if(!user.created() || !this.enabled)
+    public boolean modificaDatiUtente(Utente user) throws SQLException, ClassNotFoundException{
+        if(!user.created() || !enabled)
             return false;
 
 
@@ -119,8 +128,9 @@ public class UserManager {
 	 *
 	 * @return	flag di avvenuta creazione
      * @throws SQLException
+     * @throws ClassNotFoundException 
 	 */
-    public boolean creaUtente(InfoUtente info) throws SQLException{
+    public boolean creaUtente(InfoUtente info) throws SQLException, ClassNotFoundException{
         if(!this.enabled)
         return false;
 
@@ -150,7 +160,7 @@ public class UserManager {
         body += "Password: " + randomPassword + "\n";
         body += "Codice di attivazione: " + Integer.toString(randomCodAttivaz) + "\n";
 
-        Notifier.sendSystemMail(info.email, "SeatIn", body);
+        //Notifier.sendSystemMail(info.email, "SeatIn", body);
 
         return true;
     }
@@ -163,21 +173,22 @@ public class UserManager {
 	 *
 	 * @return	flag di avvenuta importazione
      * @throws SQLException
+     * @throws ClassNotFoundException 
 	 */
-    public boolean csvImportUtente(String path) throws SQLException{
+    public boolean csvImportUtente(String path) throws SQLException, ClassNotFoundException{
         if(!this.enabled)
             return false;
 
             Path report = Paths.get(path);
             List<InfoUtente> utenti = new ArrayList<InfoUtente>();
 
-            try (BufferedReader br = Files.newBufferedReader(path, StandardCharsets.US_ASCII)) {		
+            try (BufferedReader br = Files.newBufferedReader(report, StandardCharsets.US_ASCII)) {		
                 br.readLine();			        // scarto la prima riga con intestazioni
                 String line = br.readLine();	// leggo prima riga
                 while (line != null) {			// loop righe
                     String[] attributi = line.split(",");
                     
-                    InfoUtente i = new InfoUtente();
+                    Utente.InfoUtente i = new Utente.InfoUtente();
                     i.matricola = Integer.parseInt(attributi[0]);
                     i.nome = attributi[1];
                     i.cognome = attributi[2];

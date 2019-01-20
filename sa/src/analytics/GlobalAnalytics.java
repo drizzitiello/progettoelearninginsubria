@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import Sessione.Sessione;
 import socketDb.SocketDb;
+import Utente.Utente;
 
 /**
 * Servizi di analisi globale della piattaforma.
@@ -38,38 +40,38 @@ public class GlobalAnalytics {
          this.enabled = this.session.info().tipoUtente == Utente.admin;
      }
 
-     public int utentiConnessi(){
-        ArrayList<Map<String,Object>> response = this.socket.query("SELECT COUNT(matricola) AS UC FROM sessione WHERE fine_sessione IS NULL");
-        return response.get(0).get("UC");
+     public int utentiConnessi() throws ClassNotFoundException, SQLException{
+        ArrayList<Map<String,Object>> response = this.socket.query("SELECT CAST(COUNT(matricola) as integer) AS uc FROM sessione WHERE fine_sessione IS NULL");
+        return (int) response.get(0).get("uc");
      }
 
-     public int accessiIntervallo(String dateStart, String dateEnd){ 
-        Object[] p = {dateStart, dateEnd);
-        ArrayList<Map<String,Object>> r = this.socket.query("SELECT COUNT(matricola) AS CNT FROM sessione WHERE inizio_sesione BETWEEN ? AND ?");
-        return response.get(0).get("CNT");
+     public int accessiIntervallo(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{ 
+        Object[] p = {dateStart, dateEnd};
+        ArrayList<Map<String,Object>> r = this.socket.query("SELECT CAST(COUNT(matricola) as integer) AS cnt FROM sessione WHERE inizio_sessione BETWEEN to_timestamp(?, 'YYYY-MM-DD HH24:MI') AND to_timestamp(?, 'YYYY-MM-DD HH24:MI')", p);
+        return (int) r.get(0).get("cnt");
      }
 
 
-    public Map<Integer, Integer> tempoMedioPerCorso(){
+    public Map<Integer, Integer> tempoMedioPerCorso() throws ClassNotFoundException, SQLException{
      //in minuti
 
         Map<Integer, Integer> tempiMedi = new HashMap<Integer, Integer>();
 
-        ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corsi");
+        ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corsi", new Object[] {});
         for (Map<String, Object> b : r) {
-            tempiMedi.put(b.get("codice_corso"), b.get("tempo_medio"));
+            tempiMedi.put((int) b.get("cod_corso"),(int) b.get("tempo_medio"));
         }
        
         return tempiMedi;
     }
 
-    public Map<Integer, Integer> downloadsPerCorso(){
+    public Map<Integer, Integer> downloadsPerCorso() throws ClassNotFoundException, SQLException{
      
         Map<Integer, Integer> downloads = new HashMap<Integer, Integer>();
 
-        ArrayList<Map<String,Object>> r = this.socket.function("get_downloads_corsi");
+        ArrayList<Map<String,Object>> r = this.socket.function("get_downloads_corsi", new Object[] {});
         for (Map<String, Object> b : r) {
-           downloads.put(b.get("codice_corso"), b.get("conteggio_download"));
+           downloads.put((int) b.get("cod_corso"),(int)  b.get("conteggio_download"));
         }
        
         return downloads;
@@ -84,7 +86,7 @@ public class GlobalAnalytics {
    DROP FUNCTION get_downloads_corsi();
    CREATE OR REPLACE FUNCTION get_downloads_corsi () 
          RETURNS TABLE (
-                           codice_corso INT,
+                           cod_corso INT,
                            conteggio_download INT
          ) 
       AS $$
@@ -94,7 +96,7 @@ public class GlobalAnalytics {
                       FROM download
                       JOIN risorsa ON risorsa.codice_risorsa = download.codice_risorsa
                       JOIN sezione ON sezione.codice_sezione = risorsa.codice_sezione
-                      GROUP BY codice_corso
+                      GROUP BY codice_corso;
       END; $$ 
       
       LANGUAGE 'plpgsql';
@@ -103,17 +105,17 @@ public class GlobalAnalytics {
 
  STORED FUNCTION: get_tempo_medio_corsi()
  --------------------------------------------------------------
-    DROP FUNCTION get_tempo_medio_corsi();
+     DROP FUNCTION get_tempo_medio_corsi();
     CREATE OR REPLACE FUNCTION get_tempo_medio_corsi () 
           RETURNS TABLE (
-                            codice_corso INT,
+                            cod_corso INT,
                             tempo_medio INT
           ) 
        AS $$
        BEGIN
-          RETURN QUERY SELECT codice_corso, AVG((DATE_PART('day', fine_accesso - inizio_accesso) * 24 * 60 + 
+          RETURN QUERY SELECT codice_corso, CAST(ceil(AVG((DATE_PART('day', fine_accesso - inizio_accesso) * 24 * 60 + 
                                                  DATE_PART('hour', fine_accesso - inizio_accesso)) * 60 +
-                                                 DATE_PART('minute', fine_accesso - inizio_accesso))
+                                                 DATE_PART('minute', fine_accesso - inizio_accesso))) as integer)
                         FROM accesso_corso
                         WHERE fine_accesso IS NOT NULL
                         GROUP BY codice_corso;

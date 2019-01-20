@@ -121,7 +121,7 @@ public class AuthenticationService {
 	
 	/** Genera un codice di attivazione generico a 8 cifre
 	 * @return codice di attivazione */
-	private int createActivationCode () {
+	public static int createActivationCode () {
 		SecureRandom n = new SecureRandom();				
 		return n.nextInt(99999999);
     }

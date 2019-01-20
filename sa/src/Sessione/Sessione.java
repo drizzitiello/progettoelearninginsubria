@@ -1,5 +1,7 @@
 package Sessione;
 
+import java.sql.SQLException;
+
 import Utente.Utente;
 import Utente.Utente.InfoUtente;
 import socketDb.SocketDb;
@@ -77,11 +79,13 @@ public class Sessione {
 	 * Si occupa della chiusura della sessione in corso
 	 *
 	 * @return	flag di avvenuta distruzione della sessione
+     * @throws SQLException 
+     * @throws ClassNotFoundException 
 	 */
-    public boolean destroy(){
+    public boolean destroy() throws ClassNotFoundException, SQLException{
         if(!this.isCreated) return false;
         
-        Object[] p = { matricola };
+        Object[] p = { this.utente.getInfo().matricola };
         this.socket.query("UPDATE sessione SET fine_sessione = NOW() WHERE matricola = ? AND fine_sessione IS NULL", p);
 
         this.isCreated = false;
