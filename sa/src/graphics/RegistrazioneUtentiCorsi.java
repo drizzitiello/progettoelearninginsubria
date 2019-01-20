@@ -16,7 +16,7 @@ import javax.swing.border.EmptyBorder;
 import Sessione.Sessione;
 import UserManager.UserManager;
 
-public class RegistrazioneUtenti extends JFrame {
+public class RegistrazioneUtentiCorsi extends JFrame {
 
 	private JPanel contentPane;
 
@@ -24,7 +24,7 @@ public class RegistrazioneUtenti extends JFrame {
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public RegistrazioneUtenti(Sessione ses) {
+	public RegistrazioneUtentiCorsi(Sessione ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

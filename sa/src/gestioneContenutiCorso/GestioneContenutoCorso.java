@@ -68,12 +68,13 @@ public class GestioneContenutoCorso {
 	}
 	public void modificaRisorsa(Risorse r) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		Object[] params = {r.codRisorsa, r.codSezione, r.descrizione, r.nome, r.path, r.tipo, r.visibilita};
+		Object[] params = {(short) r.codRisorsa, r.nome,  r.descrizione,
+				 r.path, r.tipo, (short) r.codSezione,r.visibilita};
 		socket.function("modificarisorsa", params);
 	}
 	public Risorse getRisorsa(int codRisorsa) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
-		String sql = "SELECT FROM risorsa"
+		String sql = "SELECT * FROM risorsa"
 				+ " WHERE codice_risorsa = "+codRisorsa;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
 		Risorse risorsa=null;
@@ -81,7 +82,7 @@ public class GestioneContenutoCorso {
 			risorsa = new Risorse((String) m.get("nome"),(String)  m.get("descrizione"),
 					(String) m.get("percorso"),
 					(int)  m.get("codice_sezione"), (int)  m.get("codice_risorsa"), 
-					(boolean) m.get("is_pubblica"), (int)  m.get("tipo"));
+					(boolean) m.get("is_pubblica"), (String)  m.get("tipo"));
 		}
 		return risorsa;
 	}

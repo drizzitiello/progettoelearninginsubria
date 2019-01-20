@@ -136,6 +136,9 @@ public class ModificaCorso extends JFrame {
 				JButton modificaRisorsa = new JButton("Modifica risorsa");
 				modificaRisorsa.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
+						System.out.println(r);
+						System.out.println(r.codRisorsa);
+						System.out.println(r.codRisorsa);
 						ModificaRisorsa ms = new ModificaRisorsa(r.codRisorsa);
 					}
 				});

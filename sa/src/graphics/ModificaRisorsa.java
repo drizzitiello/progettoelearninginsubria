@@ -2,12 +2,14 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -29,8 +31,8 @@ public class ModificaRisorsa extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		Risorse r = null;
 		GestioneContenutoCorso gc = new GestioneContenutoCorso();
@@ -39,30 +41,39 @@ public class ModificaRisorsa extends JFrame {
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
 		}
+
+		final int codSezione=r.codSezione;
 		
-		JTextField codiceRisorsa = new JTextField(String.valueOf(r.codRisorsa));
-		contentPane.add(codiceRisorsa);
-		codiceRisorsa.setColumns(10);
+		JLabel no = new JLabel("Nome: ");
+		contentPane.add(no);
 		
 		JTextField nome = new JTextField(r.nome);
 		contentPane.add(nome);
 		nome.setColumns(10);
 		
+		JLabel descr = new JLabel("Descrizione: ");
+		contentPane.add(descr);
+		
 		JTextField descrizione = new JTextField(r.descrizione);
 		contentPane.add(descrizione);
 		descrizione.setColumns(10);
+		
+		JLabel percorso = new JLabel("Percorso: ");
+		contentPane.add(percorso);
 		
 		JTextField path = new JTextField(r.path);
 		contentPane.add(path);
 		path.setColumns(10);
 		
-		JTextField codSezione = new JTextField(String.valueOf(r.codSezione));
-		contentPane.add(codSezione);
-		codSezione.setColumns(10);
+		JLabel vis = new JLabel("Visibilita: ");
+		contentPane.add(vis);
 		
 		JTextField visibilita = new JTextField(String.valueOf(r.visibilita));
 		contentPane.add(visibilita);
 		visibilita.setColumns(10);
+		
+		JLabel type = new JLabel("Tipo: ");
+		contentPane.add(type);
 		
 		JTextField tipo = new JTextField(r.tipo);
 		contentPane.add(tipo);
@@ -76,23 +87,9 @@ public class ModificaRisorsa extends JFrame {
 					if(visibilita.getText().equals("pubblica")) {
 						pubblica=true;
 					}
-					int tipoUtente=1;
-					switch(tipo.getText()) {
-					case "Studente":
-						tipoUtente=1;
-						break;
-					case "Docente":
-						tipoUtente=2;
-						break;
-					case "Amministratore":
-						tipoUtente=3;
-						break;
-					default:
-						break;
-					}
 					Risorse risorsa = new Risorse(nome.getText(),  descrizione.getText(), path.getText(), 
-							Integer.parseInt(codSezione.getText()), Integer.parseInt(codiceRisorsa.getText()), 
-							pubblica, tipoUtente);
+							codSezione, codRisorsa, 
+							pubblica, tipo.getText());
 					gc.modificaRisorsa(risorsa);
 				} catch (Exception e1) {
 					e1.printStackTrace();

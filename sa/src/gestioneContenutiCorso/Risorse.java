@@ -7,7 +7,7 @@ public class Risorse {
 	public Boolean visibilita;
 	public String tipo;
 	public Risorse(String nome, String descr2, String path, int codSezione, int codRisorsa,
-			Boolean visibilita, String tipo) {
+			boolean visibilita, String tipo) {
 		this.nome=nome;
 		this.descrizione=descr2;
 		this.path=path;
