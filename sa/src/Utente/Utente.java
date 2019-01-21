@@ -29,16 +29,16 @@ public class Utente {
 	       public String cognome;
 	       public String email;
 	       public int tipoUtente;
-	       public int annoImmatricolazione;
+	       public Integer annoImmatricolazione;
 	       public String corsoLaurea;
 	       public String statoCarriera;
 	       public String strutturaRiferimento;
 	}
     
     /* Dichiarazione livelli utente */
-    static public final int admin = 1;
+    static public final int admin = 3;
     static public final int docente = 2;
-    static public final int studente = 3; //modificare anche in stored crea_utente
+    static public final int studente = 1; //modificare anche in stored crea_utente
 
     /* Dichiarazione dei componenti di servizio: */
     private SocketDb socket;
@@ -70,7 +70,7 @@ public class Utente {
 
 
         Object[] p = {matricola};
-        ArrayList<Map<String,Object>> response = this.socket.function("getDatiUtente", p);
+        ArrayList<Map<String,Object>> response = this.socket.function("get_dati_utente", p);
         
         if(response.size() != 1) return this.isCreated;
         this.createFromDbResult(response.get(0));
@@ -90,9 +90,9 @@ public class Utente {
         this.myInfo.cognome                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
         this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
-
+        
         if(row.containsKey("anno_immatricolazione"))
-            this.myInfo.annoImmatricolazione    = (int) row.get("anno_immatricolazione");
+            this.myInfo.annoImmatricolazione    = (Integer) row.get("anno_immatricolazione");
         if(row.containsKey("corso_laurea"))
             this.myInfo.corsoLaurea             = (String) row.get("corso_laurea");
         if(row.containsKey("stato_carriera"))

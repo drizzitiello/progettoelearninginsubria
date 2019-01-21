@@ -100,7 +100,7 @@ public class AuthenticationService {
 	public void storeNewPassword (String new_pass) throws Exception {
 		Object[] arg = {this.toHash(new_pass), email};
 		this.socket.function("reset_password", arg);
-		Notifier.send_uninsubria_email("mailIsituzionale", "pwd istituzionale",
+		Notifier.send_docente_email("mailIsituzionale", "pwd istituzionale",
 				email, "Nuova pwd", "La tua nuova pwd e' "+new_pass);
 	}
 	
@@ -129,7 +129,7 @@ public class AuthenticationService {
 	/** Invia via mail un nuovo codice di attivazione e una nuova password
 	 * @return void */
 	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
-		Notifier.send_uninsubria_email("mailIstituzionale", "pwdmailIstit", email,
+		Notifier.send_docente_email("mailIstituzionale", "pwdmailIstit", email,
 				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createActivationCode());
 	}
 	

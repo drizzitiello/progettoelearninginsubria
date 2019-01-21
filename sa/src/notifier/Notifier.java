@@ -10,6 +10,7 @@ import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.mail.Session;
 import javax.mail.Transport;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -17,6 +18,8 @@ import gestioneContenutiCorso.Corso;
 import socketDb.SocketDb;
 
 public class Notifier {
+	static String systemMail ="";
+	static String systemMailPwd ="";
 	static SocketDb socket;
 	public static boolean sendEmail(String usr, String pwd, String cor, String subject, String body) throws Exception {
 		socket=SocketDb.getInstanceDb();
@@ -25,11 +28,35 @@ public class Notifier {
 		if(codCorso!=null) {
 			ArrayList<String> l=getEmailUtenti(codCorso);
 			for(String s : l) {
-				send_uninsubria_email(usr, pwd, s, subject, body);
+				send_docente_email(usr, pwd, s, subject, body);
 			}
 			return true;
 		}
 		return false;
+	}
+
+	public static void sendSystemMail(String too, String subject, String body) throws AddressException, MessagingException {
+		String to = controlloValiditaEmail(too);
+		
+		String password=systemMailPwd;
+		String from=systemMail;
+	    	       
+	    String host = "smtp.office365.com";
+	   
+		Properties props = System.getProperties();
+	    props.put("mail.smtp.host",host);
+	    props.put("mail.smtp.starttls.enable", "true");
+	    props.put("mail.smtp.port",587);
+	    
+	    Session session = Session.getInstance(props);
+	    
+	    Message msg = new MimeMessage(session);
+	    msg.setFrom(new InternetAddress(from));
+	    msg.setRecipients(Message.RecipientType.TO,InternetAddress.parse(to, false));
+	    msg.setSubject(subject);
+	    msg.setText(body);
+	    
+	    Transport.send(msg,from,password);
 	}
 	public static Corso getCorso(String nomeCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
@@ -62,7 +89,7 @@ public class Notifier {
 		}
 		return email;
 	}
-	public static void send_uninsubria_email(String usr, String pwd, String too, String subject, String body) throws SendFailedException, MessagingException{
+	public static void send_docente_email(String usr, String pwd, String too, String subject, String body) throws SendFailedException, MessagingException{
 		String to = controlloValiditaEmail(too);
 		
 		String password=pwd;

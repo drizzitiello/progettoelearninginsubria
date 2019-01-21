@@ -170,8 +170,8 @@ public class InfoUtente extends JFrame {
 					user.getInfo().statoCarriera=modificastatoCarriera.getText();
 					user.getInfo().strutturaRiferimento=modificaStrutturaRiferimento.getText();
 					try {
-						UserManager.modificaDatiUtente(user);
-						//SocketDb.getInstanceDb().function("modificaDatiUtente", params);
+						UserManager um = new UserManager();
+						um.modificaDatiUtente(user);
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					} catch (Exception e1) {

@@ -70,7 +70,7 @@ public class EmailSender extends JFrame {
 						}
 					}
 					else{
-						Notifier.send_uninsubria_email(ses.getUtente().getInfo().email, pwd,
+						Notifier.send_docente_email(ses.getUtente().getInfo().email, pwd,
 								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
 					}
 					} catch (MessagingException e1) {

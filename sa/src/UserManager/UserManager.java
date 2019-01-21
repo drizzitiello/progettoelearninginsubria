@@ -12,6 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+
 import socketDb.SocketDb;
 import Sessione.Sessione;
 import Utente.Utente;
@@ -68,7 +70,7 @@ public class UserManager {
         Object[] p = { user.getInfo().nome,
                        user.getInfo().cognome,
                        user.getInfo().email,
-                       user.getInfo().tipoUtente,
+                       (short) user.getInfo().tipoUtente,
                        user.getInfo().annoImmatricolazione,
                        user.getInfo().corsoLaurea,
                        user.getInfo().statoCarriera,
@@ -117,7 +119,7 @@ public class UserManager {
 
         Object[] p = { user.getInfo().matricola };
         
-        this.socket.query("UPDATE TABLE utente SET loginAttemps = 0 WHERE matricola = ?", p);
+        this.socket.query("UPDATE utente SET tentativi_login = 0 WHERE matricola = ?", p);
         
         return true;
     }
@@ -141,7 +143,7 @@ public class UserManager {
                     info.nome,
                     info.cognome,
                     info.email,
-                    info.tipoUtente,
+                    (short) info.tipoUtente,
                     info.annoImmatricolazione,
                     info.corsoLaurea,
                     info.statoCarriera,
@@ -160,7 +162,11 @@ public class UserManager {
         body += "Password: " + randomPassword + "\n";
         body += "Codice di attivazione: " + Integer.toString(randomCodAttivaz) + "\n";
 
-        //Notifier.sendSystemMail(info.email, "SeatIn", body);
+        try {
+			Notifier.sendSystemMail(info.email, "SeatIn", body);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
 
         return true;
     }
@@ -207,8 +213,9 @@ public class UserManager {
                             i.tipoUtente = Utente.admin;
                         break;
                     }
-
-                    i.annoImmatricolazione = Integer.parseInt(attributi[5]);
+                    
+                    if(attributi[5].equals("")) i.annoImmatricolazione = null;
+                    else i.annoImmatricolazione = Integer.parseInt(attributi[5]);
                     i.corsoLaurea = attributi[6];
                     i.statoCarriera = attributi[7];
                     i.strutturaRiferimento = attributi[8];
