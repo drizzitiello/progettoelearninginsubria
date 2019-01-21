@@ -21,7 +21,7 @@ import gestioneContenutiCorso.Corso;
 import gestioneContenutiCorso.GestioneContenutoCorso;
 import gestioneContenutiCorso.Risorse;
 
-public class StatisticheCorso extends JFrame {
+public class StatisticheCorso extends MyFrame {
 	
 	/* Mostrare il numero complessivo di utenti connessi che stanno visualizzando/interagendo con i contenuti del corso 
 	 2. Mostrare il numero complessivo di utenti che hanno effettuato il download di una o più risorse in intervalli temporali dati 

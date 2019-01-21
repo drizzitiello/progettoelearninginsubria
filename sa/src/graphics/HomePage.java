@@ -23,7 +23,8 @@ import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 
-public class HomePage extends JFrame {
+//public class HomePage extends JFrame {
+public class HomePage extends MyFrame {
 
 	private JPanel contentPane;
 	private JTextField corso;
@@ -41,6 +42,12 @@ public class HomePage extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		try {
+			ses.create(ses.getUtente().getInfo().matricola);
+		} catch (Exception e2) {
+			e2.printStackTrace();
+		}
 		
 		JLabel cerca = new JLabel("Cerca corsi");
 		contentPane.add(cerca);

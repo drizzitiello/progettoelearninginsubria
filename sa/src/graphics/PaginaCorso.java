@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -32,9 +33,12 @@ import socketDb.SocketDb;
 public class PaginaCorso extends JFrame {
 
 	private JPanel contentPane;
+	private Utente user;
 	private Corso cor;
 	private Contenuto c;
 	private ArrayList<Component> ac;
+	private GestioneCorsi gc;
+	private PaginaCorso thisFrame;
 
 	/**
 	 * Create the frame.
@@ -51,6 +55,32 @@ public class PaginaCorso extends JFrame {
 		
 		ac=new ArrayList<Component>();
 		
+		thisFrame=this;
+		
+		user=ses.getUtente();
+		
+		addWindowListener(new java.awt.event.WindowAdapter() {
+		    @Override
+		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+		        if (JOptionPane.showConfirmDialog(thisFrame, 
+		            "Are you sure you want to close this window?", "Close Window?", 
+		            JOptionPane.YES_NO_OPTION,
+		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
+		        	try {
+						gc.deleteSession(user, cor);
+						ses.destroy();
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+		            System.exit(0);
+		        }
+		    }
+		});
+		
+		
+		try {
+			gc = new GestioneCorsi();
+			gc.createSession(ses.getUtente(), Notifier.getCorso(corso));
 			try {
 				cor= Notifier.getCorso(corso);
 				ReperisciCorso rc = new ReperisciCorso();
@@ -67,7 +97,6 @@ public class PaginaCorso extends JFrame {
 		
 		ArrayList<Utente> u=new ArrayList<Utente>();
 		try {
-			GestioneCorsi gc =new GestioneCorsi();
 			u=gc.chiTieneCorso(cor);
 		} catch (Exception e2) {
 			e2.printStackTrace();
@@ -82,7 +111,6 @@ public class PaginaCorso extends JFrame {
 		
 		
 		try {
-			GestioneCorsi gc = new GestioneCorsi();
 			if(ses.info().tipoUtente==1||visualComeStudente) {
 			if(gc.studenteIscrittoAlCorso(ses.getUtente(), cor)||visualComeStudente) {
 				for(Sezione s : c.sezioni) {
@@ -312,8 +340,20 @@ public class PaginaCorso extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		} catch (ClassNotFoundException | SQLException e3) {
+			e3.printStackTrace();
+		}
 		
 		setVisible(true);
 	}
+	
+	 protected void finalize() {   
+		    try {
+		    	gc.deleteSession(user, cor);
+				super.finalize();
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
 
 }
