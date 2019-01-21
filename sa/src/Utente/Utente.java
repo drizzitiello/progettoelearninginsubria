@@ -28,7 +28,7 @@ public class Utente {
 	       public String nome;
 	       public String cognome;
 	       public String email;
-	       public int tipoUtente;
+	       public Integer tipoUtente;
 	       public Integer annoImmatricolazione;
 	       public String corsoLaurea;
 	       public String statoCarriera;

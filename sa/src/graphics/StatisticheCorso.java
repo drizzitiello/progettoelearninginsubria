@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -10,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
+import analytics.CorsoAnalytics;
 import gestioneContenutiCorso.Corso;
 import socketDb.SocketDb;
 
@@ -31,17 +33,23 @@ public class StatisticheCorso extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: ");
-		contentPane.add(numeroAccessiCorso);
-		
-		JLabel nDownloadRisorsaPerTempo = new JLabel("N. download risorsa r :");
-		contentPane.add(nDownloadRisorsaPerTempo);
-		
-		JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina");
-		contentPane.add(tempoMedioConnessioniPagina);
+		try {
+			CorsoAnalytics ca = new CorsoAnalytics(cor.codCorso);
+			
+			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.utentiConnessi());
+			contentPane.add(numeroAccessiCorso);
+			
+			JLabel nDownloadRisorsaPerTempo = new JLabel("N. download risorsa r :");
+			contentPane.add(nDownloadRisorsaPerTempo);
+			
+			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+ca.tempoMedioConn());
+			contentPane.add(tempoMedioConnessioniPagina);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		setVisible(true);
 	}

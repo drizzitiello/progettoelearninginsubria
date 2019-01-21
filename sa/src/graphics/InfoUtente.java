@@ -69,20 +69,20 @@ public class InfoUtente extends JFrame {
 		JLabel tipoUtente = new JLabel("Tipo Utente: "+tipo);
 		contentPane.add(tipoUtente);
 		
-		JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: "+ses.getUtente().getInfo().annoImmatricolazione);
-		contentPane.add(annoImmatricolazione);
+		if(ses.getUtente().getInfo().tipoUtente==1) {
+			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: "+ses.getUtente().getInfo().annoImmatricolazione);
+			contentPane.add(annoImmatricolazione);
 		
-		JLabel corsoLaurea = new JLabel("Corso di Laurea: "+ses.getUtente().getInfo().corsoLaurea);
-		contentPane.add(corsoLaurea);
+			JLabel corsoLaurea = new JLabel("Corso di Laurea: "+ses.getUtente().getInfo().corsoLaurea);
+			contentPane.add(corsoLaurea);
 		
-		JLabel facolta = new JLabel("Facolta: "+ses.getUtente().getInfo().corsoLaurea);
-		contentPane.add(facolta);
-		
-		JLabel statoCarriera = new JLabel("Stato carriera: "+ses.getUtente().getInfo().statoCarriera);
-		contentPane.add(statoCarriera);
-		
-		JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUtente().getInfo().strutturaRiferimento);
-		contentPane.add(strutturaRiferimento);
+			JLabel statoCarriera = new JLabel("Stato carriera: "+ses.getUtente().getInfo().statoCarriera);
+			contentPane.add(statoCarriera);
+		}
+		else {
+			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUtente().getInfo().strutturaRiferimento);
+			contentPane.add(strutturaRiferimento);
+		}
 		
 		setVisible(true);
 	}
@@ -99,11 +99,8 @@ public class InfoUtente extends JFrame {
 		try {
 			user = new Utente();
 			user.createFromMatricola(mat);
-			JLabel matricola = new JLabel("Matricola: ");
+			JLabel matricola = new JLabel("Matricola: "+mat);
 			contentPane.add(matricola);
-			JTextField modificaMatricola = new JTextField(""+mat);
-			contentPane.add(modificaMatricola);
-			modificaMatricola.setColumns(10);
 			
 			JLabel nome = new JLabel("Nome: ");
 			contentPane.add(nome);
@@ -129,29 +126,44 @@ public class InfoUtente extends JFrame {
 			contentPane.add(modificaTipoUtente);
 			modificaTipoUtente.setColumns(10);
 			
+			
 			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: ");
-			contentPane.add(annoImmatricolazione);
-			JTextField modificaAnnoImmatricolazione = new JTextField(""+user.getInfo().annoImmatricolazione);
-			contentPane.add(modificaAnnoImmatricolazione);
-			modificaAnnoImmatricolazione.setColumns(10);
+			JTextField modificaAnnoImmatricolazione;
+			if(user.getInfo().annoImmatricolazione==null) {
+				modificaAnnoImmatricolazione = new JTextField("");
+			}
+			else {
+				modificaAnnoImmatricolazione = new JTextField(""+user.getInfo().annoImmatricolazione);
+			}
 			
 			JLabel corsoLaurea = new JLabel("Corso di Laurea: ");
-			contentPane.add(corsoLaurea);
-			JTextField modificaCorsoLaurea = new JTextField(user.getInfo().corsoLaurea);
-			contentPane.add(modificaCorsoLaurea);
-			modificaCorsoLaurea.setColumns(10);
-			
+			JTextField modificaCorsoLaurea = new JTextField(""+user.getInfo().corsoLaurea);
+		
 			JLabel statoCarriera = new JLabel("Stato carriera: ");
-			contentPane.add(statoCarriera);
-			JTextField modificastatoCarriera = new JTextField(user.getInfo().statoCarriera);
-			contentPane.add(modificastatoCarriera);
-			modificastatoCarriera.setColumns(10);
+			JTextField modificastatoCarriera = new JTextField(""+user.getInfo().statoCarriera);
 			
 			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: ");
-			contentPane.add(strutturaRiferimento);
-			JTextField modificaStrutturaRiferimento = new JTextField(user.getInfo().strutturaRiferimento);
-			contentPane.add(modificaStrutturaRiferimento);
-			modificaStrutturaRiferimento.setColumns(10);
+			JTextField modificaStrutturaRiferimento = new JTextField(""+user.getInfo().strutturaRiferimento);
+			
+			if(user.getInfo().tipoUtente==1) {
+				contentPane.add(annoImmatricolazione);
+				contentPane.add(modificaAnnoImmatricolazione);
+				modificaAnnoImmatricolazione.setColumns(10);
+			
+				contentPane.add(corsoLaurea);
+				contentPane.add(modificaCorsoLaurea);
+				modificaCorsoLaurea.setColumns(10);
+			
+				contentPane.add(statoCarriera);
+				contentPane.add(modificastatoCarriera);
+				modificastatoCarriera.setColumns(10);
+			}
+			
+			else {
+				contentPane.add(strutturaRiferimento);
+				contentPane.add(modificaStrutturaRiferimento);
+				modificaStrutturaRiferimento.setColumns(10);
+			}
 			
 			JButton modifica = new JButton("Modifica dati utente");
 			modifica.addActionListener(new ActionListener() {
@@ -160,12 +172,15 @@ public class InfoUtente extends JFrame {
 							modificaEmail.getText(), modificaTipoUtente.getText(), modificaAnnoImmatricolazione.getText(),
 							modificaCorsoLaurea.getText(), modificaFacolta.getText(),
 							modificastatoCarriera.getText(), modificaStrutturaRiferimento.getText()};*/
-					user.getInfo().matricola=Integer.parseInt(modificaMatricola.getText());
+					user.getInfo().matricola=mat;
 					user.getInfo().nome=modificaNome.getText();
 					user.getInfo().cognome=modificaCognome.getText();
 					user.getInfo().email=modificaEmail.getText();
+					
 					user.getInfo().tipoUtente=Integer.parseInt(modificaTipoUtente.getText());
-					user.getInfo().annoImmatricolazione=Integer.parseInt(modificaAnnoImmatricolazione.getText());
+					System.out.println(modificaAnnoImmatricolazione.getText());
+					if(modificaAnnoImmatricolazione.getText().equals("")) user.getInfo().annoImmatricolazione = null;
+	                else user.getInfo().annoImmatricolazione = Integer.parseInt(modificaAnnoImmatricolazione.getText());
 					user.getInfo().corsoLaurea=modificaCorsoLaurea.getText();
 					user.getInfo().statoCarriera=modificastatoCarriera.getText();
 					user.getInfo().strutturaRiferimento=modificaStrutturaRiferimento.getText();
@@ -180,6 +195,34 @@ public class InfoUtente extends JFrame {
 				}
 			});
 			contentPane.add(modifica);
+			
+			JButton elimina = new JButton("Elimina dati utente");
+			elimina.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						UserManager um = new UserManager();
+						um.eliminaUtente(user);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			contentPane.add(elimina);
+			
+			JButton sblocca = new JButton("Sblocca utente");
+			sblocca.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						UserManager um = new UserManager();
+						um.sbloccaUtente(user);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+					
+				}
+			});
+			contentPane.add(sblocca);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

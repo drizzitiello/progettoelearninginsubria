@@ -64,7 +64,8 @@ public class CorsoAnalytics {
      public int tempoMedioConn() throws ClassNotFoundException, SQLException{
          Object[] p = {this.codCorso};  
          ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corso", p);
-         return (int) r.get(0).get("tempo_medio");
+         if(r.get(0).get("tempo_medio")==null) return 0;
+         else return (int) r.get(0).get("tempo_medio");
      }
 }
 

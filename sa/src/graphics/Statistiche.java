@@ -10,6 +10,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
+import analytics.CorsoAnalytics;
+import analytics.GlobalAnalytics;
 import socketDb.SocketDb;
 
 public class Statistiche extends JFrame {
@@ -34,22 +36,23 @@ public class Statistiche extends JFrame {
 		setContentPane(contentPane);
 		
 		try {
-			Object[] params= {};
+			GlobalAnalytics ca = new GlobalAnalytics();
+			
 			JLabel utentiComplessivi;
-			utentiComplessivi = new JLabel("Utenti connessi: "+SocketDb.getInstanceDb().function("getUtentiConnessi", params));
+			utentiComplessivi = new JLabel("Utenti connessi: "+ca.utentiConnessi());
 			contentPane.add(utentiComplessivi);
-		} catch (ClassNotFoundException | SQLException e) {
+			
+			JLabel numeroAccessiPerOra = new JLabel("N. accessi per fascia oraria");
+			contentPane.add(numeroAccessiPerOra);
+			
+			JLabel tempoMedioConnessioniPerCorso = new JLabel("Tempo medio connessioni per corso");
+			contentPane.add(tempoMedioConnessioniPerCorso);
+			
+			JLabel nDownloadPerCorso = new JLabel("N. download per corso");
+			contentPane.add(nDownloadPerCorso);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
-		JLabel numeroAccessiPerOra = new JLabel("N. accessi per fascia oraria");
-		contentPane.add(numeroAccessiPerOra);
-		
-		JLabel tempoMedioConnessioniPerCorso = new JLabel("Tempo medio connessioni per corso");
-		contentPane.add(tempoMedioConnessioniPerCorso);
-		
-		JLabel nDownloadPerCorso = new JLabel("N. download per corso");
-		contentPane.add(nDownloadPerCorso);
 		
 		setVisible(true);
 	}

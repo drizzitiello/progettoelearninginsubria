@@ -15,6 +15,7 @@ import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
 import UserManager.UserManager;
+import gestioneCorsi.GestioneCorsi;
 
 public class RegistrazioneUtentiCorsi extends JFrame {
 
@@ -56,9 +57,8 @@ public class RegistrazioneUtentiCorsi extends JFrame {
 		aggiungiCorsi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					//import csv corsi
-					UserManager um = new UserManager();
-					um.csvImportUtente(path.getText());
+					GestioneCorsi gc = new GestioneCorsi();
+					gc.dataInput(path.getText());
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
