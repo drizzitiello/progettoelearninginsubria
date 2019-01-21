@@ -2,16 +2,28 @@ package graphics;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
+import gestioneContenutiCorso.GestioneContenutoCorso;
+import gestioneContenutiCorso.ReperisciCorso;
+import gestioneContenutiCorso.Risorse;
+import gestioneContenutiCorso.Corso;
+import notifier.Notifier;
 import socketDb.SocketDb;
 
 public class Statistiche extends JFrame {
@@ -32,23 +44,94 @@ public class Statistiche extends JFrame {
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(new BorderLayout(0, 0));
 		setContentPane(contentPane);
+		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		try {
-			GlobalAnalytics ca = new GlobalAnalytics();
+			GlobalAnalytics ga = new GlobalAnalytics();
 			
 			JLabel utentiComplessivi;
-			utentiComplessivi = new JLabel("Utenti connessi: "+ca.utentiConnessi());
+			utentiComplessivi = new JLabel("Utenti connessi: "+ga.utentiConnessi());
 			contentPane.add(utentiComplessivi);
 			
-			JLabel numeroAccessiPerOra = new JLabel("N. accessi per fascia oraria");
+			JLabel numeroAccessiPerOra = new JLabel("N. accessi per corso per fascia oraria");
 			contentPane.add(numeroAccessiPerOra);
 			
-			JLabel tempoMedioConnessioniPerCorso = new JLabel("Tempo medio connessioni per corso");
-			contentPane.add(tempoMedioConnessioniPerCorso);
+			JLabel date = new JLabel("Inserire data inizio e data fine: ");
+			contentPane.add(date);
 			
-			JLabel nDownloadPerCorso = new JLabel("N. download per corso");
+			JTextField dataInizio = new JTextField();
+			contentPane.add(dataInizio);
+			dataInizio.setColumns(10);
+			
+			JTextField dataFine = new JTextField();
+			contentPane.add(dataFine);
+			dataFine.setColumns(10);
+			
+			JButton accessButton = new JButton("Calcola il n. di accessi per corso "
+					+ "per fascia temporale");
+			accessButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						ReperisciCorso rc = new ReperisciCorso();
+						ArrayList<Corso> corsi = rc.getCorsi();
+						for(Corso c : corsi) {
+							ga.accessiIntervallo(dataInizio.getText(), dataFine.getText());
+							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+c.nome+" "
+									+ "nella fascia temporale data : "
+									+ ga.accessiIntervallo(dataInizio.getText(), dataFine.getText(), c));
+							contentPane.add(accessiCorsoFasciaTemporale);
+							contentPane.revalidate();
+							validate();
+							repaint();
+						}
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			contentPane.add(accessButton);
+			
+			JButton tempoMedioPerCorso = new JButton("Calcola il tempo medio degli accessi ai corsi");
+			tempoMedioPerCorso.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						Map<Integer, Integer> tmc = ga.tempoMedioPerCorso();
+						for(Integer m : tmc.keySet()) {
+							Corso cor = Notifier.getCorso(m);
+							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
+									+ " il corso "+cor.nome+" : "+tmc.get(m));
+							contentPane.add(tempoMedioConnessioniCorso);
+							contentPane.revalidate();
+							validate();
+							repaint();
+						}
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			contentPane.add(tempoMedioPerCorso);
+			
+			JButton nDownloadPerCorso = new JButton("Calcola il numero di download per corso");
+			nDownloadPerCorso.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						Map<Integer, Integer> dpc = ga.downloadsPerCorso();
+						for(Integer m : dpc.keySet()) {
+							Corso cor = Notifier.getCorso(m);
+							JLabel numeroAccessiCorso = new JLabel("Numero di download per"
+									+ " il corso "+cor.nome+" : "+dpc.get(m));
+							contentPane.add(numeroAccessiCorso);
+							contentPane.revalidate();
+							validate();
+							repaint();
+						}
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			});
 			contentPane.add(nDownloadPerCorso);
 		} catch (Exception e) {
 			e.printStackTrace();

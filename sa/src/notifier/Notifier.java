@@ -79,6 +79,27 @@ public class Notifier {
 			return null;
 		}
 	}
+	public static Corso getCorso(int nomeCorso) throws ClassNotFoundException, SQLException {
+		socket=SocketDb.getInstanceDb();
+		Corso c=new Corso();
+		Object[] params = {nomeCorso};
+		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
+		if(cc.size()>0) {
+		for(Map<String, Object> m : cc) {
+			c.setAnno((int) m.get("anno_attivazione"));
+			c.setCodCorso((int) m.get("codice_corso"));
+			c.setCreatore((int) m.get("creatore"));
+			c.setDescrizione((String) m.get("descrizione"));
+			c.setLaurea((String) m.get("facolta"));
+			c.setNome((String) m.get("nome"));
+			c.setPeso((int) m.get("peso"));
+		}
+		return c;
+		}
+		else {
+			return null;
+		}
+	}
 	public static ArrayList<String> getEmailUtenti(int codCorso) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		ArrayList<String> email=new ArrayList<String>();

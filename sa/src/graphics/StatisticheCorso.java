@@ -3,17 +3,23 @@ package graphics;
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.SQLException;
+import java.util.Map;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import Sessione.Sessione;
 import analytics.CorsoAnalytics;
 import gestioneContenutiCorso.Corso;
-import socketDb.SocketDb;
+import gestioneContenutiCorso.GestioneContenutoCorso;
+import gestioneContenutiCorso.Risorse;
 
 public class StatisticheCorso extends JFrame {
 	
@@ -42,8 +48,39 @@ public class StatisticheCorso extends JFrame {
 			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.utentiConnessi());
 			contentPane.add(numeroAccessiCorso);
 			
-			JLabel nDownloadRisorsaPerTempo = new JLabel("N. download risorsa r :");
-			contentPane.add(nDownloadRisorsaPerTempo);
+			JLabel date = new JLabel("Inserire data inizio e data fine: ");
+			contentPane.add(date);
+			
+			JTextField dataInizio = new JTextField();
+			contentPane.add(dataInizio);
+			dataInizio.setColumns(10);
+			
+			JTextField dataFine = new JTextField();
+			contentPane.add(dataFine);
+			dataFine.setColumns(10);
+			
+			JButton downloadButton = new JButton("Calcola il n. di utenti che hanno effettuato download");
+			downloadButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					Map<Integer, Integer> downloads;
+					try {
+						downloads = ca.downloadsIntervallo(dataInizio.getText(), dataFine.getText());
+						for(Integer m : downloads.keySet()) {
+							GestioneContenutoCorso gcc = new GestioneContenutoCorso();
+							Risorse r = gcc.getRisorsa(m);
+							JLabel nDownloadRisorsaPerTempo = new JLabel("N. utenti che hanno effettuato il download"
+									+ "della risorsa "+r.nome+" : "+downloads.get(m));
+							contentPane.add(nDownloadRisorsaPerTempo);
+							contentPane.revalidate();
+							validate();
+							repaint();
+						}
+					} catch (ClassNotFoundException | SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+			contentPane.add(downloadButton);
 			
 			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+ca.tempoMedioConn());
 			contentPane.add(tempoMedioConnessioniPagina);
