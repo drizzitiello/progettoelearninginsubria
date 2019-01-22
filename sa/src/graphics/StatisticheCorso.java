@@ -45,7 +45,7 @@ public class StatisticheCorso extends MyFrame {
 		try {
 			CorsoAnalytics ca = new CorsoAnalytics(cor.codCorso);
 			
-			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.utentiConnessi());
+			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.onlineUsers());
 			contentPane.add(numeroAccessiCorso);
 			
 			JLabel date = new JLabel("Inserire data inizio e data fine: ");
@@ -64,7 +64,7 @@ public class StatisticheCorso extends MyFrame {
 				public void actionPerformed(ActionEvent arg0) {
 					Map<Integer, Integer> downloads;
 					try {
-						downloads = ca.downloadsIntervallo(dataInizio.getText(), dataFine.getText());
+						downloads = ca.downloadByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : downloads.keySet()) {
 							GestioneContenutoCorso gcc = new GestioneContenutoCorso();
 							Risorse r = gcc.getRisorsa(m);
@@ -82,7 +82,8 @@ public class StatisticheCorso extends MyFrame {
 			});
 			contentPane.add(downloadButton);
 			
-			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+ca.tempoMedioConn());
+			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+
+			ca.avgMinsOnline());
 			contentPane.add(tempoMedioConnessioniPagina);
 		} catch (Exception e) {
 			e.printStackTrace();
