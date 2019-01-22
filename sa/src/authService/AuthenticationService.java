@@ -15,7 +15,6 @@ import java.util.*;
 import java.math.BigInteger;
 import java.security.*;
 import javax.mail.*;
-
 import notifier.Notifier;
 import session.Session;
 import socketDb.SocketDb;
@@ -29,8 +28,7 @@ public class AuthenticationService {
 		private int matricola;
 		private boolean isBlocked = false;	
 		
-		/** Fornisce le informazioni dell'utente dal database, usando la matricola 
-		 * @return void */
+		/** Fornisce le informazioni dell'utente dal database	*/
 		private void getInfoFromDb (String email) throws ClassNotFoundException, SQLException {
 			AuthenticationService.email=email;
 			String sqlScript = "SELECT password_hash, codice_attivazione, tentativi_login, matricola FROM utente WHERE email = '" + email + "';";
@@ -95,8 +93,7 @@ public class AuthenticationService {
 		return (this.controlloCredentials(pass, mail) && user.login_attempts == null);
 	}
 	
-	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata)
-	 * @return void	*/
+	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata) */
 	public void storeNewPassword (String new_pass) throws Exception {
 		Object[] arg = {this.toHash(new_pass), email};
 		this.socket.function("reset_password", arg);
@@ -104,15 +101,13 @@ public class AuthenticationService {
 				email, "Nuova pwd", "La tua nuova pwd e' "+new_pass);
 	}
 	
-	/** Azzera i tentativi di accesso dell'utente
-	 * @return void	*/
+	/** Azzera i tentativi di accesso dell'utente	*/
 	public void resetLoginAttempts () throws Exception {
 		Object[] arg = {email};
 		this.socket.function("reset_login", arg);
 	}
 	
-	/** Incrementa di un'unita' i tentativi di accesso dell'utente
-	 * @return void	*/
+	/** Incrementa di un'unita' i tentativi di accesso dell'utente	*/
 	private void loginAttemptsIncrease () throws Exception {
 		Object[] arg = {email};
 		if(user.login_attempts!=null)user.login_attempts++;
@@ -126,8 +121,7 @@ public class AuthenticationService {
 		return n.nextInt(99999999);
     }
 	
-	/** Invia via mail un nuovo codice di attivazione e una nuova password
-	 * @return void */
+	/** Invia via mail un nuovo codice di attivazione e una nuova password	*/
 	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
 		Notifier.send_professor_email("mailIstituzionale", "pwdmailIstit", email,
 				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createActivationCode());
@@ -155,7 +149,7 @@ public class AuthenticationService {
 		return number.toString(16).toUpperCase(); 				// convertiamo infine il BigInteger in formato testuale e in maiuscolo (l'argomento '16' indica la base esadecimale)
 	}
 	
-	/**	Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
+	/** Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
 	 * @return stringa random */
 	public static String randomString () {
 		StringBuilder finale = new StringBuilder();
@@ -179,7 +173,6 @@ public class AuthenticationService {
 	    return finale.toString();	
 	}	
 	
-	
 	/** Verifica che l'utente sia memorizzato nel database 
 	 * @return check di controllo */
 	private boolean controlUserExistence (String email_digitata) throws Exception { 
@@ -193,15 +186,15 @@ public class AuthenticationService {
 			
 	}
 	
-	/** Verifica che il numero di tentativi di accesso sia inferiore o uguale a 10
+	/** Verifica che il numero di tentativi di accesso sia inferiore a 10
 	 * @return check di controllo */
-	private boolean controlAttempts() throws ClassNotFoundException, SQLException {
+	private boolean controlAttempts() {
 		return (user.login_attempts < 10);
 	}
 	
 	/**  Verifica che il profilo dell'utente sia gia' attivo
 	 * @return check di controllo */
-	private boolean controlActiveUser() throws ClassNotFoundException, SQLException { 
+	private boolean controlActiveUser() { 
 		return (user.login_attempts != null);
 	}
 	
