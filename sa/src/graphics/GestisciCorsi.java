@@ -15,9 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.ReperisciCorso;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.FindCourse;
 
 public class GestisciCorsi extends MyFrame {
 
@@ -28,7 +28,7 @@ public class GestisciCorsi extends MyFrame {
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public GestisciCorsi(Sessione ses, String pwd) {
+	public GestisciCorsi(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
@@ -36,21 +36,21 @@ public class GestisciCorsi extends MyFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		ReperisciCorso rc = new ReperisciCorso();
+		FindCourse rc = new FindCourse();
 		try {
-			ArrayList<Corso> ali = rc.getCorsi();
-			for(Corso c : ali) {
-				JLabel codiceCorso = new JLabel("Codice corso: "+((Integer) c.codCorso).toString());
+			ArrayList<Course> ali = rc.getCourses();
+			for(Course c : ali) {
+				JLabel codiceCorso = new JLabel("Codice corso: "+((Integer) c.courseCode).toString());
 				contentPane.add(codiceCorso);
-				JLabel nome = new JLabel("Nome: "+c.nome);
+				JLabel nome = new JLabel("Nome: "+c.name);
 				contentPane.add(nome);
-				JLabel annoAttivazione = new JLabel("Anno attivazione: "+String.valueOf(c.anno_attivazione));
+				JLabel annoAttivazione = new JLabel("Anno attivazione: "+String.valueOf(c.activation_year));
 				contentPane.add(annoAttivazione);
-				JLabel facolta = new JLabel("Facolta: "+c.facolta);
+				JLabel facolta = new JLabel("Facolta: "+c.faculty);
 				contentPane.add(facolta);
-				JLabel descrizione = new JLabel("Descrizione: "+c.descrizione);
+				JLabel descrizione = new JLabel("Descrizione: "+c.description);
 				contentPane.add(descrizione);
-				JLabel peso = new JLabel("CFU: "+((Integer) c.peso).toString());
+				JLabel peso = new JLabel("CFU: "+((Integer) c.weight).toString());
 				contentPane.add(peso);
 				JButton modificaCorso = new JButton("Modifica Corso");
 				modificaCorso.addActionListener(new ActionListener() {

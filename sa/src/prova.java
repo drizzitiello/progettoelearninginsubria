@@ -6,10 +6,10 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import UserManager.UserManager;
-import Utente.Utente;
-import Utente.Utente.InfoUtente;
+import Utente.User;
+import Utente.User.UserInfo;
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
 import socketDb.SocketDb;
@@ -33,21 +33,21 @@ public class prova {
 			return;
 		}
 		
-		Sessione ses = Sessione.getInstance();
+		Session ses = Session.getInstance();
 		ses.create(2);
 		
-		System.out.println(ses.getUtente().getInfo().nome);
-		System.out.println(ses.getUtente().getInfo().cognome);
-		System.out.println(ses.getUtente().getInfo().corsoLaurea);
-		System.out.println(ses.getUtente().getInfo().email);
-		System.out.println(ses.getUtente().getInfo().statoCarriera);
-		System.out.println(ses.getUtente().getInfo().strutturaRiferimento);
-		System.out.println(ses.getUtente().getInfo().tipoUtente);
-		System.out.println(ses.getUtente().getInfo().annoImmatricolazione);
-		System.out.println(ses.getUtente().getInfo().matricola);
+		System.out.println(ses.getUser().getInfo().name);
+		System.out.println(ses.getUser().getInfo().surname);
+		System.out.println(ses.getUser().getInfo().corsoLaurea);
+		System.out.println(ses.getUser().getInfo().email);
+		System.out.println(ses.getUser().getInfo().careerStatus);
+		System.out.println(ses.getUser().getInfo().strutturaRiferimento);
+		System.out.println(ses.getUser().getInfo().userType);
+		System.out.println(ses.getUser().getInfo().registrationYear);
+		System.out.println(ses.getUser().getInfo().student_number);
 		
 		UserManager um = new UserManager();
-		Utente user = new Utente();
+		User user = new User();
 		
 		/*String path="C:/Users/macri/Desktop/csvimportutenti.txt";
 		um.csvImportUtente(path);*/
@@ -64,26 +64,26 @@ public class prova {
 		info.tipoUtente=1;
 		um.creaUtente(info);*/
 		
-		user.createFromMatricola(34);
-		System.out.println(user.getInfo().nome);
-		System.out.println(user.getInfo().cognome);
+		user.createFromStudentNumber(34);
+		System.out.println(user.getInfo().name);
+		System.out.println(user.getInfo().surname);
 		System.out.println(user.getInfo().corsoLaurea);
 		System.out.println(user.getInfo().email);
-		System.out.println(user.getInfo().statoCarriera);
+		System.out.println(user.getInfo().careerStatus);
 		System.out.println(user.getInfo().strutturaRiferimento);
-		System.out.println(user.getInfo().tipoUtente);
-		System.out.println(user.getInfo().annoImmatricolazione);
-		System.out.println(user.getInfo().matricola);
-		user.createFromMatricola(13);
-		System.out.println(user.getInfo().nome);
-		System.out.println(user.getInfo().cognome);
+		System.out.println(user.getInfo().userType);
+		System.out.println(user.getInfo().registrationYear);
+		System.out.println(user.getInfo().student_number);
+		user.createFromStudentNumber(13);
+		System.out.println(user.getInfo().name);
+		System.out.println(user.getInfo().surname);
 		System.out.println(user.getInfo().corsoLaurea);
 		System.out.println(user.getInfo().email);
-		System.out.println(user.getInfo().statoCarriera);
+		System.out.println(user.getInfo().careerStatus);
 		System.out.println(user.getInfo().strutturaRiferimento);
-		System.out.println(user.getInfo().tipoUtente);
-		System.out.println(user.getInfo().annoImmatricolazione);
-		System.out.println(user.getInfo().matricola);
+		System.out.println(user.getInfo().userType);
+		System.out.println(user.getInfo().registrationYear);
+		System.out.println(user.getInfo().student_number);
 		//System.out.println(um.modificaDatiUtente(user));
 		
 		/*GlobalAnalytics cs = new GlobalAnalytics();

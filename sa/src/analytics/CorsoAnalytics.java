@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import socketDb.SocketDb;
-import Utente.Utente;
+import Utente.User;
 
 /**
 * Servizi di analisi delle informazioni utente.
@@ -27,15 +27,15 @@ public class CorsoAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
      private SocketDb socket;
-     private int codCorso;
+     private int courseCode;
      
      /**
       * Istanzia l'oggetto relativo al SocketDb di sistema.
       * @throws Exception 
       */
-     public CorsoAnalytics(int codCorso) throws Exception {
+     public CorsoAnalytics(int courseCode) throws Exception {
          this.socket = SocketDb.getInstanceDb();
-         this.codCorso = codCorso;
+         this.courseCode = courseCode;
      }
 
      /**
@@ -45,7 +45,7 @@ public class CorsoAnalytics {
      * @throws SQLException 
      */
      public int onlineUsers() throws ClassNotFoundException, SQLException{
-         Object[] p = {this.codCorso};  
+         Object[] p = {this.courseCode};  
          ArrayList<Map<String,Object>> r = this.socket.query("SELECT CAST(COUNT(matricola) AS INTEGER) AS uc FROM accesso_corso WHERE fine_accesso IS NULL AND codice_corso = ?", p);
          return (int) r.get(0).get("uc");
      }
@@ -63,7 +63,7 @@ public class CorsoAnalytics {
       
          Map<Integer, Integer> outmap = new HashMap<Integer, Integer>();
       
-         Object[] p = {this.codCorso, dateStart, dateEnd};
+         Object[] p = {this.courseCode, dateStart, dateEnd};
          ArrayList<Map<String,Object>> r = this.socket.function("get_downloads_intervallo", p);
          for (Map<String, Object> b : r) {
             outmap.put((int) b.get("codice_risorsa"), (int) b.get("conteggio_download"));
@@ -81,7 +81,7 @@ public class CorsoAnalytics {
      * @throws SQLException 
      */
      public int avgMinsOnline() throws ClassNotFoundException, SQLException{
-         Object[] p = {this.codCorso};  
+         Object[] p = {this.courseCode};  
          ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corso", p);
          if(r.get(0).get("tempo_medio")==null) return 0;
          else return (int) r.get(0).get("tempo_medio");

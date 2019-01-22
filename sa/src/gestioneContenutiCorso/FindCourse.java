@@ -15,54 +15,58 @@ import java.util.Map;
 
 import socketDb.SocketDb;
 
-public class ReperisciCorso {
+public class FindCourse {
+	
 	SocketDb socket;
-	public ArrayList<Corso> getCorsi() throws ClassNotFoundException, SQLException {
+	
+	public ArrayList<Course> getCourses() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "getCorsi";
 		Object[] s= {};
 		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
-		ArrayList<Corso> corsi = new ArrayList<Corso>();
+		ArrayList<Course> courses = new ArrayList<Course>();
 		for(Map<String, Object> m : obj) {
-			corsi.add(new Corso((int) m.get("codice_corso"), (String) m.get("nome"),
+			courses.add(new Course((int) m.get("codice_corso"), (String) m.get("nome"),
 					(int) m.get("anno_attivazione"), (String) m.get("facolta"), 
 					(String) m.get("descrizione"), (int) m.get("peso"), (int) m.get("creatore")));
 		}
-		return corsi;
+		return courses;
 	}
-	public Contenuto getContenutoCorso(Corso c) throws ClassNotFoundException, SQLException{
-		Contenuto cont=new Contenuto();
+	
+	public Content getContenutCourse(Course c) throws ClassNotFoundException, SQLException{
+		Content cont=new Content();
 		socket=SocketDb.getInstanceDb();
 		String sql,sql2;
 		sql = "getContenutoCorso";
-		Object[] s= {c.codCorso};
+		Object[] s= {c.courseCode};
 		ArrayList<Map<String, Object>> obj=socket.function(sql,s);
 		for(Map<String, Object> m : obj) {
-			int codSezione=(int) m.get("codice_sezione");
-			String titolo=(String) m.get("titolo");
+			int sectionCode=(int) m.get("codice_sezione");
+			String title=(String) m.get("titolo");
 			String descr=(String) m.get("descrizione");
-			Boolean visibilita=(Boolean) m.get("is_pubblica");
+			Boolean visibility=(Boolean) m.get("is_pubblica");
 			int matricola=(int) m.get("matricola");
-			int codCorso=(int) m.get("cod_corso");
-			Integer figlioDi=(Integer) m.get("figlio_di");
-			Sezione sez=cont.addSection(titolo, descr, visibilita, codSezione, matricola, codCorso, figlioDi);
+			int courseCode=(int) m.get("cod_corso");
+			Integer sonOf=(Integer) m.get("figlio_di");
+			Section sec=cont.addSection(title, descr, visibility, sectionCode, matricola, courseCode, sonOf);
 			sql2 = "getContenutoCorso1";
-			Object[] s2= {codSezione};
+			Object[] s2= {sectionCode};
 			ArrayList<Map<String, Object>> obj2=socket.function(sql2,s2);
 			for(Map<String, Object> ms : obj2) {
-				String nome=(String) ms.get("nome");
+				String name=(String) ms.get("nome");
 				String descr2=(String) ms.get("descrizione");
 				String path2=(String) ms.get("percorso");
-				int codSezione2=(int) ms.get("codice_sezione");
-				int codRisorsa=(int) ms.get("codice_risorsa");
-				Boolean visibilita2=(Boolean) ms.get("is_pubblica");
-				String tipo=(String) ms.get("tipo");
-				sez.addResource(nome, descr2, path2, codSezione2, codRisorsa, visibilita2, tipo);
+				int sectionCode2=(int) ms.get("codice_sezione");
+				int resourceCode=(int) ms.get("codice_risorsa");
+				Boolean visibility2=(Boolean) ms.get("is_pubblica");
+				String type=(String) ms.get("tipo");
+				sec.addResource(name, descr2, path2, sectionCode2, resourceCode, visibility2, type);
 			}
 		}
 		return cont;
 	}
-	public void download(Risorse r) throws ClassNotFoundException, SQLException {
+	
+	public void download(Resource r) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		try {
 			String extension = "";

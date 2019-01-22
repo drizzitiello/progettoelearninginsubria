@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
@@ -35,7 +35,7 @@ public class HomePage extends MyFrame {
 	 * Create the frame.
 	 * @param pwd 
 	 */
-	public HomePage(Sessione ses, String pwd) {
+	public HomePage(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -44,7 +44,7 @@ public class HomePage extends MyFrame {
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		try {
-			ses.create(ses.getUtente().getInfo().matricola);
+			ses.create(ses.getUser().getInfo().student_number);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
@@ -61,7 +61,7 @@ public class HomePage extends MyFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(last!=null)contentPane.remove(last);
-					Corso i = Notifier.getCorso(corso.getText());
+					Course i = Notifier.getCourse(corso.getText());
 					if(i!=null) {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {
@@ -92,7 +92,7 @@ public class HomePage extends MyFrame {
 						contentPane.remove(j);contentPane.revalidate();validate();
 					}
 					ArrayList<Map<String, Object>> hm;
-					Object[] param = {ses.getUtente().getInfo().matricola};
+					Object[] param = {ses.getUser().getInfo().student_number};
 					hm = SocketDb.getInstanceDb().function("getcorsiutente", param);
 					for(Map<String,Object> m : hm) {
 						JButton b = new JButton((String) m.get("nome"));
@@ -113,7 +113,7 @@ public class HomePage extends MyFrame {
 		});
 		contentPane.add(corsiAssegnati);
 		
-		if(ses.getUtente().getInfo().tipoUtente!=1) {
+		if(ses.getUser().getInfo().userType!=1) {
 			JButton email = new JButton("Accedi all'email");
 			email.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -131,7 +131,7 @@ public class HomePage extends MyFrame {
 		});
 		contentPane.add(visualizzaInfo);
 		
-		if(ses.getUtente().getInfo().tipoUtente==3) {
+		if(ses.getUser().getInfo().userType==3) {
 			JButton modificaDatiUtenti = new JButton("Modifica dati utenti");
 			modificaDatiUtenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {

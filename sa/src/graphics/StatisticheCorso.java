@@ -15,11 +15,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import analytics.CorsoAnalytics;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.Risorse;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.Resource;
 
 public class StatisticheCorso extends MyFrame {
 	
@@ -34,7 +34,7 @@ public class StatisticheCorso extends MyFrame {
 	 * @param cor 
 	 * @param ses 
 	 */
-	public StatisticheCorso(Sessione ses, Corso cor) {
+	public StatisticheCorso(Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -43,7 +43,7 @@ public class StatisticheCorso extends MyFrame {
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		try {
-			CorsoAnalytics ca = new CorsoAnalytics(cor.codCorso);
+			CorsoAnalytics ca = new CorsoAnalytics(cor.courseCode);
 			
 			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.onlineUsers());
 			contentPane.add(numeroAccessiCorso);
@@ -66,10 +66,10 @@ public class StatisticheCorso extends MyFrame {
 					try {
 						downloads = ca.downloadByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : downloads.keySet()) {
-							GestioneContenutoCorso gcc = new GestioneContenutoCorso();
-							Risorse r = gcc.getRisorsa(m);
+							CourseContentManagement gcc = new CourseContentManagement();
+							Resource r = gcc.getResource(m);
 							JLabel nDownloadRisorsaPerTempo = new JLabel("N. utenti che hanno effettuato il download"
-									+ "della risorsa "+r.nome+" : "+downloads.get(m));
+									+ "della risorsa "+r.name+" : "+downloads.get(m));
 							contentPane.add(nDownloadRisorsaPerTempo);
 							contentPane.revalidate();
 							validate();

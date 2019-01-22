@@ -9,10 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import socketDb.SocketDb;
 import UserManager.UserManager;
-import Utente.Utente;
+import Utente.User;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;
@@ -35,7 +35,7 @@ public class InfoUtente extends MyFrame {
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public InfoUtente(Sessione ses, String pwd) {
+	public InfoUtente(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -43,20 +43,20 @@ public class InfoUtente extends MyFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(0, 4, 0, 0));
 		
-		JLabel matricola = new JLabel("Matricola: "+ses.getUtente().getInfo().matricola);
+		JLabel matricola = new JLabel("Matricola: "+ses.getUser().getInfo().student_number);
 		contentPane.add(matricola);
 		
-		JLabel nome = new JLabel("Nome: "+ses.getUtente().getInfo().nome);
+		JLabel nome = new JLabel("Nome: "+ses.getUser().getInfo().name);
 		contentPane.add(nome);
 		
-		JLabel cognome = new JLabel("Cognome: "+ses.getUtente().getInfo().cognome);
+		JLabel cognome = new JLabel("Cognome: "+ses.getUser().getInfo().surname);
 		contentPane.add(cognome);
 		
-		JLabel email = new JLabel("Email: "+ses.getUtente().getInfo().email);
+		JLabel email = new JLabel("Email: "+ses.getUser().getInfo().email);
 		contentPane.add(email);
 		
 		String tipo="";
-		switch(ses.getUtente().getInfo().tipoUtente) {
+		switch(ses.getUser().getInfo().userType) {
 			case 1: tipo="Studente";
 			break;
 			case 2: tipo="Docente";
@@ -69,25 +69,25 @@ public class InfoUtente extends MyFrame {
 		JLabel tipoUtente = new JLabel("Tipo Utente: "+tipo);
 		contentPane.add(tipoUtente);
 		
-		if(ses.getUtente().getInfo().tipoUtente==1) {
-			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: "+ses.getUtente().getInfo().annoImmatricolazione);
+		if(ses.getUser().getInfo().userType==1) {
+			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: "+ses.getUser().getInfo().registrationYear);
 			contentPane.add(annoImmatricolazione);
 		
-			JLabel corsoLaurea = new JLabel("Corso di Laurea: "+ses.getUtente().getInfo().corsoLaurea);
+			JLabel corsoLaurea = new JLabel("Corso di Laurea: "+ses.getUser().getInfo().faculty);
 			contentPane.add(corsoLaurea);
 		
-			JLabel statoCarriera = new JLabel("Stato carriera: "+ses.getUtente().getInfo().statoCarriera);
+			JLabel statoCarriera = new JLabel("Stato carriera: "+ses.getUser().getInfo().careerStatus);
 			contentPane.add(statoCarriera);
 		}
 		else {
-			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUtente().getInfo().strutturaRiferimento);
+			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUser().getInfo().strutturaRiferimento);
 			contentPane.add(strutturaRiferimento);
 		}
 		
 		setVisible(true);
 	}
 
-	public InfoUtente(Sessione ses, Object matr) {
+	public InfoUtente(Session ses, Object matr) {
 		int mat = (int) matr;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -95,22 +95,22 @@ public class InfoUtente extends MyFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		Utente user;
+		User user;
 		try {
-			user = new Utente();
-			user.createFromMatricola(mat);
+			user = new User();
+			user.createFromStudentNumber(mat);
 			JLabel matricola = new JLabel("Matricola: "+mat);
 			contentPane.add(matricola);
 			
 			JLabel nome = new JLabel("Nome: ");
 			contentPane.add(nome);
-			JTextField modificaNome = new JTextField(user.getInfo().nome);
+			JTextField modificaNome = new JTextField(user.getInfo().name);
 			contentPane.add(modificaNome);
 			modificaNome.setColumns(10);
 			
 			JLabel cognome = new JLabel("Cognome: ");
 			contentPane.add(cognome);
-			JTextField modificaCognome = new JTextField(user.getInfo().cognome);
+			JTextField modificaCognome = new JTextField(user.getInfo().surname);
 			contentPane.add(modificaCognome);
 			modificaCognome.setColumns(10);
 			
@@ -122,30 +122,30 @@ public class InfoUtente extends MyFrame {
 			
 			JLabel tipoUtente = new JLabel("Tipo Utente: ");
 			contentPane.add(tipoUtente);
-			JTextField modificaTipoUtente = new JTextField(""+user.getInfo().tipoUtente);
+			JTextField modificaTipoUtente = new JTextField(""+user.getInfo().userType);
 			contentPane.add(modificaTipoUtente);
 			modificaTipoUtente.setColumns(10);
 			
 			
 			JLabel annoImmatricolazione = new JLabel("Anno Immatricolazione: ");
 			JTextField modificaAnnoImmatricolazione;
-			if(user.getInfo().annoImmatricolazione==null) {
+			if(user.getInfo().registrationYear==null) {
 				modificaAnnoImmatricolazione = new JTextField("");
 			}
 			else {
-				modificaAnnoImmatricolazione = new JTextField(""+user.getInfo().annoImmatricolazione);
+				modificaAnnoImmatricolazione = new JTextField(""+user.getInfo().registrationYear);
 			}
 			
 			JLabel corsoLaurea = new JLabel("Corso di Laurea: ");
-			JTextField modificaCorsoLaurea = new JTextField(""+user.getInfo().corsoLaurea);
+			JTextField modificaCorsoLaurea = new JTextField(""+user.getInfo().faculty);
 		
 			JLabel statoCarriera = new JLabel("Stato carriera: ");
-			JTextField modificastatoCarriera = new JTextField(""+user.getInfo().statoCarriera);
+			JTextField modificastatoCarriera = new JTextField(""+user.getInfo().careerStatus);
 			
 			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: ");
 			JTextField modificaStrutturaRiferimento = new JTextField(""+user.getInfo().strutturaRiferimento);
 			
-			if(user.getInfo().tipoUtente==1) {
+			if(user.getInfo().userType==1) {
 				contentPane.add(annoImmatricolazione);
 				contentPane.add(modificaAnnoImmatricolazione);
 				modificaAnnoImmatricolazione.setColumns(10);
@@ -172,21 +172,21 @@ public class InfoUtente extends MyFrame {
 							modificaEmail.getText(), modificaTipoUtente.getText(), modificaAnnoImmatricolazione.getText(),
 							modificaCorsoLaurea.getText(), modificaFacolta.getText(),
 							modificastatoCarriera.getText(), modificaStrutturaRiferimento.getText()};*/
-					user.getInfo().matricola=mat;
-					user.getInfo().nome=modificaNome.getText();
-					user.getInfo().cognome=modificaCognome.getText();
+					user.getInfo().student_number=mat;
+					user.getInfo().name=modificaNome.getText();
+					user.getInfo().surname=modificaCognome.getText();
 					user.getInfo().email=modificaEmail.getText();
 					
-					user.getInfo().tipoUtente=Integer.parseInt(modificaTipoUtente.getText());
+					user.getInfo().userType=Integer.parseInt(modificaTipoUtente.getText());
 					System.out.println(modificaAnnoImmatricolazione.getText());
-					if(modificaAnnoImmatricolazione.getText().equals("")) user.getInfo().annoImmatricolazione = null;
-	                else user.getInfo().annoImmatricolazione = Integer.parseInt(modificaAnnoImmatricolazione.getText());
-					user.getInfo().corsoLaurea=modificaCorsoLaurea.getText();
-					user.getInfo().statoCarriera=modificastatoCarriera.getText();
+					if(modificaAnnoImmatricolazione.getText().equals("")) user.getInfo().registrationYear = null;
+	                else user.getInfo().registrationYear = Integer.parseInt(modificaAnnoImmatricolazione.getText());
+					user.getInfo().faculty=modificaCorsoLaurea.getText();
+					user.getInfo().careerStatus=modificastatoCarriera.getText();
 					user.getInfo().strutturaRiferimento=modificaStrutturaRiferimento.getText();
 					try {
 						UserManager um = new UserManager();
-						um.modificaDatiUtente(user);
+						um.modifiyUserData(user);
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					} catch (Exception e1) {
@@ -201,7 +201,7 @@ public class InfoUtente extends MyFrame {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						UserManager um = new UserManager();
-						um.eliminaUtente(user);
+						um.deleteUser(user);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}
@@ -215,7 +215,7 @@ public class InfoUtente extends MyFrame {
 				public void actionPerformed(ActionEvent e) {
 					try {
 						UserManager um = new UserManager();
-						um.sbloccaUtente(user);
+						um.unlockUser(user);
 					} catch (Exception e1) {
 						e1.printStackTrace();
 					}

@@ -5,9 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import socketDb.SocketDb;
-import Utente.Utente;
+import Utente.User;
 
 /**
 * Servizi di analisi globale della piattaforma.
@@ -78,7 +78,7 @@ public class GlobalAnalytics {
     * @throws ClassNotFoundException 
     * @throws SQLException 
     */	
-    public Map<Integer, Integer> avgMinsOnlinePerCorso() throws ClassNotFoundException, SQLException{
+    public Map<Integer, Integer> avgMinsOnlineForCourse() throws ClassNotFoundException, SQLException{
 
         Map<Integer, Integer> avgMins = new HashMap<Integer, Integer>();
 
@@ -98,7 +98,7 @@ public class GlobalAnalytics {
     * @throws ClassNotFoundException 
     * @throws SQLException 
     */	
-    public Map<Integer, Integer> downloadsPerCorso() throws ClassNotFoundException, SQLException{
+    public Map<Integer, Integer> downloadsForCourse() throws ClassNotFoundException, SQLException{
      
         Map<Integer, Integer> downloads = new HashMap<Integer, Integer>();
 

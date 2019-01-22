@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
-import gestioneCorsi.GestioneCorsi;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
+import gestioneCorsi.CourseManagement;
 import socketDb.SocketDb;
 
 public class AggiungiCorso extends MyFrame {
@@ -28,7 +28,7 @@ public class AggiungiCorso extends MyFrame {
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public AggiungiCorso(Sessione ses, String pwd) {
+	public AggiungiCorso(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -76,16 +76,16 @@ public class AggiungiCorso extends MyFrame {
 		aggiungiCorso.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GestioneCorsi gc = new GestioneCorsi();
-					Corso corso = new Corso();
-					corso.setCodCorso(Integer.parseInt(codiceCorso.getText()));
-	                corso.setNome(insNome.getText());
-	                corso.setAnno(Integer.parseInt(annoAttiv.getText()));
-	                corso.setLaurea(fac.getText());
-	                corso.setDescrizione(desc.getText());
-	                corso.setPeso(Integer.parseInt(pes.getText()));
-	                corso.setCreatore(ses.getUtente().getInfo().matricola);
-					gc.creazioneCorso(corso);
+					CourseManagement gc = new CourseManagement();
+					Course corso = new Course();
+					corso.setCourseCode(Integer.parseInt(codiceCorso.getText()));
+	                corso.setName(insNome.getText());
+	                corso.setYear(Integer.parseInt(annoAttiv.getText()));
+	                corso.setFaculty(fac.getText());
+	                corso.setDescription(desc.getText());
+	                corso.setWeight(Integer.parseInt(pes.getText()));
+	                corso.setCreator(ses.getUser().getInfo().student_number);
+					gc.createCourse(corso);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}

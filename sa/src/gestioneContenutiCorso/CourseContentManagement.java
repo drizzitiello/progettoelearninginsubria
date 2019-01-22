@@ -6,102 +6,116 @@ import java.util.Map;
 
 import graphics.PaginaCorso;
 import socketDb.SocketDb;
-import Sessione.Sessione;
+import Sessione.Session;
 
-public class GestioneContenutoCorso {
+public class CourseContentManagement {
+	
 	SocketDb socket;
-	public void uploadMatCorso(Corso cor, Contenuto con) throws Exception {
+	
+	public void uploadCourseMaterial(Course cor, Content con) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		cor.setContenuti(con);
+		cor.setContents(con);
 	}
-	public void createSezione(Sezione s) throws Exception {
+	
+	public void createSection(Section s) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "INSERT INTO sezione(codice_sezione, titolo, descrizione, is_pubblica, codice_corso, "
 				+ "figlio_di, matricola) "
-				+ "VALUES ("+s.codSezione+", '"+s.titolo+"', '"+s.descrizione+"', '"+s.visibilita+"','"+s.codCorso+"', "
-						+ " "+s.figlioDi+", "+s.matricola+");";
+				+ "VALUES ("+s.sectionCode+", '"+s.title+"', '"+s.description+"', '"+s.visibility+"','"+
+				s.courseCode+"', "+ " "+s.sonOf+", "+s.studentNumber+");";
 		socket.query(sql);
 	}
-	public void cancellaSezione(int codSezione) throws ClassNotFoundException, SQLException {
+	
+	public void cancelSection(int codSezione) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "DELETE FROM sezione"
 				+ " WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
-	public Sezione getSezione(int codSezione) throws ClassNotFoundException, SQLException {
+	
+	public Section getSection(int codSezione) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "SELECT * FROM sezione"
 				+ " WHERE codice_sezione = "+codSezione;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
-		Sezione sezione=null;
+		Section sezione=null;
 		for(Map<String,Object> m : sez) {
 			if(m.get("figlio_di")!=null)
-			sezione = new Sezione((String) m.get("titolo"),(String)  m.get("descrizione"),
+			sezione = new Section((String) m.get("titolo"),(String)  m.get("descrizione"),
 					(boolean) m.get("is_pubblica"), (int)  m.get("codice_sezione"), 
 					(int) m.get("matricola"),(int)  m.get("codice_corso"),(int)  m.get("figlio_di"));
 			else
-				sezione = new Sezione((String) m.get("titolo"),(String)  m.get("descrizione"),
+				sezione = new Section((String) m.get("titolo"),(String)  m.get("descrizione"),
 						(boolean) m.get("is_pubblica"), (int)  m.get("codice_sezione"), 
 						(int) m.get("matricola"),(int)  m.get("codice_corso"), null);
 		}
 		return sezione;
 	}
-	public void modificaSezione(Sezione s) throws Exception {
+	
+	public void modifySection(Section s) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		Object[] params = {s.codSezione, s.titolo , s.visibilita , s.descrizione,  s.codCorso,
-				(Integer) s.figlioDi, s.matricola};
+		Object[] params = {s.sectionCode, s.title , s.visibility , s.description,  s.courseCode,
+				(Integer) s.sonOf, s.studentNumber};
 		socket.function("modificasezione", params);
 	}
-	public void createRisorsa(Risorse r) throws Exception {
+	
+	public void createResource(Resource r) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "INSERT INTO risorsa(codice_risorsa, nome, descrizione, percorso, tipo, "
 				+ "codice_sezione, is_pubblica) "
-				+ "VALUES ("+r.codRisorsa+", '"+r.nome+"', '"+r.descrizione+"', '"+r.path+"','"+r.tipo+"', "
-						+ " "+r.codSezione+", "+r.visibilita+");";
+				+ "VALUES ("+r.resourceCode+", '"+r.name+"', '"+r.description+"', '"+r.path+"','"+r.type+"', "
+						+ " "+r.sectionCode+", "+r.visibility+");";
 		socket.query(sql);
 	}
-	public void cancellaRisorsa(int codRisorsa) throws ClassNotFoundException, SQLException {
+	
+	public void cancelResource(int codRisorsa) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "DELETE FROM risorsa"
 				+ " WHERE codice_risorsa = "+codRisorsa;
 		socket.query(sql);
 	}
-	public void modificaRisorsa(Risorse r) throws Exception {
+	
+	public void modifyResource(Resource r) throws Exception {
 		socket=SocketDb.getInstanceDb();
-		Object[] params = {(short) r.codRisorsa, r.nome,  r.descrizione,
-				 r.path, r.tipo, (short) r.codSezione,r.visibilita};
+		Object[] params = {(short) r.resourceCode, r.name,  r.description,
+				 r.path, r.type, (short) r.sectionCode,r.visibility};
 		socket.function("modificarisorsa", params);
 	}
-	public Risorse getRisorsa(int codRisorsa) throws ClassNotFoundException, SQLException {
+	
+	public Resource getResource(int codRisorsa) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "SELECT * FROM risorsa"
 				+ " WHERE codice_risorsa = "+codRisorsa;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
-		Risorse risorsa=null;
+		Resource risorsa=null;
 		for(Map<String,Object> m : sez) {
-			risorsa = new Risorse((String) m.get("nome"),(String)  m.get("descrizione"),
+			risorsa = new Resource((String) m.get("nome"),(String)  m.get("descrizione"),
 					(String) m.get("percorso"),
 					(int)  m.get("codice_sezione"), (int)  m.get("codice_risorsa"), 
 					(boolean) m.get("is_pubblica"), (String)  m.get("tipo"));
 		}
 		return risorsa;
 	}
-	public void modificaTitolo(int codSezione, String titolo) throws Exception {
+	
+	public void modifyTitle(int codSezione, String titolo) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET titolo = '"+titolo+
 				"' WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
-	public void modificaVisibilita(int codSezione) throws ClassNotFoundException, SQLException {
+	
+	public void modifyVisibility(int codSezione) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET is_pubblica = true"+ " WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
-	public static void visualizaAsStudent(String corso) {
+	
+	public static void viewAsStudent(String corso) {
 		try {
-			PaginaCorso mc = new PaginaCorso(Sessione.getInstance(), corso, true);
+			PaginaCorso mc = new PaginaCorso(Session.getInstance(), corso, true);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
+	
 }

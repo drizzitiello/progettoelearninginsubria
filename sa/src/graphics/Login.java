@@ -9,7 +9,7 @@ import javax.swing.JOptionPane;
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
 
-import Sessione.Sessione;
+import Sessione.Session;
 
 import javax.swing.JButton;
 
@@ -80,7 +80,7 @@ public class Login {
 				try {
 					String log = as.login(email.getText(), pwd.getText());
 					if(log.equals("Credenziali corrette")) {
-						new HomePage(Sessione.getInstance(), pwd.getText());
+						new HomePage(Session.getInstance(), pwd.getText());
 					}
 					else if(log.equals("Procedura Attivazione")) {
 						new ResetPassword();

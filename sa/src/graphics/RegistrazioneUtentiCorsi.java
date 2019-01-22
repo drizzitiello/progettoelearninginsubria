@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import UserManager.UserManager;
-import gestioneCorsi.GestioneCorsi;
+import gestioneCorsi.CourseManagement;
 
 public class RegistrazioneUtentiCorsi extends MyFrame {
 
@@ -25,7 +25,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public RegistrazioneUtentiCorsi(Sessione ses) {
+	public RegistrazioneUtentiCorsi(Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -45,7 +45,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					UserManager um = new UserManager();
-					um.csvImportUtente(path.getText());
+					um.csvImportUser(path.getText());
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -57,7 +57,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 		aggiungiCorsi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					GestioneCorsi gc = new GestioneCorsi();
+					CourseManagement gc = new CourseManagement();
 					gc.dataInput(path.getText());
 				} catch (Exception e1) {
 					e1.printStackTrace();

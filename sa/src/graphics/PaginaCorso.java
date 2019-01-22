@@ -18,26 +18,26 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import Utente.Utente;
-import gestioneContenutiCorso.Contenuto;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.ReperisciCorso;
-import gestioneContenutiCorso.Risorse;
-import gestioneContenutiCorso.Sezione;
-import gestioneCorsi.GestioneCorsi;
+import Sessione.Session;
+import Utente.User;
+import gestioneContenutiCorso.Content;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.FindCourse;
+import gestioneContenutiCorso.Resource;
+import gestioneContenutiCorso.Section;
+import gestioneCorsi.CourseManagement;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
 public class PaginaCorso extends JFrame {
 
 	private JPanel contentPane;
-	private Utente user;
-	private Corso cor;
-	private Contenuto c;
+	private User user;
+	private Course cor;
+	private Content c;
 	private ArrayList<Component> ac;
-	private GestioneCorsi gc;
+	private CourseManagement gc;
 	private PaginaCorso thisFrame;
 
 	/**
@@ -45,7 +45,7 @@ public class PaginaCorso extends JFrame {
 	 * @param corso 
 	 * @throws ClassNotFoundException 
 	 */
-	public PaginaCorso(Sessione ses, String corso, boolean visualComeStudente) {
+	public PaginaCorso(Session ses, String corso, boolean visualComeStudente) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -57,7 +57,7 @@ public class PaginaCorso extends JFrame {
 		
 		thisFrame=this;
 		
-		user=ses.getUtente();
+		user=ses.getUser();
 		
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
@@ -79,43 +79,43 @@ public class PaginaCorso extends JFrame {
 		
 		
 		try {
-			gc = new GestioneCorsi();
-			gc.createSession(ses.getUtente(), Notifier.getCorso(corso));
+			gc = new CourseManagement();
+			gc.createSession(ses.getUser(), Notifier.getCourse(corso));
 			try {
-				cor= Notifier.getCorso(corso);
-				ReperisciCorso rc = new ReperisciCorso();
-				c = rc.getContenutoCorso(cor);
+				cor= Notifier.getCourse(corso);
+				FindCourse rc = new FindCourse();
+				c = rc.getContenutCourse(cor);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}
 			
-		JLabel titoloCorso = new JLabel(cor.nome);
+		JLabel titoloCorso = new JLabel(cor.name);
 		contentPane.add(titoloCorso);
 		
-		JLabel descrizioneCorso = new JLabel(cor.descrizione);
+		JLabel descrizioneCorso = new JLabel(cor.description);
 		contentPane.add(descrizioneCorso);
 		
-		ArrayList<Utente> u=new ArrayList<Utente>();
+		ArrayList<User> u=new ArrayList<User>();
 		try {
-			u=gc.chiTieneCorso(cor);
+			u=gc.whoTeachCourse(cor);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
 		
 		String elencoDocenti="Elenco docenti corso : ";
-		for(Utente ut : u) {
-			elencoDocenti=elencoDocenti+ut.getInfo().nome+" "+ut.getInfo().cognome+" ";
+		for(User ut : u) {
+			elencoDocenti=elencoDocenti+ut.getInfo().name+" "+ut.getInfo().surname+" ";
 		}
 		JLabel docentiCorso = new JLabel(elencoDocenti);
 		contentPane.add(docentiCorso);
 		
 		
 		try {
-			if(ses.info().tipoUtente==1||visualComeStudente) {
-			if(gc.studenteIscrittoAlCorso(ses.getUtente(), cor)||visualComeStudente) {
-				for(Sezione s : c.sezioni) {
-					if(s.visibilita) {
-					JLabel sezione = new JLabel(s.titolo);
+			if(ses.info().userType==1||visualComeStudente) {
+			if(gc.studenteEnrolledInTheCourse(ses.getUser(), cor)||visualComeStudente) {
+				for(Section s : c.sections) {
+					if(s.visibility) {
+					JLabel sezione = new JLabel(s.title);
 					contentPane.add(sezione);
 					JButton accessoRisorse = new JButton("Cerca");
 					accessoRisorse.addActionListener(new ActionListener() {
@@ -144,15 +144,15 @@ public class PaginaCorso extends JFrame {
 						}
 					});
 					contentPane.add(accessoRisorse);
-					for(Risorse r : s.risorse) {
-						if(r.visibilita) {
-						JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+					for(Resource r : s.resources) {
+						if(r.visibility) {
+						JLabel descrizioneRisorsa = new JLabel(r.description);
 						descrizioneRisorsa.setVisible(false);
 						accessoRisorse.add(descrizioneRisorsa);
-						JButton risorsa = new JButton(r.nome);
+						JButton risorsa = new JButton(r.name);
 						risorsa.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								ReperisciCorso rc = new ReperisciCorso();
+								FindCourse rc = new FindCourse();
 								try {
 									rc.download(r);
 								} catch (ClassNotFoundException | SQLException e1) {
@@ -175,8 +175,8 @@ public class PaginaCorso extends JFrame {
 				iscriviti.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
-							GestioneCorsi gc = new GestioneCorsi();
-							gc.iscriviAlCorso(ses.getUtente(), cor);
+							CourseManagement gc = new CourseManagement();
+							gc.signUpForCourse(ses.getUser(), cor);
 						} catch (Exception e1) {
 							e1.printStackTrace();
 						}
@@ -185,17 +185,17 @@ public class PaginaCorso extends JFrame {
 				contentPane.add(iscriviti);
 			}
 			}
-			else if(!visualComeStudente&&ses.info().tipoUtente==2) {
+			else if(!visualComeStudente&&ses.info().userType==2) {
 				boolean docenteCorso=false;
-				for(Utente utente : gc.chiTieneCorso(cor)) {
-					if(utente.getInfo().matricola==ses.info().matricola) {
+				for(User utente : gc.whoTeachCourse(cor)) {
+					if(utente.getInfo().student_number==ses.info().student_number) {
 						docenteCorso=true;
 						break;
 					}
 				}
-				if(docenteCorso||gc.studenteIscrittoAlCorso(ses.getUtente(), cor)) {//se docente iscritto. funziona ma mettere a posto
-				for(Sezione s : c.sezioni) {
-					JLabel sezione = new JLabel(s.titolo);
+				if(docenteCorso||gc.studenteEnrolledInTheCourse(ses.getUser(), cor)) {//se docente iscritto. funziona ma mettere a posto
+				for(Section s : c.sections) {
+					JLabel sezione = new JLabel(s.title);
 					contentPane.add(sezione);
 					JButton accessoRisorse = new JButton("Cerca");
 					accessoRisorse.addActionListener(new ActionListener() {
@@ -224,14 +224,14 @@ public class PaginaCorso extends JFrame {
 						}
 					});
 					contentPane.add(accessoRisorse);
-					for(Risorse r : s.risorse) {
-						JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+					for(Resource r : s.resources) {
+						JLabel descrizioneRisorsa = new JLabel(r.description);
 						descrizioneRisorsa.setVisible(false);
 						accessoRisorse.add(descrizioneRisorsa);
-						JButton risorsa = new JButton(r.nome);
+						JButton risorsa = new JButton(r.name);
 						risorsa.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								ReperisciCorso rc = new ReperisciCorso();
+								FindCourse rc = new FindCourse();
 								try {
 									rc.download(r);
 								} catch (ClassNotFoundException | SQLException e1) {
@@ -261,7 +261,7 @@ public class PaginaCorso extends JFrame {
 				JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
 				visualizzaComeStudente.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						GestioneContenutoCorso.visualizaAsStudent(cor.nome);
+						CourseContentManagement.viewAsStudent(cor.name);
 					}
 				});
 				contentPane.add(visualizzaComeStudente);
@@ -269,9 +269,9 @@ public class PaginaCorso extends JFrame {
 				}
 			}
 			//visualComeStudente&&
-			else if(ses.info().tipoUtente==3) {
-					for(Sezione s : c.sezioni) {
-						JLabel sezione = new JLabel(s.titolo);
+			else if(ses.info().userType==3) {
+					for(Section s : c.sections) {
+						JLabel sezione = new JLabel(s.title);
 						contentPane.add(sezione);
 						JButton accessoRisorse = new JButton("Cerca");
 						accessoRisorse.addActionListener(new ActionListener() {
@@ -300,14 +300,14 @@ public class PaginaCorso extends JFrame {
 							}
 						});
 						contentPane.add(accessoRisorse);
-						for(Risorse r : s.risorse) {
-							JLabel descrizioneRisorsa = new JLabel(r.descrizione);
+						for(Resource r : s.resources) {
+							JLabel descrizioneRisorsa = new JLabel(r.description);
 							descrizioneRisorsa.setVisible(false);
 							accessoRisorse.add(descrizioneRisorsa);
-							JButton risorsa = new JButton(r.nome);
+							JButton risorsa = new JButton(r.name);
 							risorsa.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									ReperisciCorso rc = new ReperisciCorso();
+									FindCourse rc = new FindCourse();
 									try {
 										rc.download(r);
 									} catch (ClassNotFoundException | SQLException e1) {

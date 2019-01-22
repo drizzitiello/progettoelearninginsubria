@@ -16,7 +16,7 @@ import java.math.BigInteger;
 import java.security.*;
 import javax.mail.*;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
@@ -60,13 +60,13 @@ public class AuthenticationService {
 	 * @return messaggio con esito dell'operazione di login */
 	public String login (String mail, String pass) throws Exception { 
 		email=mail;
-		if (controlloEsistenzaUtente(mail)) {
+		if (controlUserExistence(mail)) {
 			user.getInfoFromDb(mail);
-			if (controlloUtenteAttivo()) {
-				if (controlloTentativi()) {
-					if (controlloCredenziali(pass, mail)) {
+			if (controlActiveUser()) {
+				if (controlAttempts()) {
+					if (controlloCredentials(pass, mail)) {
 						resetLoginAttempts();
-						Sessione.getInstance().create(user.matricola);
+						Session.getInstance().create(user.matricola);
 						return "Credenziali corrette";
 					}
 					else 
@@ -92,7 +92,7 @@ public class AuthenticationService {
 	/** Verifica se i dati inseriti sono corretti e se si tratta del primo tentativo di accesso
 	 * @return check di controllo */
 	private boolean activation (String mail, String pass) throws Exception {
-		return (this.controlloCredenziali(pass, mail) && user.login_attempts == null);
+		return (this.controlloCredentials(pass, mail) && user.login_attempts == null);
 	}
 	
 	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata)
@@ -100,7 +100,7 @@ public class AuthenticationService {
 	public void storeNewPassword (String new_pass) throws Exception {
 		Object[] arg = {this.toHash(new_pass), email};
 		this.socket.function("reset_password", arg);
-		Notifier.send_docente_email("mailIsituzionale", "pwd istituzionale",
+		Notifier.send_professor_email("mailIsituzionale", "pwd istituzionale",
 				email, "Nuova pwd", "La tua nuova pwd e' "+new_pass);
 	}
 	
@@ -129,28 +129,28 @@ public class AuthenticationService {
 	/** Invia via mail un nuovo codice di attivazione e una nuova password
 	 * @return void */
 	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
-		Notifier.send_docente_email("mailIstituzionale", "pwdmailIstit", email,
+		Notifier.send_professor_email("mailIstituzionale", "pwdmailIstit", email,
 				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createActivationCode());
 	}
 	
 	/** Controlla se il codice di attivazione inserito e' corretto
 	 * @return check di controllo */
-	private boolean controlloCodiceAttivazione (int codice_inserito) {
+	private boolean controlActivationCode (int codice_inserito) {
 		return (codice_inserito == user.activation_code);
 	}
 	
 	/** Verifica se un utente e' bloccato
 	 * @return stato dell'utente */
-	private boolean controlloStatoUtente () throws ClassNotFoundException, SQLException {
-		user.isBlocked = (!this.controlloTentativi());
+	private boolean controlUserState () throws ClassNotFoundException, SQLException {
+		user.isBlocked = (!this.controlAttempts());
 		return user.isBlocked;
 	}
 	
 	/** Genera la versione in hashcode di una stringa, applicando l'algoritmo MD5
 	 * @return stringa in hashcode */
-	private String toHash(String stringa) throws NoSuchAlgorithmException {
+	private String toHash(String string) throws NoSuchAlgorithmException {
 		MessageDigest m = MessageDigest.getInstance("MD5"); 	// creiamo un'istanza e passiamo come riferimento la funzione di hash da usare sulla stringa (MD5 nel nostro caso)
-		byte [] p = m.digest(stringa.getBytes()); 				// computiamo la password fornita 
+		byte [] p = m.digest(string.getBytes()); 				// computiamo la password fornita 
 		BigInteger number = new BigInteger(1, p); 				// convertiamo l'array di byte ottenuto in BigInteger, perche' un oggetto BigInteger Ã¨ immutabile (evitiamo quindi che il valore ottenuto subisca modifiche)
 		return number.toString(16).toUpperCase(); 				// convertiamo infine il BigInteger in formato testuale e in maiuscolo (l'argomento '16' indica la base esadecimale)
 	}
@@ -182,7 +182,7 @@ public class AuthenticationService {
 	
 	/** Verifica che l'utente sia memorizzato nel database 
 	 * @return check di controllo */
-	private boolean controlloEsistenzaUtente (String email_digitata) throws Exception { 
+	private boolean controlUserExistence (String email_digitata) throws Exception { 
 		Object[] o = {email_digitata};
 		ArrayList<Map<String,Object>> result_set = socket.function("get_matricola_from_mail", o);
 		if (!result_set.isEmpty()) {	
@@ -195,21 +195,20 @@ public class AuthenticationService {
 	
 	/** Verifica che il numero di tentativi di accesso sia inferiore o uguale a 10
 	 * @return check di controllo */
-	private boolean controlloTentativi() throws ClassNotFoundException, SQLException {
+	private boolean controlAttempts() throws ClassNotFoundException, SQLException {
 		return (user.login_attempts < 10);
 	}
 	
 	/**  Verifica che il profilo dell'utente sia gia' attivo
 	 * @return check di controllo */
-	private boolean controlloUtenteAttivo() throws ClassNotFoundException, SQLException { 
+	private boolean controlActiveUser() throws ClassNotFoundException, SQLException { 
 		return (user.login_attempts != null);
 	}
 	
 	/** Verifica che le credenziali inserite coincidano con quelle presenti nel database
 	 * @return check di controllo */
-	private boolean controlloCredenziali (String pass, String mail_digitata) throws Exception {
+	private boolean controlloCredentials (String pass, String mail_digitata) throws Exception {
 		if(this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email)) {return true;}
-		//else if(user.login_attempts != null) {loginAttemptsIncrease(); return false;}
 		else return false;
 	}
 }

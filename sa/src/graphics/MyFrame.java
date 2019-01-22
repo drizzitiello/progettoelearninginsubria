@@ -5,16 +5,16 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import Sessione.Sessione;
+import Sessione.Session;
 
 public class MyFrame extends JFrame{
 	
 	private MyFrame thisFrame;
-	private Sessione ses;
+	private Session ses;
 	
 	public MyFrame() {
 		try {
-			ses=Sessione.getInstance();
+			ses=Session.getInstance();
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		}

@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.Risorse;
-import gestioneContenutiCorso.Sezione;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.Resource;
+import gestioneContenutiCorso.Section;
 import notifier.Notifier;
 
 public class CreaRisorsa extends MyFrame {
@@ -29,7 +29,7 @@ public class CreaRisorsa extends MyFrame {
 	 * @param cor 
 	 * @param ses 
 	 */
-	public CreaRisorsa(Sessione ses, Corso cor) {
+	public CreaRisorsa(Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -93,18 +93,18 @@ public class CreaRisorsa extends MyFrame {
 				if(visibilita.getText().equals("pubblica")) {
 					pubblica=true;
 				}
-				Risorse r = new Risorse(nome.getText(),  descrizione.getText(), path.getText(), 
+				Resource r = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
 						Integer.parseInt(codSezione.getText()), Integer.parseInt(codRisorsa.getText()), 
 						pubblica, tipo.getText());
-				GestioneContenutoCorso gc = new GestioneContenutoCorso();
+				CourseContentManagement gc = new CourseContentManagement();
 				try {
-					Notifier.sendEmail(ses.info().email, "pwd?", cor.nome, 
-							"Aggiornamento contenuti corso "+cor.nome, "Aggiunta risorsa "+nome.getText());
+					Notifier.sendMail(ses.info().email, "pwd?", cor.name, 
+							"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+nome.getText());
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 				try {
-					gc.createRisorsa(r);
+					gc.createResource(r);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

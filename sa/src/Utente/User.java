@@ -20,30 +20,30 @@ import socketDb.SocketDb;
 */
 
 
-public class Utente {
+public class User {
 	
-	public static class InfoUtente {
+	public static class UserInfo {
 	       /* Dichiarazione delle info utente: */
-	       public Integer matricola;
-	       public String nome;
-	       public String cognome;
+	       public Integer student_number;
+	       public String name;
+	       public String surname;
 	       public String email;
-	       public Integer tipoUtente;
-	       public Integer annoImmatricolazione;
-	       public String corsoLaurea;
-	       public String statoCarriera;
+	       public Integer userType;
+	       public Integer registrationYear;
+	       public String faculty;
+	       public String careerStatus;
 	       public String strutturaRiferimento;
 	}
     
     /* Dichiarazione livelli utente */
     static public final int admin = 3;
-    static public final int docente = 2;
-    static public final int studente = 1; //modificare anche in stored crea_utente
+    static public final int professor = 2;
+    static public final int student = 1; //modificare anche in stored crea_utente
 
     /* Dichiarazione dei componenti di servizio: */
     private SocketDb socket;
     private boolean isCreated;
-    private InfoUtente myInfo;
+    private UserInfo myInfo;
     
     /**
 	 * Istanzia l'oggetto relativo al SocketDb di sistema.
@@ -51,7 +51,7 @@ public class Utente {
      * dell'utente a false.
      * @throws Exception 
 	 */
-    public Utente() throws Exception {
+    public User() throws Exception {
         this.socket = SocketDb.getInstanceDb();
         this.isCreated = false;
     }
@@ -65,11 +65,11 @@ public class Utente {
      * @throws SQLException 
      * @throws ClassNotFoundException 
 	 */
-    public boolean createFromMatricola(int matricola) throws ClassNotFoundException, SQLException{
+    public boolean createFromStudentNumber(int studentNumber) throws ClassNotFoundException, SQLException{
         this.isCreated = false;
 
 
-        Object[] p = {matricola};
+        Object[] p = {studentNumber};
         ArrayList<Map<String,Object>> response = this.socket.function("get_dati_utente", p);
         
         if(response.size() != 1) return this.isCreated;
@@ -84,19 +84,19 @@ public class Utente {
      * da un risultato dal DB
 	 */
     public void createFromDbResult(Map<String,Object> row){
-        this.myInfo = new InfoUtente();
-        this.myInfo.matricola               = (int)		row.get("matricola");
-        this.myInfo.nome                    = (String)	row.get("nome");
-        this.myInfo.cognome                 = (String)	row.get("cognome");
+        this.myInfo = new UserInfo();
+        this.myInfo.student_number               = (int)		row.get("matricola");
+        this.myInfo.name                    = (String)	row.get("nome");
+        this.myInfo.surname                 = (String)	row.get("cognome");
         this.myInfo.email                   = (String)	row.get("email");
-        this.myInfo.tipoUtente              = (int)		row.get("tipo_utente");
+        this.myInfo.userType              = (int)		row.get("tipo_utente");
         
         if(row.containsKey("anno_immatricolazione"))
-            this.myInfo.annoImmatricolazione    = (Integer) row.get("anno_immatricolazione");
+            this.myInfo.registrationYear    = (Integer) row.get("anno_immatricolazione");
         if(row.containsKey("corso_laurea"))
-            this.myInfo.corsoLaurea             = (String) row.get("corso_laurea");
+            this.myInfo.faculty             = (String) row.get("corso_laurea");
         if(row.containsKey("stato_carriera"))
-            this.myInfo.statoCarriera           = (String) row.get("stato_carriera");
+            this.myInfo.careerStatus           = (String) row.get("stato_carriera");
         if(row.containsKey("struttura_riferimento"))
             this.myInfo.strutturaRiferimento    = (String) row.get("struttura_riferimento");
        
@@ -121,7 +121,7 @@ public class Utente {
 	 *
 	 * @return	Informazioni dell'Utente
 	 */
-    public InfoUtente getInfo(){
+    public UserInfo getInfo(){
         if(!this.isCreated) return null;
         return this.myInfo;
     }

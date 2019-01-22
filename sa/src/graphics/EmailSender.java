@@ -4,7 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import notifier.Notifier;
 
 import javax.swing.JLabel;
@@ -30,7 +30,7 @@ public class EmailSender extends MyFrame {
 	 * @param ses 
 	 * @param pwd 
 	 */
-	public EmailSender(Sessione ses, String pwd) {
+	public EmailSender(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -64,13 +64,13 @@ public class EmailSender extends MyFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(!destinatari.getText().contains("@")) {
-						if(!Notifier.sendEmail(ses.getUtente().getInfo().email, pwd,
+						if(!Notifier.sendMail(ses.getUser().getInfo().email, pwd,
 								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText())) {
 							JOptionPane.showMessageDialog(bottoneInvio, "Destinatario non valido");
 						}
 					}
 					else{
-						Notifier.send_docente_email(ses.getUtente().getInfo().email, pwd,
+						Notifier.send_professor_email(ses.getUser().getInfo().email, pwd,
 								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
 					}
 					} catch (MessagingException e1) {

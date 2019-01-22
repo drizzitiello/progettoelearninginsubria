@@ -5,7 +5,28 @@
 -- Dumped from database version 9.5.15
 -- Dumped by pg_dump version 9.5.15
 
--- Started on 2019-01-05 16:57:49
+-- Started on 2019-01-22 10:09:05
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 2261 (class 1262 OID 16489)
+-- Name: sss; Type: DATABASE; Schema: -; Owner: postgres
+--
+
+CREATE DATABASE sss WITH TEMPLATE = template0 ENCODING = 'UTF8' LC_COLLATE = 'Italian_Italy.1252' LC_CTYPE = 'Italian_Italy.1252';
+
+
+ALTER DATABASE sss OWNER TO postgres;
+
+\connect sss
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -25,7 +46,7 @@ CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2259 (class 0 OID 0)
+-- TOC entry 2264 (class 0 OID 0)
 -- Dependencies: 2
 -- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
 --
@@ -42,7 +63,7 @@ CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 2260 (class 0 OID 0)
+-- TOC entry 2265 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
 --
@@ -70,7 +91,7 @@ $$;
 ALTER FUNCTION public.assegna_docente(matricola_fornita integer, materia character varying) OWNER TO postgres;
 
 --
--- TOC entry 2261 (class 0 OID 0)
+-- TOC entry 2266 (class 0 OID 0)
 -- Dependencies: 227
 -- Name: FUNCTION assegna_docente(matricola_fornita integer, materia character varying); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -100,7 +121,7 @@ $$;
 ALTER FUNCTION public.assegna_studenti(matricola_fornita integer) OWNER TO postgres;
 
 --
--- TOC entry 2262 (class 0 OID 0)
+-- TOC entry 2267 (class 0 OID 0)
 -- Dependencies: 226
 -- Name: FUNCTION assegna_studenti(matricola_fornita integer); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -132,6 +153,35 @@ $$;
 ALTER FUNCTION public.controllo_mail(mail character varying) OWNER TO postgres;
 
 --
+-- TOC entry 242 (class 1255 OID 16854)
+-- Name: crea_utente(character varying, character varying, character varying, smallint, integer, character varying, character varying, character varying, integer, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.crea_utente(p_nome character varying, p_cognome character varying, p_email character varying, p_tipo_utente smallint, p_anno_immatricolazione integer, p_corso_laurea character varying, p_stato_carriera character varying, p_struttura_riferimento character varying, p_matricola integer, p_random_password character varying, p_random_codatt integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+        BEGIN
+
+        INSERT INTO utente (matricola, nome, cognome, email, tipo_utente, password_hash, codice_attivazione)
+                    VALUES (p_matricola, p_nome, p_cognome, p_email, p_tipo_utente, MD5(p_random_password), p_random_codatt);
+        
+        IF p_tipo_utente = 1 THEN
+            INSERT INTO studente (matricola, anno_immatricolazione, corso_laurea, stato_carriera)
+                    VALUES (p_matricola, p_anno_immatricolazione, p_corso_laurea, p_stato_carriera);
+        ELSIF p_tipo_utente = 2 THEN
+            INSERT INTO docente (matricola, struttura_riferimento)
+                    VALUES (p_matricola, p_struttura_riferimento);
+        ELSIF p_tipo_utente = 3 THEN
+            INSERT INTO amministratore (matricola, struttura_riferimento)
+                    VALUES (p_matricola, p_struttura_riferimento);
+        END IF;
+                            
+        END; $$;
+
+
+ALTER FUNCTION public.crea_utente(p_nome character varying, p_cognome character varying, p_email character varying, p_tipo_utente smallint, p_anno_immatricolazione integer, p_corso_laurea character varying, p_stato_carriera character varying, p_struttura_riferimento character varying, p_matricola integer, p_random_password character varying, p_random_codatt integer) OWNER TO postgres;
+
+--
 -- TOC entry 224 (class 1255 OID 16784)
 -- Name: elimina_dati_corsi(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
@@ -147,6 +197,25 @@ $$;
 
 
 ALTER FUNCTION public.elimina_dati_corsi(codice integer) OWNER TO postgres;
+
+--
+-- TOC entry 245 (class 1255 OID 16884)
+-- Name: get_accessi_by_corso(character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_accessi_by_corso(p_date_start character varying, p_date_end character varying) RETURNS TABLE(cod_corso smallint, conteggio_accesi integer)
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+         RETURN QUERY SELECT codice_corso,
+                             CAST(COUNT(matricola) AS INTEGER)
+                      FROM accesso_corso
+                      WHERE inizio_accesso BETWEEN to_timestamp(p_date_start, 'YYYY-MM-DD HH24:MI') AND to_timestamp(p_date_end, 'YYYY-MM-DD HH24:MI')
+                      GROUP BY codice_corso;
+      END; $$;
+
+
+ALTER FUNCTION public.get_accessi_by_corso(p_date_start character varying, p_date_end character varying) OWNER TO postgres;
 
 --
 -- TOC entry 229 (class 1255 OID 16800)
@@ -172,13 +241,124 @@ $$;
 ALTER FUNCTION public.get_dati_docente(mat integer) OWNER TO postgres;
 
 --
--- TOC entry 2263 (class 0 OID 0)
+-- TOC entry 2268 (class 0 OID 0)
 -- Dependencies: 229
 -- Name: FUNCTION get_dati_docente(mat integer); Type: COMMENT; Schema: public; Owner: postgres
 --
 
 COMMENT ON FUNCTION public.get_dati_docente(mat integer) IS 'Fornisce i dati utili di un docente, partendo dalla matricola';
 
+
+--
+-- TOC entry 243 (class 1255 OID 16863)
+-- Name: get_dati_utente(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_dati_utente(p_matricola integer) RETURNS TABLE(matricola integer, nome character varying, cognome character varying, email character varying, tipo_utente smallint, anno_immatricolazione integer, corso_laurea character varying, stato_carriera character varying, struttura_riferimento character varying)
+    LANGUAGE plpgsql
+    AS $$
+    BEGIN
+        RETURN QUERY SELECT
+                        utente.matricola,
+                        utente.nome,
+                        utente.cognome,
+                        utente.email,
+                        utente.tipo_utente,
+                        studente.anno_immatricolazione,
+                        studente.corso_laurea,
+                        studente.stato_carriera,
+                        docente.struttura_riferimento
+                     FROM
+                        utente
+                     LEFT JOIN studente ON studente.matricola = utente.matricola
+                     LEFT JOIN docente ON docente.matricola = utente.matricola
+                     WHERE
+                        utente.matricola = p_matricola AND docente.struttura_riferimento IS NOT NULL
+                     
+                     UNION
+
+                     SELECT
+                        utente.matricola,
+                        utente.nome,
+                        utente.cognome,
+                        utente.email,
+                        utente.tipo_utente,
+                        studente.anno_immatricolazione,
+                        studente.corso_laurea,
+                        studente.stato_carriera,
+                        amministratore.struttura_riferimento
+                     FROM
+                        utente
+                     LEFT JOIN studente ON studente.matricola = utente.matricola
+                     LEFT JOIN docente ON docente.matricola = utente.matricola
+                     LEFT JOIN amministratore ON amministratore.matricola = utente.matricola
+                     WHERE
+                        utente.matricola = p_matricola AND amministratore.struttura_riferimento IS NOT NULL
+
+                     UNION
+
+                      SELECT
+                        utente.matricola,
+                        utente.nome,
+                        utente.cognome,
+                        utente.email,
+                        utente.tipo_utente,
+                        studente.anno_immatricolazione,
+                        studente.corso_laurea,
+                        studente.stato_carriera,
+                        amministratore.struttura_riferimento
+                     FROM
+                        utente
+                     LEFT JOIN studente ON studente.matricola = utente.matricola
+                     LEFT JOIN docente ON docente.matricola = utente.matricola
+                     LEFT JOIN amministratore ON amministratore.matricola = utente.matricola
+                     WHERE
+                        utente.matricola = p_matricola AND studente.anno_immatricolazione IS NOT NULL;
+    END; $$;
+
+
+ALTER FUNCTION public.get_dati_utente(p_matricola integer) OWNER TO postgres;
+
+--
+-- TOC entry 240 (class 1255 OID 16836)
+-- Name: get_downloads_corsi(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_downloads_corsi() RETURNS TABLE(cod_corso integer, conteggio_download integer)
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+         RETURN QUERY SELECT CAST(codice_corso as integer),
+                             CAST(COUNT(download.matricola) as INTEGER)
+                      FROM download
+                      JOIN risorsa ON risorsa.codice_risorsa = download.codice_risorsa
+                      JOIN sezione ON sezione.codice_sezione = risorsa.codice_sezione
+                      GROUP BY codice_corso;
+      END; $$;
+
+
+ALTER FUNCTION public.get_downloads_corsi() OWNER TO postgres;
+
+--
+-- TOC entry 237 (class 1255 OID 16826)
+-- Name: get_downloads_intervallo(integer, character varying, character varying); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_downloads_intervallo(p_codice_corso integer, p_start_date character varying, p_end_date character varying) RETURNS TABLE(codice_risorsa integer, conteggio_download integer)
+    LANGUAGE plpgsql
+    AS $$
+      BEGIN
+         RETURN QUERY SELECT download.codice_risorsa,
+                             CAST(COUNT(DISTINCT(download.matricola)) AS INTEGER)
+                      FROM download
+                      JOIN risorsa ON risorsa.codice_risorsa = download.codice_risorsa
+                      JOIN sezione ON sezione.codice_sezione = risorsa.codice_sezione
+                      WHERE codice_corso = p_codice_corso AND data_e_ora BETWEEN to_timestamp(p_start_date, 'YYYY-MM-DD HH24:MI') AND to_timestamp(p_end_date, 'YYYY-MM-DD HH24:MI')
+                      GROUP BY download.codice_risorsa;
+      END; $$;
+
+
+ALTER FUNCTION public.get_downloads_intervallo(p_codice_corso integer, p_start_date character varying, p_end_date character varying) OWNER TO postgres;
 
 --
 -- TOC entry 215 (class 1255 OID 16742)
@@ -202,7 +382,7 @@ $$;
 ALTER FUNCTION public.get_matricola_from_mail(mail_utente character varying) OWNER TO postgres;
 
 --
--- TOC entry 2264 (class 0 OID 0)
+-- TOC entry 2269 (class 0 OID 0)
 -- Dependencies: 215
 -- Name: FUNCTION get_matricola_from_mail(mail_utente character varying); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -211,7 +391,46 @@ COMMENT ON FUNCTION public.get_matricola_from_mail(mail_utente character varying
 
 
 --
--- TOC entry 209 (class 1255 OID 16745)
+-- TOC entry 239 (class 1255 OID 16833)
+-- Name: get_tempo_medio_corsi(); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_tempo_medio_corsi() RETURNS TABLE(cod_corso integer, tempo_medio integer)
+    LANGUAGE plpgsql
+    AS $$
+       BEGIN
+          RETURN QUERY SELECT codice_corso, CAST(ceil(AVG((DATE_PART('day', fine_accesso - inizio_accesso) * 24 * 60 + 
+                                                 DATE_PART('hour', fine_accesso - inizio_accesso)) * 60 +
+                                                 DATE_PART('minute', fine_accesso - inizio_accesso))) as integer)
+                        FROM accesso_corso
+                        WHERE fine_accesso IS NOT NULL
+                        GROUP BY codice_corso;
+       END; $$;
+
+
+ALTER FUNCTION public.get_tempo_medio_corsi() OWNER TO postgres;
+
+--
+-- TOC entry 238 (class 1255 OID 16830)
+-- Name: get_tempo_medio_corso(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.get_tempo_medio_corso(p_codice_corso integer) RETURNS TABLE(tempo_medio integer)
+    LANGUAGE plpgsql
+    AS $$
+       BEGIN
+          RETURN QUERY  SELECT cast(ceil(AVG((DATE_PART('day', fine_accesso - inizio_accesso) * 24 * 60 + 
+                               DATE_PART('hour', fine_accesso - inizio_accesso)) * 60 +
+                               DATE_PART('minute', fine_accesso - inizio_accesso))) as integer)
+                        FROM accesso_corso
+                        WHERE fine_accesso IS NOT NULL AND codice_corso = p_codice_corso;
+       END; $$;
+
+
+ALTER FUNCTION public.get_tempo_medio_corso(p_codice_corso integer) OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1255 OID 16745)
 -- Name: getcontenutocorso(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -237,7 +456,7 @@ CREATE FUNCTION public.getcontenutocorso(o_cod integer) RETURNS TABLE(codice_sez
 ALTER FUNCTION public.getcontenutocorso(o_cod integer) OWNER TO postgres;
 
 --
--- TOC entry 211 (class 1255 OID 16746)
+-- TOC entry 212 (class 1255 OID 16746)
 -- Name: getcontenutocorso1(integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -330,6 +549,31 @@ $$;
 ALTER FUNCTION public.getcorsiutente(mat integer) OWNER TO postgres;
 
 --
+-- TOC entry 244 (class 1255 OID 16864)
+-- Name: getcorso(integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.getcorso(cod integer) RETURNS TABLE(codice_corso smallint, nome character varying, anno_attivazione smallint, facolta character varying, descrizione character varying, peso smallint, creatore integer)
+    LANGUAGE plpgsql
+    AS $$
+	BEGIN
+        RETURN QUERY
+		SELECT corso.codice_corso, 
+		corso.nome, 
+		corso.anno_attivazione, 
+		corso.facolta, 
+		corso.descrizione, 
+		corso.peso, 
+		corso.creatore
+		FROM corso
+		WHERE corso.codice_corso=cod;
+	END;
+$$;
+
+
+ALTER FUNCTION public.getcorso(cod integer) OWNER TO postgres;
+
+--
 -- TOC entry 233 (class 1255 OID 16808)
 -- Name: getcorso(character varying); Type: FUNCTION; Schema: public; Owner: postgres
 --
@@ -353,30 +597,6 @@ $$;
 
 
 ALTER FUNCTION public.getcorso(cod character varying) OWNER TO postgres;
-
---
--- TOC entry 212 (class 1255 OID 16747)
--- Name: getdatiutente(integer); Type: FUNCTION; Schema: public; Owner: postgres
---
-
-CREATE FUNCTION public.getdatiutente(p_matricola integer) RETURNS TABLE(matricola integer, nome character varying, cognome character varying, email character varying, tipo_utente smallint)
-    LANGUAGE plpgsql
-    AS $$
-    BEGIN
-        RETURN QUERY SELECT
-                        utente.matricola AS p1,
-                        utente.nome AS p2,
-                        utente.cognome AS p3,
-                        utente.email AS p4,
-                        utente.tipo_utente AS p5
-                     FROM
-                        utente
-                     WHERE
-                        utente.matricola = p_matricola;
-    END; $$;
-
-
-ALTER FUNCTION public.getdatiutente(p_matricola integer) OWNER TO postgres;
 
 --
 -- TOC entry 216 (class 1255 OID 16715)
@@ -455,7 +675,7 @@ $$;
 ALTER FUNCTION public.incremento_login(codice character varying) OWNER TO postgres;
 
 --
--- TOC entry 236 (class 1255 OID 16813)
+-- TOC entry 235 (class 1255 OID 16813)
 -- Name: iscrivi_studente_al_corso(integer, smallint); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -496,7 +716,7 @@ $$;
 ALTER FUNCTION public.modifica_dati_corsi(code integer, nominative character varying, a_year integer, faculty character varying, description character varying, cfu integer, creator integer) OWNER TO postgres;
 
 --
--- TOC entry 2265 (class 0 OID 0)
+-- TOC entry 2270 (class 0 OID 0)
 -- Dependencies: 225
 -- Name: FUNCTION modifica_dati_corsi(code integer, nominative character varying, a_year integer, faculty character varying, description character varying, cfu integer, creator integer); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -505,7 +725,47 @@ COMMENT ON FUNCTION public.modifica_dati_corsi(code integer, nominative characte
 
 
 --
--- TOC entry 235 (class 1255 OID 16812)
+-- TOC entry 241 (class 1255 OID 16839)
+-- Name: modifica_dati_utente(character varying, character varying, character varying, smallint, smallint, character varying, character varying, character varying, integer); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.modifica_dati_utente(p_nome character varying, p_cognome character varying, p_email character varying, p_tipo_utente smallint, p_anno_immatricolazione smallint, p_corso_laurea character varying, p_stato_carriera character varying, p_struttura_riferimento character varying, p_matricola integer) RETURNS void
+    LANGUAGE plpgsql
+    AS $$
+        BEGIN
+            UPDATE utente SET
+                            nome = p_nome,
+                            cognome = p_cognome,
+                            email = p_email,
+                            tipo_utente = p_tipo_utente
+                        WHERE
+                            matricola = p_matricola;
+
+            UPDATE studente SET
+                            anno_immatricolazione = p_anno_immatricolazione,
+                            corso_laurea = p_corso_laurea,
+                            stato_carriera = p_stato_carriera
+                        WHERE
+                            matricola = p_matricola;
+
+            UPDATE docente SET
+                            struttura_riferimento = p_struttura_riferimento
+                        WHERE
+                            matricola = p_matricola;
+            
+            UPDATE amministratore SET
+                            struttura_riferimento = p_struttura_riferimento
+                        WHERE
+                            matricola = p_matricola;
+                            
+                            
+        END; $$;
+
+
+ALTER FUNCTION public.modifica_dati_utente(p_nome character varying, p_cognome character varying, p_email character varying, p_tipo_utente smallint, p_anno_immatricolazione smallint, p_corso_laurea character varying, p_stato_carriera character varying, p_struttura_riferimento character varying, p_matricola integer) OWNER TO postgres;
+
+--
+-- TOC entry 234 (class 1255 OID 16812)
 -- Name: modificarisorsa(smallint, character varying, character varying, character varying, character varying, smallint, boolean); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -529,11 +789,11 @@ $$;
 ALTER FUNCTION public.modificarisorsa(codrisorsa smallint, nom character varying, descr character varying, path character varying, tipo_risorsa character varying, codsezione smallint, visibilita boolean) OWNER TO postgres;
 
 --
--- TOC entry 234 (class 1255 OID 16810)
--- Name: modificasezione(smallint, character varying, boolean, character varying, smallint, smallint, smallint); Type: FUNCTION; Schema: public; Owner: postgres
+-- TOC entry 236 (class 1255 OID 16816)
+-- Name: modificasezione(integer, character varying, boolean, character varying, integer, integer, integer); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
-CREATE FUNCTION public.modificasezione(codice smallint, tit character varying, visibilita boolean, descr character varying, codcorso smallint, fdi smallint, mat smallint) RETURNS void
+CREATE FUNCTION public.modificasezione(codice integer, tit character varying, visibilita boolean, descr character varying, codcorso integer, fdi integer, mat integer) RETURNS void
     LANGUAGE plpgsql
     AS $$
 	BEGIN
@@ -550,7 +810,7 @@ CREATE FUNCTION public.modificasezione(codice smallint, tit character varying, v
 $$;
 
 
-ALTER FUNCTION public.modificasezione(codice smallint, tit character varying, visibilita boolean, descr character varying, codcorso smallint, fdi smallint, mat smallint) OWNER TO postgres;
+ALTER FUNCTION public.modificasezione(codice integer, tit character varying, visibilita boolean, descr character varying, codcorso integer, fdi integer, mat integer) OWNER TO postgres;
 
 --
 -- TOC entry 217 (class 1255 OID 16744)
@@ -576,7 +836,7 @@ $$;
 ALTER FUNCTION public.query_dati(pwd character, mail character varying) OWNER TO postgres;
 
 --
--- TOC entry 2266 (class 0 OID 0)
+-- TOC entry 2271 (class 0 OID 0)
 -- Dependencies: 217
 -- Name: FUNCTION query_dati(pwd character, mail character varying); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -644,7 +904,7 @@ $$;
 ALTER FUNCTION public.ricerca_docenti(cod_corso integer) OWNER TO postgres;
 
 --
--- TOC entry 2267 (class 0 OID 0)
+-- TOC entry 2272 (class 0 OID 0)
 -- Dependencies: 228
 -- Name: FUNCTION ricerca_docenti(cod_corso integer); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -653,7 +913,7 @@ COMMENT ON FUNCTION public.ricerca_docenti(cod_corso integer) IS 'Restituisce i 
 
 
 --
--- TOC entry 196 (class 1255 OID 16499)
+-- TOC entry 197 (class 1255 OID 16499)
 -- Name: trigger_cartella(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -671,7 +931,7 @@ $$;
 ALTER FUNCTION public.trigger_cartella() OWNER TO postgres;
 
 --
--- TOC entry 210 (class 1255 OID 16500)
+-- TOC entry 211 (class 1255 OID 16500)
 -- Name: trigger_corsi_studenti(); Type: FUNCTION; Schema: public; Owner: postgres
 --
 
@@ -748,7 +1008,7 @@ $$;
 ALTER FUNCTION public.verifica_iscrizione_studente(mtrcl integer, cod_corso smallint) OWNER TO postgres;
 
 --
--- TOC entry 2268 (class 0 OID 0)
+-- TOC entry 2273 (class 0 OID 0)
 -- Dependencies: 230
 -- Name: FUNCTION verifica_iscrizione_studente(mtrcl integer, cod_corso smallint); Type: COMMENT; Schema: public; Owner: postgres
 --
@@ -783,6 +1043,21 @@ ALTER FUNCTION public.verifica_iscrizione_studente(mtrcl integer, cod_corso inte
 SET default_tablespace = '';
 
 SET default_with_oids = false;
+
+--
+-- TOC entry 196 (class 1259 OID 16865)
+-- Name: accesso_corso; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.accesso_corso (
+    inizio_accesso timestamp with time zone NOT NULL,
+    fine_accesso timestamp with time zone,
+    matricola integer NOT NULL,
+    codice_corso smallint NOT NULL
+);
+
+
+ALTER TABLE public.accesso_corso OWNER TO postgres;
 
 --
 -- TOC entry 182 (class 1259 OID 16502)
@@ -953,7 +1228,7 @@ ALTER TABLE public.sostiene OWNER TO postgres;
 CREATE TABLE public.studente (
     matricola integer NOT NULL,
     corso_laurea character varying(40) NOT NULL,
-    anno_immatricolazione smallint NOT NULL,
+    anno_immatricolazione integer NOT NULL,
     stato_carriera character varying(20) NOT NULL
 );
 
@@ -984,7 +1259,7 @@ CREATE TABLE public.utente (
     cognome character varying(40) NOT NULL,
     email character varying(50) NOT NULL,
     password_hash character(32) NOT NULL,
-    codice_attivazione smallint NOT NULL,
+    codice_attivazione integer NOT NULL,
     tentativi_login smallint,
     tipo_utente smallint NOT NULL
 );
@@ -993,184 +1268,25 @@ CREATE TABLE public.utente (
 ALTER TABLE public.utente OWNER TO postgres;
 
 --
--- TOC entry 2237 (class 0 OID 16502)
--- Dependencies: 182
--- Data for Name: amministratore; Type: TABLE DATA; Schema: public; Owner: postgres
+-- TOC entry 2084 (class 2606 OID 16868)
+-- Name: accesso_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
-COPY public.amministratore (matricola, struttura_riferimento) FROM stdin;
-2	Informatica
-3	Informatica
-\.
+ALTER TABLE public.accesso_corso
+    ADD CONSTRAINT accesso_check CHECK ((inizio_accesso <= fine_accesso)) NOT VALID;
 
 
 --
--- TOC entry 2238 (class 0 OID 16505)
--- Dependencies: 183
--- Data for Name: corso; Type: TABLE DATA; Schema: public; Owner: postgres
+-- TOC entry 2116 (class 2606 OID 16872)
+-- Name: accesso_corso_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
-COPY public.corso (codice_corso, nome, anno_attivazione, facolta, descrizione, peso, creatore) FROM stdin;
-3000	Useless	2013	Informatica	Corso inutile	1	2
-4343	ffdfd	2000	merendine	ee	1	2
-89	botanica	2015	Informatica	pannocchie	15	2
-80	storia del cinema	1998	merendine	guardiamo film	10	2
-77	programmazione tentacolare	2010	Informatica	programmazione per cefalopodi	6	2
-9	pesce ghiacciato	2013	merendine	saa	6	2
-99	pellegrinaggio	2000	Informatica	sasa	0	2
-1999	Progg	2000	Informatica	Corso per imparare a programmare con quella cagata pazzesca di prog.io	10	3
-\.
+ALTER TABLE ONLY public.accesso_corso
+    ADD CONSTRAINT accesso_corso_pkey PRIMARY KEY (inizio_accesso, matricola, codice_corso);
 
 
 --
--- TOC entry 2239 (class 0 OID 16508)
--- Dependencies: 184
--- Data for Name: docente; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.docente (matricola, struttura_riferimento) FROM stdin;
-13	Informatica
-\.
-
-
---
--- TOC entry 2240 (class 0 OID 16511)
--- Dependencies: 185
--- Data for Name: download; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.download (data_e_ora, matricola, codice_risorsa) FROM stdin;
-2018-11-27 00:00:00+01	2	45
-\.
-
-
---
--- TOC entry 2241 (class 0 OID 16514)
--- Dependencies: 186
--- Data for Name: esame; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.esame (codice_corso, stato, voto, data) FROM stdin;
-1999	Passato	25	2010-12-22
-\.
-
-
---
--- TOC entry 2242 (class 0 OID 16517)
--- Dependencies: 187
--- Data for Name: facolta; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.facolta (nome) FROM stdin;
-Informatica
-merendine
-\.
-
-
---
--- TOC entry 2243 (class 0 OID 16520)
--- Dependencies: 188
--- Data for Name: iscritto_a; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.iscritto_a (matricola, codice_corso) FROM stdin;
-34	1999
-34	3000
-1	1999
-1	3000
-1	89
-1	77
-\.
-
-
---
--- TOC entry 2244 (class 0 OID 16523)
--- Dependencies: 189
--- Data for Name: risorsa; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.risorsa (codice_risorsa, nome, descrizione, percorso, tipo, codice_sezione, is_pubblica) FROM stdin;
-22	ris1	prima risorsa	w	r	3	t
-45	ris2	seconda risorsa	C://h	word	5	t
-\.
-
-
---
--- TOC entry 2245 (class 0 OID 16526)
--- Dependencies: 190
--- Data for Name: sessione; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.sessione (matricola, inizio_sessione, fine_sessione) FROM stdin;
-34	2018-11-28 10:00:00+01	2018-11-28 10:30:00+01
-\.
-
-
---
--- TOC entry 2246 (class 0 OID 16529)
--- Dependencies: 191
--- Data for Name: sezione; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.sezione (codice_sezione, titolo, descrizione, is_pubblica, codice_corso, figlio_di, matricola) FROM stdin;
-3	sez1	prima sez	t	1999	\N	13
-5	sez2	seconda sez	t	1999	3	13
-\.
-
-
---
--- TOC entry 2247 (class 0 OID 16532)
--- Dependencies: 192
--- Data for Name: sostiene; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.sostiene (matricola, codice_esame) FROM stdin;
-34	1999
-\.
-
-
---
--- TOC entry 2248 (class 0 OID 16535)
--- Dependencies: 193
--- Data for Name: studente; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.studente (matricola, corso_laurea, anno_immatricolazione, stato_carriera) FROM stdin;
-34	Informatica	2018	1 anno
-1	Informatica	2017	2 anno
-\.
-
-
---
--- TOC entry 2250 (class 0 OID 16762)
--- Dependencies: 195
--- Data for Name: tiene; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.tiene (docente, codice_corso) FROM stdin;
-13	99
-13	1999
-\.
-
-
---
--- TOC entry 2249 (class 0 OID 16538)
--- Dependencies: 194
--- Data for Name: utente; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public.utente (matricola, nome, cognome, email, password_hash, codice_attivazione, tentativi_login, tipo_utente) FROM stdin;
-34	pippo	pluto	aaaa	6E6BC4E49DD477EBC98EF4046C067B5F	45	0	1
-3	a	a	hhhh	6E6BC4E49DD477EBC98EF4046C067B5F	33	0	3
-1	Ciccio	Pasticcio	ciao	6E6BC4E49DD477EBC98EF4046C067B5F	3434	\N	1
-13	Aria	Stark	aaa	6E6BC4E49DD477EBC98EF4046C067B5F	11	0	2
-2	Adriano	Galliani	agag	6E6BC4E49DD477EBC98EF4046C067B5F	2020	0	3
-33	Cacca	Bomba	sasa	C21A7F50739500292AB24DD37150FA8A	33	1	1
-\.
-
-
---
--- TOC entry 2073 (class 2606 OID 16543)
+-- TOC entry 2088 (class 2606 OID 16543)
 -- Name: amministratore_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1179,7 +1295,7 @@ ALTER TABLE ONLY public.amministratore
 
 
 --
--- TOC entry 2061 (class 2606 OID 16544)
+-- TOC entry 2073 (class 2606 OID 16544)
 -- Name: corso_anno_attivazione_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1188,7 +1304,7 @@ ALTER TABLE public.corso
 
 
 --
--- TOC entry 2075 (class 2606 OID 16552)
+-- TOC entry 2090 (class 2606 OID 16552)
 -- Name: corso_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1197,7 +1313,7 @@ ALTER TABLE ONLY public.corso
 
 
 --
--- TOC entry 2077 (class 2606 OID 16546)
+-- TOC entry 2092 (class 2606 OID 16546)
 -- Name: docente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1206,7 +1322,7 @@ ALTER TABLE ONLY public.docente
 
 
 --
--- TOC entry 2062 (class 2606 OID 16547)
+-- TOC entry 2074 (class 2606 OID 16547)
 -- Name: download_data_e_ora_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1215,7 +1331,7 @@ ALTER TABLE public.download
 
 
 --
--- TOC entry 2079 (class 2606 OID 16549)
+-- TOC entry 2094 (class 2606 OID 16549)
 -- Name: download_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1224,7 +1340,7 @@ ALTER TABLE ONLY public.download
 
 
 --
--- TOC entry 2063 (class 2606 OID 16550)
+-- TOC entry 2075 (class 2606 OID 16550)
 -- Name: esame_data_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1233,7 +1349,7 @@ ALTER TABLE public.esame
 
 
 --
--- TOC entry 2081 (class 2606 OID 16554)
+-- TOC entry 2096 (class 2606 OID 16554)
 -- Name: esame_pkey1; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1242,7 +1358,7 @@ ALTER TABLE ONLY public.esame
 
 
 --
--- TOC entry 2064 (class 2606 OID 16555)
+-- TOC entry 2076 (class 2606 OID 16555)
 -- Name: esame_voto_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1251,7 +1367,7 @@ ALTER TABLE public.esame
 
 
 --
--- TOC entry 2083 (class 2606 OID 16557)
+-- TOC entry 2098 (class 2606 OID 16557)
 -- Name: facoltà_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1260,7 +1376,25 @@ ALTER TABLE ONLY public.facolta
 
 
 --
--- TOC entry 2085 (class 2606 OID 16559)
+-- TOC entry 2085 (class 2606 OID 16870)
+-- Name: fine_accesso_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.accesso_corso
+    ADD CONSTRAINT fine_accesso_check CHECK ((fine_accesso <= now())) NOT VALID;
+
+
+--
+-- TOC entry 2086 (class 2606 OID 16869)
+-- Name: inizio_accesso_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE public.accesso_corso
+    ADD CONSTRAINT inizio_accesso_check CHECK ((inizio_accesso <= now())) NOT VALID;
+
+
+--
+-- TOC entry 2100 (class 2606 OID 16559)
 -- Name: iscritto_a_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1269,7 +1403,7 @@ ALTER TABLE ONLY public.iscritto_a
 
 
 --
--- TOC entry 2087 (class 2606 OID 16561)
+-- TOC entry 2102 (class 2606 OID 16561)
 -- Name: risorsa_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1278,7 +1412,7 @@ ALTER TABLE ONLY public.risorsa
 
 
 --
--- TOC entry 2065 (class 2606 OID 16562)
+-- TOC entry 2077 (class 2606 OID 16562)
 -- Name: sessione_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1287,7 +1421,7 @@ ALTER TABLE public.sessione
 
 
 --
--- TOC entry 2066 (class 2606 OID 16563)
+-- TOC entry 2078 (class 2606 OID 16563)
 -- Name: sessione_fine_sessione_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1296,7 +1430,7 @@ ALTER TABLE public.sessione
 
 
 --
--- TOC entry 2067 (class 2606 OID 16564)
+-- TOC entry 2079 (class 2606 OID 16564)
 -- Name: sessione_inizio_sessione_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1305,7 +1439,7 @@ ALTER TABLE public.sessione
 
 
 --
--- TOC entry 2089 (class 2606 OID 16566)
+-- TOC entry 2104 (class 2606 OID 16566)
 -- Name: sessione_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1314,7 +1448,7 @@ ALTER TABLE ONLY public.sessione
 
 
 --
--- TOC entry 2091 (class 2606 OID 16568)
+-- TOC entry 2106 (class 2606 OID 16568)
 -- Name: sezione_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1323,7 +1457,7 @@ ALTER TABLE ONLY public.sezione
 
 
 --
--- TOC entry 2093 (class 2606 OID 16570)
+-- TOC entry 2108 (class 2606 OID 16570)
 -- Name: sostiene_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1332,7 +1466,7 @@ ALTER TABLE ONLY public.sostiene
 
 
 --
--- TOC entry 2068 (class 2606 OID 16571)
+-- TOC entry 2080 (class 2606 OID 16849)
 -- Name: studente_anno_immatricolazione_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1341,7 +1475,7 @@ ALTER TABLE public.studente
 
 
 --
--- TOC entry 2095 (class 2606 OID 16573)
+-- TOC entry 2110 (class 2606 OID 16573)
 -- Name: studente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1350,7 +1484,7 @@ ALTER TABLE ONLY public.studente
 
 
 --
--- TOC entry 2099 (class 2606 OID 16766)
+-- TOC entry 2114 (class 2606 OID 16766)
 -- Name: tiene_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1359,7 +1493,7 @@ ALTER TABLE ONLY public.tiene
 
 
 --
--- TOC entry 2069 (class 2606 OID 16574)
+-- TOC entry 2081 (class 2606 OID 16574)
 -- Name: utente_matricola_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1368,7 +1502,7 @@ ALTER TABLE public.utente
 
 
 --
--- TOC entry 2097 (class 2606 OID 16576)
+-- TOC entry 2112 (class 2606 OID 16576)
 -- Name: utente_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1377,7 +1511,7 @@ ALTER TABLE ONLY public.utente
 
 
 --
--- TOC entry 2070 (class 2606 OID 16577)
+-- TOC entry 2082 (class 2606 OID 16577)
 -- Name: utente_tentativi_login_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1386,7 +1520,7 @@ ALTER TABLE public.utente
 
 
 --
--- TOC entry 2071 (class 2606 OID 16578)
+-- TOC entry 2083 (class 2606 OID 16578)
 -- Name: utente_tipo_utente_check; Type: CHECK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1395,7 +1529,7 @@ ALTER TABLE public.utente
 
 
 --
--- TOC entry 2120 (class 2620 OID 16750)
+-- TOC entry 2139 (class 2620 OID 16750)
 -- Name: corsi_compatibili_con_la_facolta; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1403,7 +1537,7 @@ CREATE TRIGGER corsi_compatibili_con_la_facolta AFTER INSERT OR UPDATE OF matric
 
 
 --
--- TOC entry 2122 (class 2620 OID 16748)
+-- TOC entry 2141 (class 2620 OID 16748)
 -- Name: nessuna_sotto_sottosezione; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1411,7 +1545,7 @@ CREATE TRIGGER nessuna_sotto_sottosezione AFTER INSERT OR UPDATE OF figlio_di ON
 
 
 --
--- TOC entry 2121 (class 2620 OID 16749)
+-- TOC entry 2140 (class 2620 OID 16749)
 -- Name: nessuna_sottocartella; Type: TRIGGER; Schema: public; Owner: postgres
 --
 
@@ -1419,7 +1553,25 @@ CREATE TRIGGER nessuna_sottocartella AFTER INSERT OR UPDATE ON public.risorsa FO
 
 
 --
--- TOC entry 2100 (class 2606 OID 16582)
+-- TOC entry 2137 (class 2606 OID 16873)
+-- Name: accesso_corso_codice_corso_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.accesso_corso
+    ADD CONSTRAINT accesso_corso_codice_corso_fkey FOREIGN KEY (codice_corso) REFERENCES public.corso(codice_corso) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 2138 (class 2606 OID 16878)
+-- Name: accesso_corso_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.accesso_corso
+    ADD CONSTRAINT accesso_corso_matricola_fkey FOREIGN KEY (matricola) REFERENCES public.utente(matricola) ON UPDATE CASCADE;
+
+
+--
+-- TOC entry 2117 (class 2606 OID 16582)
 -- Name: amministratore_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1428,7 +1580,7 @@ ALTER TABLE ONLY public.amministratore
 
 
 --
--- TOC entry 2101 (class 2606 OID 16587)
+-- TOC entry 2118 (class 2606 OID 16587)
 -- Name: corso_creatore_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1437,7 +1589,7 @@ ALTER TABLE ONLY public.corso
 
 
 --
--- TOC entry 2102 (class 2606 OID 16592)
+-- TOC entry 2119 (class 2606 OID 16592)
 -- Name: corso_facoltà_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1446,7 +1598,7 @@ ALTER TABLE ONLY public.corso
 
 
 --
--- TOC entry 2119 (class 2606 OID 16772)
+-- TOC entry 2136 (class 2606 OID 16772)
 -- Name: corso_tenuto_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1455,7 +1607,7 @@ ALTER TABLE ONLY public.tiene
 
 
 --
--- TOC entry 2118 (class 2606 OID 16767)
+-- TOC entry 2135 (class 2606 OID 16767)
 -- Name: docente_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1464,7 +1616,7 @@ ALTER TABLE ONLY public.tiene
 
 
 --
--- TOC entry 2103 (class 2606 OID 16597)
+-- TOC entry 2120 (class 2606 OID 16597)
 -- Name: docente_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1473,7 +1625,7 @@ ALTER TABLE ONLY public.docente
 
 
 --
--- TOC entry 2104 (class 2606 OID 16602)
+-- TOC entry 2121 (class 2606 OID 16602)
 -- Name: download_codice_risorsa_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1482,7 +1634,7 @@ ALTER TABLE ONLY public.download
 
 
 --
--- TOC entry 2105 (class 2606 OID 16607)
+-- TOC entry 2122 (class 2606 OID 16607)
 -- Name: download_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1491,7 +1643,7 @@ ALTER TABLE ONLY public.download
 
 
 --
--- TOC entry 2106 (class 2606 OID 16612)
+-- TOC entry 2123 (class 2606 OID 16612)
 -- Name: esame_codice_corso_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1500,7 +1652,7 @@ ALTER TABLE ONLY public.esame
 
 
 --
--- TOC entry 2107 (class 2606 OID 16617)
+-- TOC entry 2124 (class 2606 OID 16617)
 -- Name: iscritto_a_codice_corso_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1509,7 +1661,7 @@ ALTER TABLE ONLY public.iscritto_a
 
 
 --
--- TOC entry 2108 (class 2606 OID 16622)
+-- TOC entry 2125 (class 2606 OID 16622)
 -- Name: iscritto_a_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1518,7 +1670,7 @@ ALTER TABLE ONLY public.iscritto_a
 
 
 --
--- TOC entry 2109 (class 2606 OID 16627)
+-- TOC entry 2126 (class 2606 OID 16627)
 -- Name: risorsa_codice_sezione_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1527,7 +1679,7 @@ ALTER TABLE ONLY public.risorsa
 
 
 --
--- TOC entry 2110 (class 2606 OID 16632)
+-- TOC entry 2127 (class 2606 OID 16632)
 -- Name: sessione_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1536,7 +1688,7 @@ ALTER TABLE ONLY public.sessione
 
 
 --
--- TOC entry 2113 (class 2606 OID 16637)
+-- TOC entry 2130 (class 2606 OID 16637)
 -- Name: sezione_codice_corso_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1545,7 +1697,7 @@ ALTER TABLE ONLY public.sezione
 
 
 --
--- TOC entry 2112 (class 2606 OID 16642)
+-- TOC entry 2129 (class 2606 OID 16642)
 -- Name: sezione_figlio_di_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1554,7 +1706,7 @@ ALTER TABLE ONLY public.sezione
 
 
 --
--- TOC entry 2111 (class 2606 OID 16647)
+-- TOC entry 2128 (class 2606 OID 16647)
 -- Name: sezione_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1563,7 +1715,7 @@ ALTER TABLE ONLY public.sezione
 
 
 --
--- TOC entry 2114 (class 2606 OID 16652)
+-- TOC entry 2131 (class 2606 OID 16652)
 -- Name: sostiene_codice_esame_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1572,7 +1724,7 @@ ALTER TABLE ONLY public.sostiene
 
 
 --
--- TOC entry 2115 (class 2606 OID 16657)
+-- TOC entry 2132 (class 2606 OID 16657)
 -- Name: sostiene_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1581,7 +1733,7 @@ ALTER TABLE ONLY public.sostiene
 
 
 --
--- TOC entry 2116 (class 2606 OID 16662)
+-- TOC entry 2133 (class 2606 OID 16662)
 -- Name: studente_corso_laurea_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1590,7 +1742,7 @@ ALTER TABLE ONLY public.studente
 
 
 --
--- TOC entry 2117 (class 2606 OID 16667)
+-- TOC entry 2134 (class 2606 OID 16667)
 -- Name: studente_matricola_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1599,7 +1751,7 @@ ALTER TABLE ONLY public.studente
 
 
 --
--- TOC entry 2258 (class 0 OID 0)
+-- TOC entry 2263 (class 0 OID 0)
 -- Dependencies: 7
 -- Name: SCHEMA public; Type: ACL; Schema: -; Owner: postgres
 --
@@ -1610,7 +1762,7 @@ GRANT ALL ON SCHEMA public TO postgres;
 GRANT ALL ON SCHEMA public TO PUBLIC;
 
 
--- Completed on 2019-01-05 16:57:49
+-- Completed on 2019-01-22 10:09:05
 
 --
 -- PostgreSQL database dump complete

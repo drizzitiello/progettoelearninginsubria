@@ -13,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import Utente.Utente;
-import gestioneContenutiCorso.Corso;
-import gestioneCorsi.GestioneCorsi;
+import Sessione.Session;
+import Utente.User;
+import gestioneContenutiCorso.Course;
+import gestioneCorsi.CourseManagement;
 import notifier.Notifier;
 
 public class AssegnazioneDocenti extends MyFrame {
@@ -27,7 +27,7 @@ public class AssegnazioneDocenti extends MyFrame {
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public AssegnazioneDocenti(Sessione ses) {
+	public AssegnazioneDocenti(Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -53,11 +53,11 @@ public class AssegnazioneDocenti extends MyFrame {
 		cercaCorsi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					Utente doc = new Utente();
-					doc.createFromMatricola(Integer.parseInt(docente.getText()));
-					Corso c = Notifier.getCorso(corso.getText());
-					GestioneCorsi gc = new GestioneCorsi();
-					gc.assegnamentoCorsi(doc, c);
+					User doc = new User();
+					doc.createFromStudentNumber(Integer.parseInt(docente.getText()));
+					Course c = Notifier.getCourse(corso.getText());
+					CourseManagement gc = new CourseManagement();
+					gc.coursesAssignment(doc, c);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

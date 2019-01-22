@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.Risorse;
-import gestioneContenutiCorso.Sezione;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.Resource;
+import gestioneContenutiCorso.Section;
 
 public class ModificaRisorsa extends MyFrame {
 
@@ -34,27 +34,27 @@ public class ModificaRisorsa extends MyFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		Risorse r = null;
-		GestioneContenutoCorso gc = new GestioneContenutoCorso();
+		Resource r = null;
+		CourseContentManagement gc = new CourseContentManagement();
 		try {
-			r=gc.getRisorsa(codRisorsa);
+			r=gc.getResource(codRisorsa);
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
 		}
 
-		final int codSezione=r.codSezione;
+		final int codSezione=r.sectionCode;
 		
 		JLabel no = new JLabel("Nome: ");
 		contentPane.add(no);
 		
-		JTextField nome = new JTextField(r.nome);
+		JTextField nome = new JTextField(r.name);
 		contentPane.add(nome);
 		nome.setColumns(10);
 		
 		JLabel descr = new JLabel("Descrizione: ");
 		contentPane.add(descr);
 		
-		JTextField descrizione = new JTextField(r.descrizione);
+		JTextField descrizione = new JTextField(r.description);
 		contentPane.add(descrizione);
 		descrizione.setColumns(10);
 		
@@ -68,14 +68,14 @@ public class ModificaRisorsa extends MyFrame {
 		JLabel vis = new JLabel("Visibilita: ");
 		contentPane.add(vis);
 		
-		JTextField visibilita = new JTextField(String.valueOf(r.visibilita));
+		JTextField visibilita = new JTextField(String.valueOf(r.visibility));
 		contentPane.add(visibilita);
 		visibilita.setColumns(10);
 		
 		JLabel type = new JLabel("Tipo: ");
 		contentPane.add(type);
 		
-		JTextField tipo = new JTextField(r.tipo);
+		JTextField tipo = new JTextField(r.type);
 		contentPane.add(tipo);
 		tipo.setColumns(10);
 		
@@ -87,10 +87,10 @@ public class ModificaRisorsa extends MyFrame {
 					if(visibilita.getText().equals("pubblica")) {
 						pubblica=true;
 					}
-					Risorse risorsa = new Risorse(nome.getText(),  descrizione.getText(), path.getText(), 
+					Resource risorsa = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
 							codSezione, codRisorsa, 
 							pubblica, tipo.getText());
-					gc.modificaRisorsa(risorsa);
+					gc.modifyResource(risorsa);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -101,9 +101,9 @@ public class ModificaRisorsa extends MyFrame {
 		JButton cancellaQuestaRisorsa = new JButton("Cancella questa risorsa");
 		cancellaQuestaRisorsa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				GestioneContenutoCorso gc = new GestioneContenutoCorso();
+				CourseContentManagement gc = new CourseContentManagement();
 				try {
-					gc.cancellaRisorsa(codRisorsa);
+					gc.cancelResource(codRisorsa);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}

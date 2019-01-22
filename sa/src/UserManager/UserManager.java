@@ -15,12 +15,12 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import socketDb.SocketDb;
-import Sessione.Sessione;
-import Utente.Utente;
-import Utente.Utente.InfoUtente;
+import Sessione.Session;
+import Utente.User;
+import Utente.User.UserInfo;
 import authService.AuthenticationService;
 import notifier.Notifier;
-import gestioneCorsi.GestioneCorsi;
+import gestioneCorsi.CourseManagement;
 
 /**
 * Modifica e inserimento massivo delle informazioni utente.
@@ -39,7 +39,7 @@ public class UserManager {
     
     /* Dichiarazione dei componenti di servizio */
     private SocketDb socket;
-    private Sessione session;
+    private Session session;
     private boolean enabled = false;
     
     /**
@@ -49,8 +49,8 @@ public class UserManager {
 	 */
     public UserManager() throws Exception {
         this.socket = SocketDb.getInstanceDb();
-        this.session = Sessione.getInstance();
-        this.enabled = this.session.info().tipoUtente == Utente.admin;
+        this.session = Session.getInstance();
+        this.enabled = this.session.info().userType == User.admin;
     }
 
 
@@ -62,20 +62,20 @@ public class UserManager {
      * @throws SQLException
      * @throws ClassNotFoundException 
 	 */
-    public boolean modificaDatiUtente(Utente user) throws SQLException, ClassNotFoundException{
+    public boolean modifiyUserData(User user) throws SQLException, ClassNotFoundException{
         if(!user.created() || !enabled)
             return false;
 
 
-        Object[] p = { user.getInfo().nome,
-                       user.getInfo().cognome,
+        Object[] p = { user.getInfo().name,
+                       user.getInfo().surname,
                        user.getInfo().email,
-                       (short) (int) user.getInfo().tipoUtente,
-                       user.getInfo().annoImmatricolazione,
-                       user.getInfo().corsoLaurea,
-                       user.getInfo().statoCarriera,
+                       (short) (int) user.getInfo().userType,
+                       user.getInfo().registrationYear,
+                       user.getInfo().faculty,
+                       user.getInfo().careerStatus,
                        user.getInfo().strutturaRiferimento,
-                       user.getInfo().matricola
+                       user.getInfo().student_number
                      };
         
         this.socket.function("modifica_dati_utente", p);
@@ -93,11 +93,11 @@ public class UserManager {
      * @throws SQLException
      * @throws ClassNotFoundException 
 	 */
-    public boolean eliminaUtente(Utente user) throws SQLException, ClassNotFoundException{
+    public boolean deleteUser(User user) throws SQLException, ClassNotFoundException{
         if(!user.created() || !this.enabled)
             return false;
 
-        Object[] p = { user.getInfo().matricola };
+        Object[] p = { user.getInfo().student_number };
         this.socket.query("DELETE FROM utente WHERE matricola = ?", p);
         
         return true;
@@ -113,11 +113,11 @@ public class UserManager {
      * @throws SQLException
      * @throws ClassNotFoundException 
 	 */
-    public boolean sbloccaUtente(Utente user) throws SQLException, ClassNotFoundException{
+    public boolean unlockUser(User user) throws SQLException, ClassNotFoundException{
         if(!user.created() || !this.enabled)
             return false;
 
-        Object[] p = { user.getInfo().matricola };
+        Object[] p = { user.getInfo().student_number };
         
         this.socket.query("UPDATE utente SET tentativi_login = 0 WHERE matricola = ?", p);
         
@@ -132,7 +132,7 @@ public class UserManager {
      * @throws SQLException
      * @throws ClassNotFoundException 
 	 */
-    public boolean creaUtente(InfoUtente info) throws SQLException, ClassNotFoundException{
+    public boolean createUser(UserInfo info) throws SQLException, ClassNotFoundException{
         if(!this.enabled)
         return false;
 
@@ -140,15 +140,15 @@ public class UserManager {
         int randomCodAttivaz = AuthenticationService.createActivationCode();
 
         Object[] p = {
-                    info.nome,
-                    info.cognome,
+                    info.name,
+                    info.surname,
                     info.email,
-                    (short) (int)  info.tipoUtente,
-                    info.annoImmatricolazione,
-                    info.corsoLaurea,
-                    info.statoCarriera,
+                    (short) (int)  info.userType,
+                    info.registrationYear,
+                    info.faculty,
+                    info.careerStatus,
                     info.strutturaRiferimento,
-                    info.matricola,
+                    info.student_number,
                     randomPassword,
                     randomCodAttivaz
                     };
@@ -156,7 +156,7 @@ public class UserManager {
         this.socket.function("crea_utente", p);
         
         String body;
-        body = "Ciao " + info.nome + "! Ti diamo il benvenuto su SeatIn.\n\n";
+        body = "Ciao " + info.name + "! Ti diamo il benvenuto su SeatIn.\n\n";
         body += "Di seguito troverai le credenziali per accedere al portale:\n";
         body += "Utente: " + info.email + "\n";
         body += "Password: " + randomPassword + "\n";
@@ -181,58 +181,58 @@ public class UserManager {
      * @throws SQLException
      * @throws ClassNotFoundException 
 	 */
-    public boolean csvImportUtente(String path) throws SQLException, ClassNotFoundException{
+    public boolean csvImportUser(String path) throws SQLException, ClassNotFoundException{
         if(!this.enabled)
             return false;
 
             Path report = Paths.get(path);
-            List<InfoUtente> utenti = new ArrayList<InfoUtente>();
+            List<UserInfo> users = new ArrayList<UserInfo>();
 
             try (BufferedReader br = Files.newBufferedReader(report, StandardCharsets.US_ASCII)) {		
                 br.readLine();			        // scarto la prima riga con intestazioni
                 String line = br.readLine();	// leggo prima riga
                 while (line != null) {			// loop righe
-                    String[] attributi = line.split(",");
+                    String[] attributes = line.split(",");
                     
-                    Utente.InfoUtente i = new Utente.InfoUtente();
-                    i.matricola = Integer.parseInt(attributi[0]);
-                    i.nome = attributi[1];
-                    i.cognome = attributi[2];
-                    i.email = attributi[3];
+                    User.UserInfo i = new User.UserInfo();
+                    i.student_number = Integer.parseInt(attributes[0]);
+                    i.name = attributes[1];
+                    i.surname = attributes[2];
+                    i.email = attributes[3];
 
-                    switch(attributi[4]){
+                    switch(attributes[4]){
                         case "S":
-                            i.tipoUtente = Utente.studente;
+                            i.userType = User.student;
                         break;
 
                         case "D":
-                            i.tipoUtente = Utente.docente;
+                            i.userType = User.professor;
                         break;
 
                         case "A":
-                            i.tipoUtente = Utente.admin;
+                            i.userType = User.admin;
                         break;
                     }
                     
-                    if(attributi[5].equals("")) i.annoImmatricolazione = null;
-                    else i.annoImmatricolazione = Integer.parseInt(attributi[5]);
-                    i.corsoLaurea = attributi[6];
-                    i.statoCarriera = attributi[7];
-                    i.strutturaRiferimento = attributi[8];
+                    if(attributes[5].equals("")) i.registrationYear = null;
+                    else i.registrationYear = Integer.parseInt(attributes[5]);
+                    i.faculty = attributes[6];
+                    i.careerStatus = attributes[7];
+                    i.strutturaRiferimento = attributes[8];
 
-                    utenti.add(i);
+                    users.add(i);
                     line = br.readLine();				// prossima riga
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
 
-            GestioneCorsi gc = new GestioneCorsi();
+            CourseManagement gc = new CourseManagement();
 
             int i = 1;
-            for (InfoUtente user: utenti) {				// memorizziamo ogni utente nel db
-                if(creaUtente(user)){
-                    gc.assegnamentoCorsi(user.matricola);
+            for (UserInfo user: users) {				// memorizziamo ogni utente nel db
+                if(createUser(user)){
+                    gc.coursesAssignment(user.student_number);
                 }else{
                     System.err.println("Errore csv file riga " + i);
                 }

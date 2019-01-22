@@ -16,13 +16,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.ReperisciCorso;
-import gestioneContenutiCorso.Risorse;
-import gestioneContenutiCorso.Corso;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.FindCourse;
+import gestioneContenutiCorso.Resource;
+import gestioneContenutiCorso.Course;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
@@ -39,7 +39,7 @@ public class Statistiche extends MyFrame {
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public Statistiche(Sessione ses) {
+	public Statistiche(Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -75,8 +75,8 @@ public class Statistiche extends MyFrame {
 					try {
 						Map<Integer, Integer> tmc = ga.accessByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : tmc.keySet()) {
-							Corso cor = Notifier.getCorso(m);
-							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.nome+" "
+							Course cor = Notifier.getCorso(m);
+							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.name+" "
 									+ "nella fascia temporale data : "
 									+ tmc.get(m));
 							contentPane.add(accessiCorsoFasciaTemporale);
@@ -111,11 +111,11 @@ public class Statistiche extends MyFrame {
 			tempoMedioPerCorso.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						Map<Integer, Integer> tmc = ga.avgMinsOnlinePerCorso();
+						Map<Integer, Integer> tmc = ga.avgMinsOnlineForCourse();
 						for(Integer m : tmc.keySet()) {
-							Corso cor = Notifier.getCorso(m);
+							Course cor = Notifier.getCorso(m);
 							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
-									+ " il corso "+cor.nome+" : "+tmc.get(m));
+									+ " il corso "+cor.name+" : "+tmc.get(m));
 							contentPane.add(tempoMedioConnessioniCorso);
 							contentPane.revalidate();
 							validate();
@@ -132,11 +132,11 @@ public class Statistiche extends MyFrame {
 			nDownloadPerCorso.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						Map<Integer, Integer> dpc = ga.downloadsPerCorso();
+						Map<Integer, Integer> dpc = ga.downloadsForCourse();
 						for(Integer m : dpc.keySet()) {
-							Corso cor = Notifier.getCorso(m);
+							Course cor = Notifier.getCorso(m);
 							JLabel numeroAccessiCorso = new JLabel("Numero di download per"
-									+ " il corso "+cor.nome+" : "+dpc.get(m));
+									+ " il corso "+cor.name+" : "+dpc.get(m));
 							contentPane.add(numeroAccessiCorso);
 							contentPane.revalidate();
 							validate();

@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.Sezione;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.Section;
 
 public class ModificaSezione extends MyFrame {
 
@@ -29,7 +29,7 @@ public class ModificaSezione extends MyFrame {
 	 * @param ses 
 	 * @param string 
 	 */
-	public ModificaSezione(Sessione ses, Corso cor, int codSezione) {
+	public ModificaSezione(Session ses, Course cor, int codSezione) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -37,36 +37,36 @@ public class ModificaSezione extends MyFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		Sezione s = null;
-		GestioneContenutoCorso gc = new GestioneContenutoCorso();
+		Section s = null;
+		CourseContentManagement gc = new CourseContentManagement();
 		try {
-			s=gc.getSezione(codSezione);
+			s=gc.getSection(codSezione);
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();
 		}
-		final int matricola=s.matricola;
-		final int codCorso=s.codCorso;
-		final Integer figlioDi=s.figlioDi;
+		final int matricola=s.studentNumber;
+		final int codCorso=s.courseCode;
+		final Integer figlioDi=s.sonOf;
 		
 		
 		JLabel descr = new JLabel("Descrizione: ");
 		contentPane.add(descr);
 		
-		JTextField descrizione = new JTextField(s.descrizione);
+		JTextField descrizione = new JTextField(s.description);
 		contentPane.add(descrizione);
 		descrizione.setColumns(10);
 		
 		JLabel tit = new JLabel("Titolo: ");
 		contentPane.add(tit);
 		
-		JTextField titolo = new JTextField(s.titolo);
+		JTextField titolo = new JTextField(s.title);
 		contentPane.add(titolo);
 		titolo.setColumns(10);
 		
 		JLabel vis = new JLabel("Visibilita: ");
 		contentPane.add(vis);
 		
-		JTextField visibilita = new JTextField(String.valueOf(s.visibilita));
+		JTextField visibilita = new JTextField(String.valueOf(s.visibility));
 		contentPane.add(visibilita);
 		visibilita.setColumns(10);
 		
@@ -78,9 +78,9 @@ public class ModificaSezione extends MyFrame {
 					if(visibilita.getText().equals("pubblica")) {
 						pubblica=true;
 					}
-					Sezione sezione = new Sezione(titolo.getText(),descrizione.getText(),
+					Section sezione = new Section(titolo.getText(),descrizione.getText(),
 							pubblica, codSezione, matricola, codCorso, figlioDi);
-					gc.modificaSezione(sezione);
+					gc.modifySection(sezione);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
@@ -99,9 +99,9 @@ public class ModificaSezione extends MyFrame {
 		JButton cancellaQuestaSezione = new JButton("Cancella questa sezione");
 		cancellaQuestaSezione.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				GestioneContenutoCorso gc = new GestioneContenutoCorso();
+				CourseContentManagement gc = new CourseContentManagement();
 				try {
-					gc.cancellaSezione(codSezione);
+					gc.cancelSection(codSezione);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}

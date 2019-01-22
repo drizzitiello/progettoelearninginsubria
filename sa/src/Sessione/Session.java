@@ -2,8 +2,8 @@ package Sessione;
 
 import java.sql.SQLException;
 
-import Utente.Utente;
-import Utente.Utente.InfoUtente;
+import Utente.User;
+import Utente.User.UserInfo;
 import socketDb.SocketDb;
 
 /**
@@ -18,22 +18,22 @@ import socketDb.SocketDb;
 * 
 */
 
-public class Sessione {
+public class Session {
     
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
     private SocketDb socket;
-    public Utente utente;    
-    public static Sessione s;
+    public User user;    
+    public static Session s;
     
     /**
 	 * Ottiene l'istanza della sessione (pattern Singleton)
      * 
      * @return istanza della sessione o nuovo oggetto.
 	 */
-    public static Sessione getInstance() throws ClassNotFoundException {
+    public static Session getInstance() throws ClassNotFoundException {
 		if(s == null)
-			s = new Sessione();
+			s = new Session();
 		return s;
 	}
     
@@ -42,7 +42,7 @@ public class Sessione {
      * Inizializza flag di riconoscimento di avvenuta creazione
      * della sessione a false.
 	 */	 
-    private Sessione() throws ClassNotFoundException{
+    private Session() throws ClassNotFoundException{
         this.socket = SocketDb.getInstanceDb();
         this.isCreated = false;
 	}
@@ -55,14 +55,14 @@ public class Sessione {
 	 * @return	flag di avvenuta creazione della sessione
      * @throws Exception 
 	 */
-    public boolean create(int matricola) throws Exception{
+    public boolean create(int student_number) throws Exception{
         this.isCreated = false;
-        this.utente = new Utente();
-        this.utente.createFromMatricola(matricola);
-        this.isCreated = this.utente.created();
+        this.user = new User();
+        this.user.createFromStudentNumber(student_number);
+        this.isCreated = this.user.created();
         if(!this.isCreated) return this.isCreated;
 
-        Object[] p = { matricola };
+        Object[] p = { student_number };
 
         //Purging delle sessioni non chiuse correttamente
         this.socket.query("DELETE FROM sessione WHERE matricola = ? AND fine_sessione IS NULL", p);
@@ -85,7 +85,7 @@ public class Sessione {
     public boolean destroy() throws ClassNotFoundException, SQLException{
         if(!this.isCreated) return false;
         
-        Object[] p = { this.utente.getInfo().matricola };
+        Object[] p = { this.user.getInfo().student_number };
         this.socket.query("UPDATE sessione SET fine_sessione = NOW() WHERE matricola = ? AND fine_sessione IS NULL", p);
 
         this.isCreated = false;
@@ -110,9 +110,9 @@ public class Sessione {
 	 *
 	 * @return	Oggetto Utente autenticato nella piattaforma
 	 */
-    public Utente getUtente(){
+    public User getUser(){
         if(!this.isCreated) return null;
-        return this.utente;
+        return this.user;
     }
 
 
@@ -121,9 +121,9 @@ public class Sessione {
 	 *
 	 * @return	Oggetto Utente autenticato nella piattaforma
 	 */
-    public InfoUtente info(){
+    public UserInfo info(){
         if(!this.isCreated) return null;
-        return this.utente.getInfo();
+        return this.user.getInfo();
     }
 
 }

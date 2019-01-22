@@ -16,21 +16,21 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import Utente.Utente;
-import gestioneContenutiCorso.Contenuto;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.ReperisciCorso;
-import gestioneContenutiCorso.Risorse;
-import gestioneContenutiCorso.Sezione;
-import gestioneCorsi.GestioneCorsi;
+import Sessione.Session;
+import Utente.User;
+import gestioneContenutiCorso.Content;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.FindCourse;
+import gestioneContenutiCorso.Resource;
+import gestioneContenutiCorso.Section;
+import gestioneCorsi.CourseManagement;
 
 public class ModificaCorso extends MyFrame {
 
 	private JPanel contentPane;
 
-	public ModificaCorso(Sessione ses, Corso cor) {
+	public ModificaCorso(Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -41,66 +41,66 @@ public class ModificaCorso extends MyFrame {
 		JLabel nome = new JLabel("Nome: ");
 		contentPane.add(nome);
 		
-		JTextField nomeCorso = new JTextField(cor.nome);
+		JTextField nomeCorso = new JTextField(cor.name);
 		contentPane.add(nomeCorso);
 		nomeCorso.setColumns(10);
 		
 		JLabel anno = new JLabel("Anno: ");
 		contentPane.add(anno);
 		
-		JTextField annoo = new JTextField(String.valueOf(cor.anno_attivazione));
+		JTextField annoo = new JTextField(String.valueOf(cor.activation_year));
 		contentPane.add(annoo);
 		annoo.setColumns(10);
 		
-		JLabel codCorso = new JLabel("Codice corso: "+String.valueOf(cor.codCorso));
+		JLabel codCorso = new JLabel("Codice corso: "+String.valueOf(cor.courseCode));
 		contentPane.add(codCorso);
 		
-		JLabel creatore = new JLabel("Creatore: "+String.valueOf(cor.creatore));
+		JLabel creatore = new JLabel("Creatore: "+String.valueOf(cor.creator));
 		contentPane.add(creatore);
 		
-		JLabel descrizione = new JLabel("Descrizione: "+cor.descrizione);
-		if(ses.getUtente().getInfo().tipoUtente==3) {
+		JLabel descrizione = new JLabel("Descrizione: "+cor.description);
+		if(ses.getUser().getInfo().userType==3) {
 			descrizione.setText("Descrizione: ");
 		}
 		contentPane.add(descrizione);
 		
-		JTextField descr = new JTextField(cor.descrizione);
+		JTextField descr = new JTextField(cor.description);
 		descr.setColumns(10);
-		if(ses.getUtente().getInfo().tipoUtente==3) {
+		if(ses.getUser().getInfo().userType==3) {
 			contentPane.add(descr);
 		}
 		
 		JLabel laurea = new JLabel("Facolta: ");
 		contentPane.add(laurea);
 		
-		JTextField facolta = new JTextField(cor.laurea);
+		JTextField facolta = new JTextField(cor.faculty);
 		contentPane.add(facolta);
 		facolta.setColumns(10);
 		
 		JLabel pesoCFU = new JLabel("CFU: ");
 		contentPane.add(pesoCFU);
 		
-		JTextField peso = new JTextField(String.valueOf(cor.peso));
+		JTextField peso = new JTextField(String.valueOf(cor.weight));
 		contentPane.add(peso);
 		peso.setColumns(10);
 		
 		JButton modifica = new JButton("Modifica");
 		modifica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cor.setAnno(Integer.parseInt(annoo.getText()));
-				if(ses.getUtente().getInfo().tipoUtente==3) {
-					cor.setDescrizione(descr.getText());
+				cor.setYear(Integer.parseInt(annoo.getText()));
+				if(ses.getUser().getInfo().userType==3) {
+					cor.setDescription(descr.getText());
 				}
 				else {
-					cor.setDescrizione(descrizione.getText());
+					cor.setDescription(descrizione.getText());
 				}
-				cor.setLaurea(facolta.getText());
-				cor.setNome(nomeCorso.getText());
-				cor.setPeso(Integer.parseInt(peso.getText()));
-				GestioneCorsi gc;
+				cor.setFaculty(facolta.getText());
+				cor.setName(nomeCorso.getText());
+				cor.setWeight(Integer.parseInt(peso.getText()));
+				CourseManagement gc;
 				try {
-					gc = new GestioneCorsi();
-					gc.modificaCorso(cor);
+					gc = new CourseManagement();
+					gc.modifyCourse(cor);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -108,38 +108,36 @@ public class ModificaCorso extends MyFrame {
 		});
 		contentPane.add(modifica);
 		
-		ReperisciCorso rc = new ReperisciCorso();
-		Contenuto c=null;
+		FindCourse rc = new FindCourse();
+		Content c=null;
 			try {
-				c = rc.getContenutoCorso(cor);
+				c = rc.getContenutCourse(cor);
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
 			}
-		for(Sezione s : c.sezioni) {
+		for(Section s : c.sections) {
 			
-			//JTextField sezione = new JTextField(""+s.codSezione);
-			JTextField sezione = new JTextField(s.titolo);
+			JTextField sezione = new JTextField(s.title);
 			contentPane.add(sezione);
 			nomeCorso.setColumns(10);
 			JButton modificaSezione = new JButton("Modifica sezione");
 			modificaSezione.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ModificaSezione ms = new ModificaSezione(ses, cor, s.codSezione);
+					ModificaSezione ms = new ModificaSezione(ses, cor, s.sectionCode);
 				}
 			});
 			contentPane.add(modificaSezione);
-			for(Risorse r : s.risorse) {
-				//JTextField risorsa = new JTextField(""+r.codRisorsa);
-				JTextField risorsa = new JTextField(r.nome);
+			for(Resource r : s.resources) {
+				JTextField risorsa = new JTextField(r.name);
 				contentPane.add(risorsa);
 				nomeCorso.setColumns(10);
 				JButton modificaRisorsa = new JButton("Modifica risorsa");
 				modificaRisorsa.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						System.out.println(r);
-						System.out.println(r.codRisorsa);
-						System.out.println(r.codRisorsa);
-						ModificaRisorsa ms = new ModificaRisorsa(r.codRisorsa);
+						System.out.println(r.resourceCode);
+						System.out.println(r.resourceCode);
+						ModificaRisorsa ms = new ModificaRisorsa(r.resourceCode);
 					}
 				});
 				contentPane.add(modificaRisorsa);

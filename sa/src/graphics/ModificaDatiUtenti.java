@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
+import Sessione.Session;
 import socketDb.SocketDb;
 
 public class ModificaDatiUtenti extends MyFrame {
@@ -27,7 +27,7 @@ public class ModificaDatiUtenti extends MyFrame {
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public ModificaDatiUtenti(Sessione ses, String pwd) {
+	public ModificaDatiUtenti(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

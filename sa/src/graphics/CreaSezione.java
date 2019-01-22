@@ -13,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Sessione;
-import gestioneContenutiCorso.Corso;
-import gestioneContenutiCorso.GestioneContenutoCorso;
-import gestioneContenutiCorso.Sezione;
+import Sessione.Session;
+import gestioneContenutiCorso.Course;
+import gestioneContenutiCorso.CourseContentManagement;
+import gestioneContenutiCorso.Section;
 import notifier.Notifier;
 
 public class CreaSezione extends MyFrame {
@@ -28,7 +28,7 @@ public class CreaSezione extends MyFrame {
 	 * @param cor 
 	 * @param ses 
 	 */
-	public CreaSezione(Sessione ses, Corso cor) {
+	public CreaSezione(Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -96,18 +96,18 @@ public class CreaSezione extends MyFrame {
 				if(!figlioDi.getText().equals("")) {
 					figlio=Integer.parseInt(figlioDi.getText());
 				}
-				Sezione s = new Sezione(titolo.getText(),  descrizione.getText(), 
+				Section s = new Section(titolo.getText(),  descrizione.getText(), 
 						pubblica, Integer.parseInt(codSezione.getText()), Integer.parseInt(creatore.getText()), 
 						Integer.parseInt(codCorso.getText()), figlio);
-				GestioneContenutoCorso gc = new GestioneContenutoCorso();
+				CourseContentManagement gc = new CourseContentManagement();
 				try {
-					Notifier.sendEmail(ses.info().email, "pwd?", cor.nome,
-							"Aggiornamento contenuti corso "+cor.nome, "Aggiunta sezione "+titolo.getText());
+					Notifier.sendMail(ses.info().email, "pwd?", cor.name,
+							"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+titolo.getText());
 				} catch (Exception e2) {
 					e2.printStackTrace();
 				}
 				try {
-					gc.createSezione(s);
+					gc.createSection(s);
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

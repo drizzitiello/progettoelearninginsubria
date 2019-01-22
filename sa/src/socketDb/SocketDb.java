@@ -13,7 +13,7 @@ public class SocketDb {
 	static final String PASS = "makaay";
 	public static SocketDb socketDb;
 	private Connection conn;
-	private static int nTentativi;
+	private static int nAttempts;
 	private PreparedStatement stmt;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException{
@@ -24,10 +24,10 @@ public class SocketDb {
 		if(socketDb==null) {
 			try {
 				socketDb=new SocketDb();
-				nTentativi=0;
+				nAttempts=0;
 			} catch (SQLException e) {
-				nTentativi++;
-				if(nTentativi<=25)
+				nAttempts++;
+				if(nAttempts<=25)
 					getInstanceDb();
 				else
 					return null;
