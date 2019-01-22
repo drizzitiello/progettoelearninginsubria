@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class SocketDb {
 	static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	static final String DB_URL = "jdbc:postgresql://localhost/sss";
+	static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
 	static final String USER = "postgres";
 	static final String PASS = "makaay";
 	public static SocketDb socketDb;

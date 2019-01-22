@@ -12,7 +12,7 @@ public class Corso {
 	SocketDb socket;
 	
 	public Corso() {
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public Corso(int codCorso, String nome, int anno_attivazione, String facolta, String descrizione,
@@ -25,7 +25,12 @@ public class Corso {
 		this.peso=peso;
 		this.creatore=creatore;
 	}
-
+	/**
+	 * 
+	 * @param con
+	 * @throws ClassNotFoundException
+	 * @throws SQLException
+	 */
 	public void setContenuti(Contenuto con) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		ArrayList<Sezione> sezioni = new ArrayList<Sezione>();

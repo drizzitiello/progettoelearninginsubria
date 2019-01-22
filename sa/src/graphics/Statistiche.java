@@ -51,7 +51,7 @@ public class Statistiche extends MyFrame {
 			GlobalAnalytics ga = new GlobalAnalytics();
 			
 			JLabel utentiComplessivi;
-			utentiComplessivi = new JLabel("Utenti connessi: "+ga.utentiConnessi());
+			utentiComplessivi = new JLabel("Utenti connessi: "+ga.onlineUsers());
 			contentPane.add(utentiComplessivi);
 			
 			JLabel numeroAccessiPerOra = new JLabel("N. accessi per corso per fascia oraria");
@@ -73,18 +73,33 @@ public class Statistiche extends MyFrame {
 			accessButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						ReperisciCorso rc = new ReperisciCorso();
-						ArrayList<Corso> corsi = rc.getCorsi();
-						for(Corso c : corsi) {
-							ga.accessiIntervallo(dataInizio.getText(), dataFine.getText());
-							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+c.nome+" "
+						Map<Integer, Integer> tmc = ga.accessByInterval(dataInizio.getText(), dataFine.getText());
+						for(Integer m : tmc.keySet()) {
+							Corso cor = Notifier.getCorso(m);
+							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.nome+" "
 									+ "nella fascia temporale data : "
-									+ ga.accessiIntervallo(dataInizio.getText(), dataFine.getText(), c));
+									+ tmc.get(m));
 							contentPane.add(accessiCorsoFasciaTemporale);
 							contentPane.revalidate();
 							validate();
 							repaint();
 						}
+						
+						
+						
+						
+						/*ReperisciCorso rc = new ReperisciCorso();
+						ArrayList<Corso> corsi = rc.getCorsi();
+						for(Corso c : corsi) {
+							ga.accessByInterval(dataInizio.getText(), dataFine.getText());
+							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+c.nome+" "
+									+ "nella fascia temporale data : "
+									+ ga.accessByInterval(dataInizio.getText(), dataFine.getText()));
+							contentPane.add(accessiCorsoFasciaTemporale);
+							contentPane.revalidate();
+							validate();
+							repaint();
+						}*/
 					} catch (ClassNotFoundException | SQLException e) {
 						e.printStackTrace();
 					}
@@ -96,7 +111,7 @@ public class Statistiche extends MyFrame {
 			tempoMedioPerCorso.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
-						Map<Integer, Integer> tmc = ga.tempoMedioPerCorso();
+						Map<Integer, Integer> tmc = ga.avgMinsOnlinePerCorso();
 						for(Integer m : tmc.keySet()) {
 							Corso cor = Notifier.getCorso(m);
 							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
