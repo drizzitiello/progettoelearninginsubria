@@ -13,11 +13,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import Utente.User;
-import gestioneContenutiCorso.Course;
-import gestioneCorsi.CourseManagement;
+import courseContentManagement.Course;
+import courseManagement.CourseManagement;
 import notifier.Notifier;
+import session.Session;
+import user.User;
 
 public class AssegnazioneDocenti extends MyFrame {
 

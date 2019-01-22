@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.Resource;
-import gestioneContenutiCorso.Section;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.Resource;
+import courseContentManagement.Section;
 
 public class ModificaRisorsa extends MyFrame {
 

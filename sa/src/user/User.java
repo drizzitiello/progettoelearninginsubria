@@ -1,4 +1,4 @@
-package Utente;
+package user;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

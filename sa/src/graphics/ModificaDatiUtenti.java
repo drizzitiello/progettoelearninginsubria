@@ -15,7 +15,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
+import session.Session;
 import socketDb.SocketDb;
 
 public class ModificaDatiUtenti extends MyFrame {

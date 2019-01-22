@@ -14,7 +14,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
-import gestioneContenutiCorso.Course;
+import courseContentManagement.Course;
 import socketDb.SocketDb;
 
 public class Notifier {

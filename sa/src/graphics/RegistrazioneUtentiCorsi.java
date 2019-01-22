@@ -13,9 +13,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import UserManager.UserManager;
-import gestioneCorsi.CourseManagement;
+import courseManagement.CourseManagement;
+import session.Session;
+import userManager.UserManager;
 
 public class RegistrazioneUtentiCorsi extends MyFrame {
 

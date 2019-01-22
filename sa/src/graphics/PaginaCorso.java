@@ -18,17 +18,17 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import Utente.User;
-import gestioneContenutiCorso.Content;
-import gestioneContenutiCorso.Course;
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.FindCourse;
-import gestioneContenutiCorso.Resource;
-import gestioneContenutiCorso.Section;
-import gestioneCorsi.CourseManagement;
+import courseContentManagement.Content;
+import courseContentManagement.Course;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.FindCourse;
+import courseContentManagement.Resource;
+import courseContentManagement.Section;
+import courseManagement.CourseManagement;
 import notifier.Notifier;
+import session.Session;
 import socketDb.SocketDb;
+import user.User;
 
 public class PaginaCorso extends JFrame {
 

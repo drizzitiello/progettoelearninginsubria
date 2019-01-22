@@ -13,12 +13,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import gestioneContenutiCorso.Course;
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.Resource;
-import gestioneContenutiCorso.Section;
+import courseContentManagement.Course;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.Resource;
+import courseContentManagement.Section;
 import notifier.Notifier;
+import session.Session;
 
 public class CreaRisorsa extends MyFrame {
 

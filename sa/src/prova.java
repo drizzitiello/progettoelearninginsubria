@@ -6,13 +6,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
-import Sessione.Session;
-import UserManager.UserManager;
-import Utente.User;
-import Utente.User.UserInfo;
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
+import session.Session;
 import socketDb.SocketDb;
+import user.User;
+import user.User.UserInfo;
+import userManager.UserManager;
 
 public class prova {
 	static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  

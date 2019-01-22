@@ -9,10 +9,10 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
 import socketDb.SocketDb;
-import UserManager.UserManager;
-import Utente.User;
+import user.User;
+import userManager.UserManager;
+import session.Session;
 
 import java.awt.GridLayout;
 import javax.swing.JLabel;

@@ -14,9 +14,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import gestioneContenutiCorso.Course;
-import gestioneCorsi.CourseManagement;
+import courseContentManagement.Course;
+import courseManagement.CourseManagement;
+import session.Session;
 import socketDb.SocketDb;
 
 public class AggiungiCorso extends MyFrame {

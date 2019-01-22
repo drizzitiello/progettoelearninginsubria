@@ -1,4 +1,4 @@
-package gestioneCorsi;
+package courseManagement;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,10 +7,10 @@ import java.nio.file.*;
 import java.sql.SQLException;
 import java.util.*;
 
-import Utente.User;
-import gestioneContenutiCorso.Course;
+import courseContentManagement.Course;
 import notifier.Notifier;
-import socketDb.SocketDb; 
+import socketDb.SocketDb;
+import user.User; 
 
 /** Gestione dei corsi.
 * 

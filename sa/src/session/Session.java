@@ -1,10 +1,10 @@
-package Sessione;
+package session;
 
 import java.sql.SQLException;
 
-import Utente.User;
-import Utente.User.UserInfo;
 import socketDb.SocketDb;
+import user.User;
+import user.User.UserInfo;
 
 /**
 * Gestione della sessione utente.

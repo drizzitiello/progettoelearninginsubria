@@ -1,4 +1,4 @@
-package gestioneContenutiCorso;
+package courseContentManagement;
 
 import java.io.*;
 import java.net.URL;

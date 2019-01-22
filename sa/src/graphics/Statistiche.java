@@ -16,14 +16,14 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.FindCourse;
-import gestioneContenutiCorso.Resource;
-import gestioneContenutiCorso.Course;
+import courseContentManagement.Course;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.FindCourse;
+import courseContentManagement.Resource;
 import notifier.Notifier;
+import session.Session;
 import socketDb.SocketDb;
 
 public class Statistiche extends MyFrame {

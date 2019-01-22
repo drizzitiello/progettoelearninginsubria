@@ -1,4 +1,4 @@
-package gestioneContenutiCorso;
+package courseContentManagement;
 
 public class Resource {
 	public String name, description, path;

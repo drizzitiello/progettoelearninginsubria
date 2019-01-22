@@ -4,8 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
 import notifier.Notifier;
+import session.Session;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;

@@ -8,9 +8,6 @@ import javax.swing.JOptionPane;
 
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
-
-import Sessione.Session;
-
 import javax.swing.JButton;
 
 import javax.mail.MessagingException;
@@ -19,6 +16,7 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import authService.AuthenticationService;
+import session.Session;
 import socketDb.SocketDb;
 
 public class Login {

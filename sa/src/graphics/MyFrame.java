@@ -5,7 +5,7 @@ import java.sql.SQLException;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import Sessione.Session;
+import session.Session;
 
 public class MyFrame extends JFrame{
 	

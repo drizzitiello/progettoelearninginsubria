@@ -15,9 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import gestioneContenutiCorso.Course;
-import gestioneContenutiCorso.FindCourse;
+import courseContentManagement.Course;
+import courseContentManagement.FindCourse;
+import session.Session;
 
 public class GestisciCorsi extends MyFrame {
 

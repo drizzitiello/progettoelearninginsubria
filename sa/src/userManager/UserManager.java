@@ -1,4 +1,4 @@
-package UserManager;
+package userManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,12 +15,12 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import socketDb.SocketDb;
-import Sessione.Session;
-import Utente.User;
-import Utente.User.UserInfo;
+import user.User;
+import user.User.UserInfo;
 import authService.AuthenticationService;
+import courseManagement.CourseManagement;
 import notifier.Notifier;
-import gestioneCorsi.CourseManagement;
+import session.Session;
 
 /**
 * Modifica e inserimento massivo delle informazioni utente.

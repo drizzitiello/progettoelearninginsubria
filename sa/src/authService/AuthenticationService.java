@@ -16,8 +16,8 @@ import java.math.BigInteger;
 import java.security.*;
 import javax.mail.*;
 
-import Sessione.Session;
 import notifier.Notifier;
+import session.Session;
 import socketDb.SocketDb;
 
 public class AuthenticationService {

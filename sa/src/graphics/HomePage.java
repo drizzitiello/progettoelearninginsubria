@@ -4,9 +4,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import gestioneContenutiCorso.Course;
+import courseContentManagement.Course;
 import notifier.Notifier;
+import session.Session;
 import socketDb.SocketDb;
 
 import javax.swing.JLabel;

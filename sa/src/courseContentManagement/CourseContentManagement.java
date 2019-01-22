@@ -1,12 +1,12 @@
-package gestioneContenutiCorso;
+package courseContentManagement;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import graphics.PaginaCorso;
+import session.Session;
 import socketDb.SocketDb;
-import Sessione.Session;
 
 public class CourseContentManagement {
 	

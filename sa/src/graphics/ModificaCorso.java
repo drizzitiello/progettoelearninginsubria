@@ -16,15 +16,15 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import Utente.User;
-import gestioneContenutiCorso.Content;
-import gestioneContenutiCorso.Course;
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.FindCourse;
-import gestioneContenutiCorso.Resource;
-import gestioneContenutiCorso.Section;
-import gestioneCorsi.CourseManagement;
+import courseContentManagement.Content;
+import courseContentManagement.Course;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.FindCourse;
+import courseContentManagement.Resource;
+import courseContentManagement.Section;
+import courseManagement.CourseManagement;
+import session.Session;
+import user.User;
 
 public class ModificaCorso extends MyFrame {
 

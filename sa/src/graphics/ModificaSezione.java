@@ -14,10 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import Sessione.Session;
-import gestioneContenutiCorso.Course;
-import gestioneContenutiCorso.CourseContentManagement;
-import gestioneContenutiCorso.Section;
+import courseContentManagement.Course;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.Section;
+import session.Session;
 
 public class ModificaSezione extends MyFrame {
 

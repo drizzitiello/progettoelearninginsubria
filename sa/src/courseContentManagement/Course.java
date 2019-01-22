@@ -1,4 +1,4 @@
-package gestioneContenutiCorso;
+package courseContentManagement;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
