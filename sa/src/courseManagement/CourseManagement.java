@@ -6,7 +6,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
 import java.sql.SQLException;
 import java.util.*;
-
 import courseContentManagement.Course;
 import notifier.Notifier;
 import socketDb.SocketDb;
@@ -36,9 +35,9 @@ public class CourseManagement {
 	public void dataInput (String CSV_fileName) throws ClassNotFoundException, SQLException {
         Path pathToFile = Paths.get(CSV_fileName);
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
-                StandardCharsets.US_ASCII)) {		// creiamo un'istanza di BufferedReader
-            String line = br.readLine();			// leggiamo la prima riga del file
-            while (line != null) {					// fino a quando non abbiamo letto tutte le righe
+                StandardCharsets.US_ASCII)) {		
+            String line = br.readLine();			
+            while (line != null) {					
                 String[] attributes = line.split(",");
                 Course course = new Course();
                 course.setCourseCode(Integer.parseInt(attributes[0]));
@@ -48,16 +47,16 @@ public class CourseManagement {
                 course.setDescription(attributes[4]);
                 course.setWeight(Integer.parseInt(attributes[5]));
                 course.setCreator(Integer.parseInt(attributes[6]));
-                courses.add(course);					// aggiungiamo il corso all'array list
-                line = br.readLine();				// leggiamo la prossima riga
+                courses.add(course);					
+                line = br.readLine();				
             }
         } catch (IOException ioe) {
             ioe.printStackTrace();
-        }
-        for (Course a: courses) {						// memorizziamo ogni corso nel database
+        	}
+        for (Course a: courses) {						
         	Object[] params = {a.courseCode, a.name, (Integer) a.activation_year, a.faculty, a.description, a.weight, a.creator};
         	socket.function("import_dati_corsi", params);
-        }
+        	}
 	}
 	
 	/** Creazione di un nuovo corso nel database	*/
@@ -78,7 +77,6 @@ public class CourseManagement {
 		socket.function("modifica_dati_corsi", params);
 	} 
 
-
 	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
 	public void coursesAssignment(int matricola) throws ClassNotFoundException, SQLException {
 		Object[] params = {matricola};
@@ -91,7 +89,7 @@ public class CourseManagement {
 		socket.function("assegna_studenti", params);
 	}
 	
-	/** Assegnamento dei corsi di competenza di piu' studenti al loro piano di studi	*/
+	/** Assegnamento dei corsi di competenza di piu' studenti ai loro piano di studi	*/
 	public void coursesAssignment(List<User> studenti) throws ClassNotFoundException, SQLException {
 		for (User studente : studenti) {
 			Object[] params = {studente.getInfo().student_number};
@@ -118,7 +116,6 @@ public class CourseManagement {
 	public ArrayList<User> whoTeachCourse (Course c) throws Exception {
 		Object[] params = {c.courseCode};
 		ArrayList<Map<String, Object>> matricolaDocente = socket.function("ricerca_docenti", params);
-		
 		ArrayList<Object> matricole = new ArrayList<Object>();
 		for (Map<String, Object> a : matricolaDocente) {
 			matricole.add((int) a.get("docente")); 
