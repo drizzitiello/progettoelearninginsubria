@@ -12,10 +12,10 @@ public class CourseContentManagement {
 	
 	SocketDb socket;
 	
-	public void uploadCourseMaterial(Course cor, Content con) throws Exception {
+	/*public void uploadCourseMaterial(Course cor, Content con) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		cor.setContents(con);
-	}
+	}*/
 	
 	public void createSection(Section s) throws Exception {
 		socket=SocketDb.getInstanceDb();
@@ -97,7 +97,7 @@ public class CourseContentManagement {
 		return risorsa;
 	}
 	
-	public void modifyTitle(int codSezione, String titolo) throws Exception {
+	/*public void modifyTitle(int codSezione, String titolo) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET titolo = '"+titolo+
 				"' WHERE codice_sezione = "+codSezione;
@@ -108,7 +108,7 @@ public class CourseContentManagement {
 		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET is_pubblica = true"+ " WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
-	}
+	}*/
 	
 	public static void viewAsStudent(String corso) {
 		try {

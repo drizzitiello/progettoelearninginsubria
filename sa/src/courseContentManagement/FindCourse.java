@@ -75,7 +75,7 @@ public class FindCourse {
 			    extension = r.path.substring(i+1);
 			}
 			BufferedInputStream in =new BufferedInputStream(new URL(r.path).openStream());
-			Files.copy(in, Paths.get("C:/Users/macri/Desktop/nini."+extension),StandardCopyOption.REPLACE_EXISTING);
+			Files.copy(in, Paths.get("C:/Users/macri/Desktop/"+r.name+"."+extension),StandardCopyOption.REPLACE_EXISTING);
 		
 		} catch (IOException e) {
 			e.printStackTrace();

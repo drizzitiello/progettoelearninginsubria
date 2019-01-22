@@ -8,7 +8,7 @@ import socketDb.SocketDb;
 public class Course {
 	
 	public int courseCode, weight, creator, activation_year;
-	public String name, description, contents, faculty;
+	public String name, description, faculty;
 	SocketDb socket;
 	
 	public Course() {

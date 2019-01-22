@@ -8,6 +8,8 @@ import java.util.Map;
 
 import analytics.CorsoAnalytics;
 import analytics.GlobalAnalytics;
+import courseContentManagement.FindCourse;
+import courseContentManagement.Resource;
 import session.Session;
 import socketDb.SocketDb;
 import user.User;
@@ -33,7 +35,11 @@ public class prova {
 			return;
 		}
 		
-		Session ses = Session.getInstance();
+		FindCourse fc = new FindCourse();
+		Resource r = new Resource(null, null, "", nTentativi, nTentativi, false, null);
+		fc.download(r);
+		
+		/*Session ses = Session.getInstance();
 		ses.create(2);
 		
 		System.out.println(ses.getUser().getInfo().name);
@@ -47,7 +53,7 @@ public class prova {
 		System.out.println(ses.getUser().getInfo().student_number);
 		
 		UserManager um = new UserManager();
-		User user = new User();
+		User user = new User();*/
 		
 		/*String path="C:/Users/macri/Desktop/csvimportutenti.txt";
 		um.csvImportUtente(path);*/
@@ -64,7 +70,7 @@ public class prova {
 		info.tipoUtente=1;
 		um.creaUtente(info);*/
 		
-		user.createFromStudentNumber(34);
+		/*user.createFromStudentNumber(34);
 		System.out.println(user.getInfo().name);
 		System.out.println(user.getInfo().surname);
 		System.out.println(user.getInfo().corsoLaurea);
@@ -83,7 +89,7 @@ public class prova {
 		System.out.println(user.getInfo().strutturaRiferimento);
 		System.out.println(user.getInfo().userType);
 		System.out.println(user.getInfo().registrationYear);
-		System.out.println(user.getInfo().student_number);
+		System.out.println(user.getInfo().student_number);*/
 		//System.out.println(um.modificaDatiUtente(user));
 		
 		/*GlobalAnalytics cs = new GlobalAnalytics();
@@ -96,6 +102,6 @@ public class prova {
 			System.out.println(hh.get(m));
 		}*/
 		
-		ses.destroy();
+		//ses.destroy();
 	}
 }

@@ -83,7 +83,7 @@ public class Notifier {
 		}
 	}
 	
-	public static Course getCorso(int courseName) throws ClassNotFoundException, SQLException {
+	public static Course getCourse(int courseName) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		Course c=new Course();
 		Object[] params = {courseName};

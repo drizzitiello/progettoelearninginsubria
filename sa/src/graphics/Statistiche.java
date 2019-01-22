@@ -75,7 +75,7 @@ public class Statistiche extends MyFrame {
 					try {
 						Map<Integer, Integer> tmc = ga.accessByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : tmc.keySet()) {
-							Course cor = Notifier.getCorso(m);
+							Course cor = Notifier.getCourse(m);
 							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.name+" "
 									+ "nella fascia temporale data : "
 									+ tmc.get(m));
@@ -113,7 +113,7 @@ public class Statistiche extends MyFrame {
 					try {
 						Map<Integer, Integer> tmc = ga.avgMinsOnlineForCourse();
 						for(Integer m : tmc.keySet()) {
-							Course cor = Notifier.getCorso(m);
+							Course cor = Notifier.getCourse(m);
 							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
 									+ " il corso "+cor.name+" : "+tmc.get(m));
 							contentPane.add(tempoMedioConnessioniCorso);
@@ -134,7 +134,7 @@ public class Statistiche extends MyFrame {
 					try {
 						Map<Integer, Integer> dpc = ga.downloadsForCourse();
 						for(Integer m : dpc.keySet()) {
-							Course cor = Notifier.getCorso(m);
+							Course cor = Notifier.getCourse(m);
 							JLabel numeroAccessiCorso = new JLabel("Numero di download per"
 									+ " il corso "+cor.name+" : "+dpc.get(m));
 							contentPane.add(numeroAccessiCorso);
