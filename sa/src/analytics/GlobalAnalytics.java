@@ -11,6 +11,7 @@ import Utente.Utente;
 
 /**
 * Servizi di analisi globale della piattaforma.
+* L'utilizzo della classe e' riservato esclusivamente agli utenti amministratori
 * 
 *	<P>	Progetto d'esame: SeatIn.
 *	<P>	Obiettivo: Realizzazione di una semplice piattaforma di elearning
@@ -26,45 +27,77 @@ public class GlobalAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
      private SocketDb socket;
-     private Sessione session;
-     private boolean enabled = false;
      
-     /**
-      * Istanzia l'oggetto relativo al SocketDb di sistema.
-      * @throws Exception 
-      */	
- 
+    /**
+     * Istanzia l'oggetto relativo al SocketDb di sistema.
+     * @throws Exception 
+     */	
      public GlobalAnalytics() throws Exception {
          this.socket = SocketDb.getInstanceDb();
-         this.session = Sessione.getInstance();
-         this.enabled = this.session.info().tipoUtente == Utente.admin;
      }
 
-     public int utentiConnessi() throws ClassNotFoundException, SQLException{
+
+   /**
+    * Ottiene il numero di utenti attualmente online sulla piattaforma
+    * @return numero di utenti loggati sulla piattaforma 
+    * @throws ClassNotFoundException 
+    * @throws SQLException 
+    */	
+     public int onlineUsers() throws ClassNotFoundException, SQLException{
         ArrayList<Map<String,Object>> response = this.socket.query("SELECT CAST(COUNT(matricola) as integer) AS uc FROM sessione WHERE fine_sessione IS NULL");
         return (int) response.get(0).get("uc");
      }
 
-     public int accessiIntervallo(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{ 
-        Object[] p = {dateStart, dateEnd};
-        ArrayList<Map<String,Object>> r = this.socket.query("SELECT CAST(COUNT(matricola) as integer) AS cnt FROM sessione WHERE inizio_sessione BETWEEN to_timestamp(?, 'YYYY-MM-DD HH24:MI') AND to_timestamp(?, 'YYYY-MM-DD HH24:MI')", p);
-        return (int) r.get(0).get("cnt");
+
+   /**
+    * Ottiene il numero di accessi effettuati per ogni corso, dato un intervallo di tempo definito.
+    * i parametri dateStart e dateEnd avranno il seguente formato: YYYY-MM-DD HH24:MI
+    * @return mappa che associa un codice corso alla relativa somma degli accessi 
+    * @throws ClassNotFoundException 
+    * @throws SQLException 
+    */	
+     public Map<Integer, Integer> accessByInterval(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{ 
+         
+         Map<Integer, Integer> accessList = new HashMap<Integer, Integer>();
+      
+         Object[] p = {dateStart, dateEnd};
+         ArrayList<Map<String,Object>> r = this.socket.function("get_accessi_by_corso", p);
+        
+         for (Map<String, Object> b : r) {
+            accessList.put((int) b.get("cod_corso"),(int) b.get("conteggio_accesi"));
+         }
+         
+         return accessList;
      }
 
 
-    public Map<Integer, Integer> tempoMedioPerCorso() throws ClassNotFoundException, SQLException{
-     //in minuti
+   /**
+    * Ottiene il tempo medio di connessione espresso in minuti di ogni corso
+    *
+    * @return mappa che associa un codice corso al relativo tempo medio di accesso espresso in minuti
+    * @throws ClassNotFoundException 
+    * @throws SQLException 
+    */	
+    public Map<Integer, Integer> avgMinsOnlinePerCorso() throws ClassNotFoundException, SQLException{
 
-        Map<Integer, Integer> tempiMedi = new HashMap<Integer, Integer>();
+        Map<Integer, Integer> avgMins = new HashMap<Integer, Integer>();
 
         ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corsi", new Object[] {});
         for (Map<String, Object> b : r) {
-            tempiMedi.put((int) b.get("cod_corso"),(int) b.get("tempo_medio"));
+            avgMins.put((int) b.get("cod_corso"),(int) b.get("tempo_medio"));
         }
        
-        return tempiMedi;
+        return avgMins;
     }
 
+
+   /**
+    * Ottiene il numero complessivo di download delle risorse relativi a ogni corso
+    *
+    * @return mappa che associa un codice corso al relativo numero complessivo di download
+    * @throws ClassNotFoundException 
+    * @throws SQLException 
+    */	
     public Map<Integer, Integer> downloadsPerCorso() throws ClassNotFoundException, SQLException{
      
         Map<Integer, Integer> downloads = new HashMap<Integer, Integer>();
@@ -81,21 +114,21 @@ public class GlobalAnalytics {
 
 
 /*
- STORED FUNCTION: get_downloads_corsi()
+
+STORED FUNCTION: get_accessi_by_corso(dateStart, dateEnd)
  --------------------------------------------------------------
-   DROP FUNCTION get_downloads_corsi();
-   CREATE OR REPLACE FUNCTION get_downloads_corsi () 
+   DROP FUNCTION get_accessi_by_corso(VARCHAR, VARCHAR);
+   CREATE OR REPLACE FUNCTION get_accessi_by_corso (p_date_start VARCHAR, p_date_end VARCHAR) 
          RETURNS TABLE (
                            cod_corso INT,
-                           conteggio_download INT
+                           conteggio_accesi INT
          ) 
       AS $$
       BEGIN
          RETURN QUERY SELECT codice_corso,
-                             COUNT(download.matricola)
-                      FROM download
-                      JOIN risorsa ON risorsa.codice_risorsa = download.codice_risorsa
-                      JOIN sezione ON sezione.codice_sezione = risorsa.codice_sezione
+                             CAST(COUNT(matricola) AS INTEGER)
+                      FROM accesso_corso
+                      WHERE inizio_accesso BETWEEN to_timestamp(p_date_start, 'YYYY-MM-DD HH24:MI') AND to_timestamp(p_date_end, 'YYYY-MM-DD HH24:MI')
                       GROUP BY codice_corso;
       END; $$ 
       
@@ -103,24 +136,15 @@ public class GlobalAnalytics {
 
 
 
+
+ STORED FUNCTION: get_downloads_corsi()
+ --------------------------------------------------------------
+   ***** Da aggiornare ****
+
+
+
  STORED FUNCTION: get_tempo_medio_corsi()
  --------------------------------------------------------------
-     DROP FUNCTION get_tempo_medio_corsi();
-    CREATE OR REPLACE FUNCTION get_tempo_medio_corsi () 
-          RETURNS TABLE (
-                            cod_corso INT,
-                            tempo_medio INT
-          ) 
-       AS $$
-       BEGIN
-          RETURN QUERY SELECT codice_corso, CAST(ceil(AVG((DATE_PART('day', fine_accesso - inizio_accesso) * 24 * 60 + 
-                                                 DATE_PART('hour', fine_accesso - inizio_accesso)) * 60 +
-                                                 DATE_PART('minute', fine_accesso - inizio_accesso))) as integer)
-                        FROM accesso_corso
-                        WHERE fine_accesso IS NOT NULL
-                        GROUP BY codice_corso;
-       END; $$ 
-       
-       LANGUAGE 'plpgsql';
+   ***** Da aggiornare ****
 
-      */
+*/
