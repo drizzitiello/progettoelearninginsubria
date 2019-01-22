@@ -31,7 +31,8 @@ public class AuthenticationService {
 		/** Fornisce le informazioni dell'utente dal database	*/
 		private void getInfoFromDb (String email) throws ClassNotFoundException, SQLException {
 			AuthenticationService.email=email;
-			String sqlScript = "SELECT password_hash, codice_attivazione, tentativi_login, matricola FROM utente WHERE email = '" + email + "';";
+			String sqlScript = "SELECT password_hash, codice_attivazione, tentativi_login, matricola"
+					+ " FROM utente WHERE email = '" + email + "';";
 			ArrayList<Map<String, Object>> takeInfo = new ArrayList<Map<String, Object>>();
 			takeInfo = socket.query(sqlScript);
 			for (Map<String, Object> a : takeInfo) {
@@ -123,14 +124,14 @@ public class AuthenticationService {
 	
 	/** Invia via mail un nuovo codice di attivazione e una nuova password	*/
 	public void sendNewLoginCredentials (String email) throws SendFailedException, MessagingException, Exception {
-		Notifier.send_professor_email("mailIstituzionale", "pwdmailIstit", email,
-				 "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "+ createActivationCode());
+		Notifier.sendSystemMail(email, "NUOVA PWD", "PWD: "+randomString()+" CODATTIVAZIONE: "
+				+ createActivationCode());
 	}
 	
 	/** Controlla se il codice di attivazione inserito e' corretto
 	 * @return check di controllo */
-	private boolean controlActivationCode (int codice_inserito) {
-		return (codice_inserito == user.activation_code);
+	private boolean controlActivationCode (int codeInserted) {
+		return (codeInserted == user.activation_code);
 	}
 	
 	/** Verifica se un utente e' bloccato

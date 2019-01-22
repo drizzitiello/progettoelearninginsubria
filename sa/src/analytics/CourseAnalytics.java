@@ -23,7 +23,7 @@ import session.Session;
 */
 
 
-public class CorsoAnalytics {
+public class CourseAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
      private SocketDb socket;
@@ -33,7 +33,7 @@ public class CorsoAnalytics {
       * Istanzia l'oggetto relativo al SocketDb di sistema.
       * @throws Exception 
       */
-     public CorsoAnalytics(int courseCode) throws Exception {
+     public CourseAnalytics(int courseCode) throws Exception {
          this.socket = SocketDb.getInstanceDb();
          this.courseCode = courseCode;
      }
@@ -87,18 +87,3 @@ public class CorsoAnalytics {
          else return (int) r.get(0).get("tempo_medio");
      }
 }
-
-
-/*
- STORED FUNCTION: get_downloads_intervallo(codice_corso, dataStart, dataEnd)
- --------------------------------------------------------------
-  ***** Da aggiornare ****
-
-
- STORED FUNCTION: get_tempo_medio_corso(codice_corso)
- --------------------------------------------------------------
-  ***** Da aggiornare ****
-
-
-    */
- 

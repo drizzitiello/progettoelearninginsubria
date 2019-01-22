@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import analytics.CorsoAnalytics;
+import analytics.CourseAnalytics;
 import courseContentManagement.Course;
 import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
@@ -43,7 +43,7 @@ public class StatisticheCorso extends MyFrame {
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		try {
-			CorsoAnalytics ca = new CorsoAnalytics(cor.courseCode);
+			CourseAnalytics ca = new CourseAnalytics(cor.courseCode);
 			
 			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.onlineUsers());
 			contentPane.add(numeroAccessiCorso);

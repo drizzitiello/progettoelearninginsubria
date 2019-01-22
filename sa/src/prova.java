@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
-import analytics.CorsoAnalytics;
+import analytics.CourseAnalytics;
 import analytics.GlobalAnalytics;
 import courseContentManagement.FindCourse;
 import courseContentManagement.Resource;

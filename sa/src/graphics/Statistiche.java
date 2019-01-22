@@ -16,7 +16,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import analytics.CorsoAnalytics;
+import analytics.CourseAnalytics;
 import analytics.GlobalAnalytics;
 import courseContentManagement.Course;
 import courseContentManagement.CourseContentManagement;

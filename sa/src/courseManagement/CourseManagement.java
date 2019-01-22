@@ -144,8 +144,8 @@ public class CourseManagement {
 	public boolean studenteEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException {
 		boolean response = false;
 		Object[] params = {student.getInfo().student_number, c.courseCode};
-		ArrayList<Map<String, Object>> esito = socket.function("verifica_iscrizione_studente", params);
-		for (Map<String, Object> a : esito) {
+		ArrayList<Map<String, Object>> outcome = socket.function("verifica_iscrizione_studente", params);
+		for (Map<String, Object> a : outcome) {
 			response = a.containsValue(true); 	}
 		return response;
 	}

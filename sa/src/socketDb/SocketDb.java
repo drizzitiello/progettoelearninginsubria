@@ -78,17 +78,17 @@ public class SocketDb {
 	}
 	
 	
-	private ArrayList<Map<String,Object>> getResults(ResultSet ObjResults) throws SQLException, ClassNotFoundException {
+	private ArrayList<Map<String,Object>> getResults(ResultSet objResults) throws SQLException, ClassNotFoundException {
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
-		ResultSetMetaData rsmd= ObjResults.getMetaData();
-		while(ObjResults.next()) {			
+		ResultSetMetaData rsmd= objResults.getMetaData();
+		while(objResults.next()) {			
 			Map<String, Object> m = new HashMap<String, Object>();
 			for(int i=1; i<=rsmd.getColumnCount();i++) {
-				m.put(rsmd.getColumnName(i).toLowerCase(), ObjResults.getObject(i));
+				m.put(rsmd.getColumnName(i).toLowerCase(), objResults.getObject(i));
 			}
 			hm.add(m);
 		}
-		ObjResults.close();
+		objResults.close();
 		destroySql();
 		return hm;
 	}
