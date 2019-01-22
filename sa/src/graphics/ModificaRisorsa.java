@@ -18,7 +18,7 @@ import gestioneContenutiCorso.GestioneContenutoCorso;
 import gestioneContenutiCorso.Risorse;
 import gestioneContenutiCorso.Sezione;
 
-public class ModificaRisorsa extends JFrame {
+public class ModificaRisorsa extends MyFrame {
 
 	private JPanel contentPane;
 

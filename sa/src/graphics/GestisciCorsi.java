@@ -19,7 +19,7 @@ import Sessione.Sessione;
 import gestioneContenutiCorso.Corso;
 import gestioneContenutiCorso.ReperisciCorso;
 
-public class GestisciCorsi extends JFrame {
+public class GestisciCorsi extends MyFrame {
 
 	private JPanel contentPane;
 

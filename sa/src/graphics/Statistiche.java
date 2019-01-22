@@ -26,7 +26,7 @@ import gestioneContenutiCorso.Corso;
 import notifier.Notifier;
 import socketDb.SocketDb;
 
-public class Statistiche extends JFrame {
+public class Statistiche extends MyFrame {
 	
 	/*Mostrare il numero complessivo di utenti contemporaneamente connessi a seatIn 
 	2. Mostrare il numero complessivo accessi per corso in una fascia temporale 

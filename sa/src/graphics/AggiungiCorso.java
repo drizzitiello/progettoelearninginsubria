@@ -19,7 +19,7 @@ import gestioneContenutiCorso.Corso;
 import gestioneCorsi.GestioneCorsi;
 import socketDb.SocketDb;
 
-public class AggiungiCorso extends JFrame {
+public class AggiungiCorso extends MyFrame {
 
 	private JPanel contentPane;
 

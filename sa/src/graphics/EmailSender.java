@@ -17,7 +17,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class EmailSender extends JFrame {
+public class EmailSender extends MyFrame {
 
 	private JPanel contentPane;
 	private JTextField destinatari;

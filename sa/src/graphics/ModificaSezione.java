@@ -19,7 +19,7 @@ import gestioneContenutiCorso.Corso;
 import gestioneContenutiCorso.GestioneContenutoCorso;
 import gestioneContenutiCorso.Sezione;
 
-public class ModificaSezione extends JFrame {
+public class ModificaSezione extends MyFrame {
 
 	private JPanel contentPane;
 

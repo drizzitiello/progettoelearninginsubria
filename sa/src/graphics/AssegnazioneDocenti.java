@@ -19,7 +19,7 @@ import gestioneContenutiCorso.Corso;
 import gestioneCorsi.GestioneCorsi;
 import notifier.Notifier;
 
-public class AssegnazioneDocenti extends JFrame {
+public class AssegnazioneDocenti extends MyFrame {
 
 	private JPanel contentPane;
 

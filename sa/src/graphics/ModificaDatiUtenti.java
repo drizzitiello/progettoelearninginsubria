@@ -18,7 +18,7 @@ import javax.swing.border.EmptyBorder;
 import Sessione.Sessione;
 import socketDb.SocketDb;
 
-public class ModificaDatiUtenti extends JFrame {
+public class ModificaDatiUtenti extends MyFrame {
 
 	private JPanel contentPane;
 

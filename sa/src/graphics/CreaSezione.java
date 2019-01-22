@@ -19,7 +19,7 @@ import gestioneContenutiCorso.GestioneContenutoCorso;
 import gestioneContenutiCorso.Sezione;
 import notifier.Notifier;
 
-public class CreaSezione extends JFrame {
+public class CreaSezione extends MyFrame {
 
 	private JPanel contentPane;
 

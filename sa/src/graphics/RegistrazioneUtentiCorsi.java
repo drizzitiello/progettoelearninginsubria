@@ -17,7 +17,7 @@ import Sessione.Sessione;
 import UserManager.UserManager;
 import gestioneCorsi.GestioneCorsi;
 
-public class RegistrazioneUtentiCorsi extends JFrame {
+public class RegistrazioneUtentiCorsi extends MyFrame {
 
 	private JPanel contentPane;
 

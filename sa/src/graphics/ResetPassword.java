@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
-public class ResetPassword extends JFrame {
+public class ResetPassword extends MyFrame {
 
 	private JPanel contentPane;
 	private JTextField codAttivazione;

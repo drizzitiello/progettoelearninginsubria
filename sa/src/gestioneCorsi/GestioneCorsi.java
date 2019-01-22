@@ -165,6 +165,17 @@ public class GestioneCorsi {
 				Notifier.send_docente_email("usr", "pwd", "docente", "iscrizione a corso", "iscritto a");
 		}
 	}
+	
+	/** Creazione di una nuova sessione relativa a un corso	*/
+	public void createSession (Utente u, Corso c) throws ClassNotFoundException, SQLException {
+        socket.query("DELETE FROM accesso_corso WHERE matricola = "+ u.getInfo().matricola + " AND codice_corso = " + c.codCorso + " AND fine_accesso IS NULL;");
+        socket.query("INSERT INTO accesso_corso (matricola, codice_corso, inizio_accesso) VALUES (" + u.getInfo().matricola + ", " + c.codCorso + ", NOW());");
+	} 
+	
+	/** Terminazione di una sessione relativa a un corso	*/
+	public void deleteSession (Utente u, Corso c) throws ClassNotFoundException, SQLException {
+		socket.query("UPDATE accesso_corso SET fine_accesso = NOW() WHERE matricola = " + u.getInfo().matricola + " AND codice_corso = " + c.codCorso + " AND fine_accesso IS NULL");
+	} 
 }
 // STORED PROCEDURE
 /* 
