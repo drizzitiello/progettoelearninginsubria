@@ -78,35 +78,35 @@ public class CourseManagement {
 	} 
 
 	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
-	public void coursesAssignment(int matricola) throws ClassNotFoundException, SQLException {
-		Object[] params = {matricola};
+	public void coursesAssignment(int studentNumber) throws ClassNotFoundException, SQLException {
+		Object[] params = {studentNumber};
 		socket.function("assegna_studenti", params);
 	}
 	
 	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
-	public void coursesAssignment(User studente) throws ClassNotFoundException, SQLException {
-		Object[] params = {studente.getInfo().student_number};
+	public void coursesAssignment(User student) throws ClassNotFoundException, SQLException {
+		Object[] params = {student.getInfo().student_number};
 		socket.function("assegna_studenti", params);
 	}
 	
 	/** Assegnamento dei corsi di competenza di piu' studenti ai loro piano di studi	*/
-	public void coursesAssignment(List<User> studenti) throws ClassNotFoundException, SQLException {
-		for (User studente : studenti) {
-			Object[] params = {studente.getInfo().student_number};
+	public void coursesAssignment(List<User> students) throws ClassNotFoundException, SQLException {
+		for (User student : students) {
+			Object[] params = {student.getInfo().student_number};
 			socket.function("assegna_studenti", params);
 		}
 	}
 	
 	/** Assegnamento di un corso di competenza ad un docente	*/
-	public void coursesAssignment(User docente, Course c) throws ClassNotFoundException, SQLException {
-		Object[] params = {docente.getInfo().student_number, c.name };
+	public void coursesAssignment(User professor, Course c) throws ClassNotFoundException, SQLException {
+		Object[] params = {professor.getInfo().student_number, c.name };
 		socket.function("assegna_docente", params);
 	}
 	
 	/** Assegnamento di piu' corsi ad un docente	*/
-	public void coursesAssignment(User docente, List<Course> lista_corsi) throws ClassNotFoundException, SQLException {
-		for (Course a : lista_corsi) {
-			Object[] params = {docente.getInfo().student_number, a.name };
+	public void coursesAssignment(User professor, List<Course> courseList) throws ClassNotFoundException, SQLException {
+		for (Course a : courseList) {
+			Object[] params = {professor.getInfo().student_number, a.name };
 			socket.function("assegna_docente", params);
 		}
 	}
@@ -115,50 +115,49 @@ public class CourseManagement {
 	 * 	@return	array con le matricole dei docenti cercati	*/
 	public ArrayList<User> whoTeachCourse (Course c) throws Exception {
 		Object[] params = {c.courseCode};
-		ArrayList<Map<String, Object>> matricolaDocente = socket.function("ricerca_docenti", params);
-		ArrayList<Object> matricole = new ArrayList<Object>();
-		for (Map<String, Object> a : matricolaDocente) {
-			matricole.add((int) a.get("docente")); 
+		ArrayList<Map<String, Object>> professorNumbers = socket.function("ricerca_docenti", params);
+		ArrayList<Object> professorNumber = new ArrayList<Object>();
+		for (Map<String, Object> a : professorNumbers) {
+			professorNumber.add((int) a.get("docente")); 
 			}
-		return this.professorsData(matricole);
+		return this.professorsData(professorNumber);
 	} 
 	
 	/** Estrae i dati principali di un docente dal database e li memorizza 
 	 * 	@return lista dei docenti	*/
-	private ArrayList<User> professorsData(ArrayList<Object> matricole) throws Exception {
-		ArrayList<User> docenti = new ArrayList<User>();
-		ArrayList<Map<String,Object>> datiDocente;
-		for (Object a: matricole) {
-			datiDocente = socket.function("get_dati_docente", new Object[] {a});
-			for (Map<String, Object> b : datiDocente) {
+	private ArrayList<User> professorsData(ArrayList<Object> professorNumber) throws Exception {
+		ArrayList<User> professors = new ArrayList<User>();
+		ArrayList<Map<String,Object>> professorData;
+		for (Object a: professorNumber) {
+			professorData = socket.function("get_dati_docente", new Object[] {a});
+			for (Map<String, Object> b : professorData) {
 				User u = new User();
 				u.createFromDbResult(b);
-				docenti.add(u);
+				professors.add(u);
 			}
 		}
-		return docenti;
+		return professors;
 	}
 	
 	/** Verifica se uno studente risulta iscritto a un corso	
 	 * 	@return check di controllo	*/
-	public boolean studenteEnrolledInTheCourse (User studente, Course c) throws ClassNotFoundException, SQLException {
-		boolean risposta = false;
-		Object[] params = {studente.getInfo().student_number, c.courseCode};
+	public boolean studenteEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException {
+		boolean response = false;
+		Object[] params = {student.getInfo().student_number, c.courseCode};
 		ArrayList<Map<String, Object>> esito = socket.function("verifica_iscrizione_studente", params);
 		for (Map<String, Object> a : esito) {
-			risposta = a.containsValue(true); 	}
-		return risposta;
+			response = a.containsValue(true); 	}
+		return response;
 	}
 	
 	/** Permette a uno studente di iscriversi a un corso	
 	 * @throws Exception */
-	public void signUpForCourse (User studente, Course c) throws Exception {
-		Object[] params = {studente.getInfo().student_number, (short) c.courseCode};
+	public void signUpForCourse (User student, Course c) throws Exception {
+		Object[] params = {student.getInfo().student_number, (short) c.courseCode};
 		socket.function("iscrivi_studente_al_corso", params);
-		//invio email a utente stesso e ai docenti titolari del corso
-		ArrayList<User> doc = whoTeachCourse(c);
+		ArrayList<User> prof = whoTeachCourse(c);
 		Notifier.send_professor_email("usr", "pwd", "utente", "iscrizione a corso", "iscritto a");
-		for(User d : doc){
+		for(User d : prof){
 				Notifier.send_professor_email("usr", "pwd", "docente", "iscrizione a corso", "iscritto a");
 		}
 	}
@@ -174,29 +173,3 @@ public class CourseManagement {
 		socket.query("UPDATE accesso_corso SET fine_accesso = NOW() WHERE matricola = " + u.getInfo().student_number + " AND codice_corso = " + c.courseCode + " AND fine_accesso IS NULL");
 	} 
 }
-// STORED PROCEDURE
-/* 
--- FUNCTION: public.iscrivi_studente_al_corso(integer, smallint)
-
--- DROP FUNCTION public.iscrivi_studente_al_corso(integer, smallint);
-
-CREATE OR REPLACE FUNCTION public.iscrivi_studente_al_corso(
-	matr integer,
-	cod_corso smallint)
-    RETURNS void
-    LANGUAGE 'plpgsql'
-
-    COST 100
-    VOLATILE 
-AS $BODY$
-
-BEGIN
-	INSERT INTO iscritto_a (matricola, codice_corso)
-	VALUES (matr, cod_corso);
-END;
-
-$BODY$;
-
-ALTER FUNCTION public.iscrivi_studente_al_corso(integer, smallint)
-    OWNER TO postgres;
-*/

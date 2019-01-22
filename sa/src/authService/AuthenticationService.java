@@ -25,7 +25,7 @@ public class AuthenticationService {
 		private int activation_code;
 		private Integer login_attempts;
 		private String pwd_hash;
-		private int matricola;
+		private int student_number;
 		private boolean isBlocked = false;	
 		
 		/** Fornisce le informazioni dell'utente dal database	*/
@@ -38,7 +38,7 @@ public class AuthenticationService {
 				user.pwd_hash = (String) a.get("password_hash");
 				user.activation_code = (int) a.get("codice_attivazione");
 				user.login_attempts = (Integer) a.get("tentativi_login");
-				user.matricola = (int) a.get("matricola");
+				user.student_number = (int) a.get("matricola");
 			}
 		}
 	}
@@ -46,7 +46,7 @@ public class AuthenticationService {
 	//CAMPI
 	InfoFromDb user = new InfoFromDb();
 	private SocketDb socket;
-	private int matricola;
+	private int studentNumber;
 	private static String email;
 	
 	/** Costruttore: assegnamento del socket */
@@ -62,9 +62,9 @@ public class AuthenticationService {
 			user.getInfoFromDb(mail);
 			if (controlActiveUser()) {
 				if (controlAttempts()) {
-					if (controlloCredentials(pass, mail)) {
+					if (controlCredentials(pass, mail)) {
 						resetLoginAttempts();
-						Session.getInstance().create(user.matricola);
+						Session.getInstance().create(user.student_number);
 						return "Credenziali corrette";
 					}
 					else 
@@ -90,7 +90,7 @@ public class AuthenticationService {
 	/** Verifica se i dati inseriti sono corretti e se si tratta del primo tentativo di accesso
 	 * @return check di controllo */
 	private boolean activation (String mail, String pass) throws Exception {
-		return (this.controlloCredentials(pass, mail) && user.login_attempts == null);
+		return (this.controlCredentials(pass, mail) && user.login_attempts == null);
 	}
 	
 	/** Memorizza la nuova password inserita (in fase di attivazione o nel servizio di password dimenticata) */
@@ -152,7 +152,7 @@ public class AuthenticationService {
 	/** Genera una stringa casuale composta da 16 caratteri (tra lettere e cifre) utilizzabile come password 
 	 * @return stringa random */
 	public static String randomString () {
-		StringBuilder finale = new StringBuilder();
+		StringBuilder finalString = new StringBuilder();
 		String SALTCHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
         StringBuilder salt = new StringBuilder();
         Random rnd = new Random();
@@ -160,8 +160,8 @@ public class AuthenticationService {
             int index = (int) (rnd.nextFloat() * SALTCHARS.length());
             salt.append(SALTCHARS.charAt(index)); 
         }
-        String risultato = new String(salt.toString());
-        char [] chr= risultato.toCharArray();
+        String result = new String(salt.toString());
+        char [] chr= result.toCharArray();
         for(int i=0; i<16; i++)	{
         	if (Character.isLetter(chr[i]) && i%2==0) 
         		chr[i] = Character.toUpperCase(chr[i]); 
@@ -169,18 +169,18 @@ public class AuthenticationService {
         		chr[i] = Character.toLowerCase(chr[i]);
        	}
         for(int i=0; i<16; i++)	
-        	finale.append(Character.toString(chr[i]));
-	    return finale.toString();	
+        	finalString.append(Character.toString(chr[i]));
+	    return finalString.toString();	
 	}	
 	
 	/** Verifica che l'utente sia memorizzato nel database 
 	 * @return check di controllo */
-	private boolean controlUserExistence (String email_digitata) throws Exception { 
-		Object[] o = {email_digitata};
+	private boolean controlUserExistence (String mailInserted) throws Exception { 
+		Object[] o = {mailInserted};
 		ArrayList<Map<String,Object>> result_set = socket.function("get_matricola_from_mail", o);
 		if (!result_set.isEmpty()) {	
 			for (Map<String, Object> a : result_set)
-				matricola = (int) a.get("matricola");
+				studentNumber = (int) a.get("matricola");
 		}	// se la matricola e' stata restituita dalla funzione allora la memorizziamo
 		return (!result_set.isEmpty());
 			
@@ -200,8 +200,8 @@ public class AuthenticationService {
 	
 	/** Verifica che le credenziali inserite coincidano con quelle presenti nel database
 	 * @return check di controllo */
-	private boolean controlloCredentials (String pass, String mail_digitata) throws Exception {
-		if(this.toHash(pass).equals(user.pwd_hash) && mail_digitata.equals(this.email)) {return true;}
+	private boolean controlCredentials (String pass, String mailInserted) throws Exception {
+		if(this.toHash(pass).equals(user.pwd_hash) && mailInserted.equals(this.email)) {return true;}
 		else return false;
 	}
 }

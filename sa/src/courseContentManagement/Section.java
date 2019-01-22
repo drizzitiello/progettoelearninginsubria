@@ -24,9 +24,9 @@ public class Section {
 		this.sonOf=sonOf;
 	}
 
-	public void addResource(String name, String descr, String path, int sectionCode, int codRisorsa,
-			boolean visibilita, String tipo) {
-		Resource ris=new Resource(name, descr, path, sectionCode, codRisorsa, visibilita, tipo);
+	public void addResource(String name, String descr, String path, int sectionCode, int resourceCode,
+			boolean visibility, String type) {
+		Resource ris=new Resource(name, descr, path, sectionCode, resourceCode, visibility, type);
 		resources.add(ris);
 	}
 

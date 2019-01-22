@@ -111,7 +111,7 @@ public class ModificaCorso extends MyFrame {
 		FindCourse rc = new FindCourse();
 		Content c=null;
 			try {
-				c = rc.getContenutCourse(cor);
+				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
 			}

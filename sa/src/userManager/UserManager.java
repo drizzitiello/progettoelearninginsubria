@@ -74,7 +74,7 @@ public class UserManager {
                        user.getInfo().registrationYear,
                        user.getInfo().faculty,
                        user.getInfo().careerStatus,
-                       user.getInfo().strutturaRiferimento,
+                       user.getInfo().referenceStructure,
                        user.getInfo().student_number
                      };
         
@@ -147,7 +147,7 @@ public class UserManager {
                     info.registrationYear,
                     info.faculty,
                     info.careerStatus,
-                    info.strutturaRiferimento,
+                    info.referenceStructure,
                     info.student_number,
                     randomPassword,
                     randomCodAttivaz
@@ -218,7 +218,7 @@ public class UserManager {
                     else i.registrationYear = Integer.parseInt(attributes[5]);
                     i.faculty = attributes[6];
                     i.careerStatus = attributes[7];
-                    i.strutturaRiferimento = attributes[8];
+                    i.referenceStructure = attributes[8];
 
                     users.add(i);
                     line = br.readLine();				// prossima riga
@@ -241,112 +241,4 @@ public class UserManager {
 
         return true;
     }
-
-
-
-
- }
-
-
-
-
- /*
- STORED FUNCTION: modifica_dati_utente(...)
- --------------------------------------------------------------
-    -- FUNCTION: public.modifica_dati_utente(character varying, character varying, character varying, smallint, smallint, character varying, character varying, character varying, integer)
-
-    -- DROP FUNCTION public.modifica_dati_utente(character varying, character varying, character varying, smallint, smallint, character varying, character varying, character varying, integer);
-
-    CREATE OR REPLACE FUNCTION public.modifica_dati_utente(
-        p_nome character varying,
-        p_cognome character varying,
-        p_email character varying,
-        p_tipo_utente smallint,
-        p_anno_immatricolazione smallint,
-        p_corso_laurea character varying,
-        p_stato_carriera character varying,
-        p_struttura_riferimento character varying,
-        p_matricola integer)
-        RETURNS void
-        LANGUAGE 'plpgsql'
-
-        COST 100
-        VOLATILE 
-    AS $BODY$
-        BEGIN
-            UPDATE utente SET
-                            nome = p_nome,
-                            cognome = p_cognome,
-                            email = p_email,
-                            tipo_utente = p_tipo_utente
-                        WHERE
-                            matricola = p_matricola;
-
-            UPDATE studente SET
-                            anno_immatricolazione = p_anno_immatricolazione,
-                            corso_laurea = p_corso_laurea,
-                            stato_carriera = p_stato_carriera
-                        WHERE
-                            matricola = p_matricola;
-
-            UPDATE docente SET
-                            struttura_riferimento = p_struttura_riferimento
-                        WHERE
-                            matricola = p_matricola;
-            
-            UPDATE amministratore SET
-                            struttura_riferimento = p_struttura_riferimento
-                        WHERE
-                            matricola = p_matricola;
-                            
-                            
-        END; $BODY$;
-
-
-
-
-
-
-STORED FUNCTION: crea_utente(...)
- --------------------------------------------------------------
-    -- FUNCTION: public.crea_utente(character varying, character varying, character varying, smallint, smallint, character varying, character varying, character varying, integer, character varying, integer)
-
-    -- DROP FUNCTION public.crea_utente(character varying, character varying, character varying, smallint, smallint, character varying, character varying, character varying, integer, character varying, integer);
-
-    CREATE OR REPLACE FUNCTION public.crea_utente(
-        p_nome character varying,
-        p_cognome character varying,
-        p_email character varying,
-        p_tipo_utente smallint,
-        p_anno_immatricolazione smallint,
-        p_corso_laurea character varying,
-        p_stato_carriera character varying,
-        p_struttura_riferimento character varying,
-        p_matricola integer,
-        p_random_password character varying,
-        p_random_codatt integer)
-        RETURNS void
-        LANGUAGE 'plpgsql'
-
-        COST 100
-        VOLATILE 
-    AS $BODY$
-        BEGIN
-
-        INSERT INTO utente (matricola, nome, cognome, email, tipo_utente, password_hash, codice_attivazione)
-                    VALUES (p_matricola, p_nome, p_cognome, p_email, p_tipo_utente, MD5(p_random_password), p_random_codatt);
-        
-        IF p_tipo_utente = 3 THEN
-            INSERT INTO studente (matricola, anno_immatricolazione, corso_laurea, stato_carriera)
-                    VALUES (p_matricola, p_anno_immatricolazione, p_corso_laurea, p_stato_carriera);
-        ELSIF p_tipo_utente = 2 THEN
-            INSERT INTO docente (matricola, struttura_riferimento)
-                    VALUES (p_matricola, p_struttura_riferimento);
-        ELSIF p_tipo_utente = 1 THEN
-            INSERT INTO amministratore (matricola, struttura_riferimento)
-                    VALUES (p_matricola, p_struttura_riferimento);
-        END IF;
-                            
-        END; $BODY$;
-
- */
+}

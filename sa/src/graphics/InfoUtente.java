@@ -80,7 +80,7 @@ public class InfoUtente extends MyFrame {
 			contentPane.add(statoCarriera);
 		}
 		else {
-			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUser().getInfo().strutturaRiferimento);
+			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: "+ses.getUser().getInfo().referenceStructure);
 			contentPane.add(strutturaRiferimento);
 		}
 		
@@ -143,7 +143,7 @@ public class InfoUtente extends MyFrame {
 			JTextField modificastatoCarriera = new JTextField(""+user.getInfo().careerStatus);
 			
 			JLabel strutturaRiferimento = new JLabel("Struttura di riferimento: ");
-			JTextField modificaStrutturaRiferimento = new JTextField(""+user.getInfo().strutturaRiferimento);
+			JTextField modificaStrutturaRiferimento = new JTextField(""+user.getInfo().referenceStructure);
 			
 			if(user.getInfo().userType==1) {
 				contentPane.add(annoImmatricolazione);
@@ -183,7 +183,7 @@ public class InfoUtente extends MyFrame {
 	                else user.getInfo().registrationYear = Integer.parseInt(modificaAnnoImmatricolazione.getText());
 					user.getInfo().faculty=modificaCorsoLaurea.getText();
 					user.getInfo().careerStatus=modificastatoCarriera.getText();
-					user.getInfo().strutturaRiferimento=modificaStrutturaRiferimento.getText();
+					user.getInfo().referenceStructure=modificaStrutturaRiferimento.getText();
 					try {
 						UserManager um = new UserManager();
 						um.modifiyUserData(user);

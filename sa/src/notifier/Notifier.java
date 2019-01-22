@@ -61,10 +61,10 @@ public class Notifier {
 	    Transport.send(msg,from,password);
 	}
 	
-	public static Course getCourse(String nomeCorso) throws ClassNotFoundException, SQLException {
+	public static Course getCourse(String courseName) throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
 		Course c=new Course();
-		Object[] params = {nomeCorso};
+		Object[] params = {courseName};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
 		if(cc.size()>0) {
 		for(Map<String, Object> m : cc) {

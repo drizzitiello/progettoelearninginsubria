@@ -33,7 +33,7 @@ public class FindCourse {
 		return courses;
 	}
 	
-	public Content getContenutCourse(Course c) throws ClassNotFoundException, SQLException{
+	public Content getContentCourse(Course c) throws ClassNotFoundException, SQLException{
 		Content cont=new Content();
 		socket=SocketDb.getInstanceDb();
 		String sql,sql2;
@@ -45,10 +45,10 @@ public class FindCourse {
 			String title=(String) m.get("titolo");
 			String descr=(String) m.get("descrizione");
 			Boolean visibility=(Boolean) m.get("is_pubblica");
-			int matricola=(int) m.get("matricola");
+			int studentNumber=(int) m.get("matricola");
 			int courseCode=(int) m.get("cod_corso");
 			Integer sonOf=(Integer) m.get("figlio_di");
-			Section sec=cont.addSection(title, descr, visibility, sectionCode, matricola, courseCode, sonOf);
+			Section sec=cont.addSection(title, descr, visibility, sectionCode, studentNumber, courseCode, sonOf);
 			sql2 = "getContenutoCorso1";
 			Object[] s2= {sectionCode};
 			ArrayList<Map<String, Object>> obj2=socket.function(sql2,s2);

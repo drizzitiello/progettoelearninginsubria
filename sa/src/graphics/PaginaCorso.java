@@ -84,7 +84,7 @@ public class PaginaCorso extends JFrame {
 			try {
 				cor= Notifier.getCourse(corso);
 				FindCourse rc = new FindCourse();
-				c = rc.getContenutCourse(cor);
+				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e) {
 				e.printStackTrace();
 			}

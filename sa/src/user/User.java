@@ -32,7 +32,7 @@ public class User {
 	       public Integer registrationYear;
 	       public String faculty;
 	       public String careerStatus;
-	       public String strutturaRiferimento;
+	       public String referenceStructure;
 	}
     
     /* Dichiarazione livelli utente */
@@ -98,7 +98,7 @@ public class User {
         if(row.containsKey("stato_carriera"))
             this.myInfo.careerStatus           = (String) row.get("stato_carriera");
         if(row.containsKey("struttura_riferimento"))
-            this.myInfo.strutturaRiferimento    = (String) row.get("struttura_riferimento");
+            this.myInfo.referenceStructure    = (String) row.get("struttura_riferimento");
        
         this.isCreated = true;
     }
@@ -127,46 +127,3 @@ public class User {
     }
 
  }
-
-
-
- /*
- STORED FUNCTION: getDatiUtente(matricola)
- --------------------------------------------------------------
-    DROP FUNCTION getdatiutente(integer);
-CREATE OR REPLACE FUNCTION getDatiUtente (p_matricola INT) 
-        RETURNS TABLE (
-                        matricola INT,
-                        nome VARCHAR,
-                        cognome VARCHAR,
-                        email VARCHAR,
-                        tipoutente SMALLINT,
-                        anno_immatricolazione SMALLINT,
-                        corso_laurea VARCHAR,
-                        stato_carriera VARCHAR,
-                        struttura_riferimento VARCHAR
-        ) 
-    AS $$
-    BEGIN
-        RETURN QUERY SELECT
-                        utente.matricola,
-                        utente.nome,
-                        utente.cognome,
-                        utente.email,
-                        utente.tipo_utente,
-                        studente.anno_immatricolazione,
-                        studente.corso_laurea,
-                        studente.stato_carriera,
-                        struttura.struttura_riferimento
-                     FROM
-                        utente
-                     LEFT JOIN studente ON studente.matricola = utente.matricola
-                     LEFT JOIN struttura ON struttura.matricola = utente.matricola
-                     WHERE
-                        utente.matricola = p_matricola;
-    END; $$ 
-    
-    LANGUAGE 'plpgsql';
- */
-
-
