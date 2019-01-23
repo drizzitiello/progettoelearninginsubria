@@ -6,10 +6,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.naming.NamingException;
+
 import analytics.CourseAnalytics;
 import analytics.GlobalAnalytics;
 import courseContentManagement.FindCourse;
 import courseContentManagement.Resource;
+import notifier.Notifier;
 import session.Session;
 import socketDb.SocketDb;
 import user.User;
@@ -36,7 +39,7 @@ public class prova {
 		}
 		
 		FindCourse fc = new FindCourse();
-		Resource r = new Resource(null, null, "", nTentativi, nTentativi, false, null);
+		Resource r = new Resource("aaa", null, "https://images-na.ssl-images-amazon.com/images/I/81tpQALJVgL._SL1500_.jpg", nTentativi, nTentativi, false, null);
 		fc.download(r);
 		
 		/*Session ses = Session.getInstance();

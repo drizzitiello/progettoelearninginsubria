@@ -1,7 +1,14 @@
 package notifier;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 import java.util.Properties;
 
@@ -13,6 +20,12 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
 
 import courseContentManagement.Course;
 import socketDb.SocketDb;
@@ -37,28 +50,31 @@ public class Notifier {
 		return false;
 	}
 
-	public static void sendSystemMail(String too, String subject, String body) throws AddressException, MessagingException {
-		String to = checkValidityMail(too);
+	public static boolean sendSystemMail(String to, String subject, String body) throws AddressException, MessagingException {
+		if(checkValidityEmail(to)) {
+			String password=systemMailPwd;
+			String from=systemMail;
+		    	       
+		    String host = "smtp.office365.com";
+		   
+			Properties props = System.getProperties();
+		    props.put("mail.smtp.host",host);
+		    props.put("mail.smtp.starttls.enable", "true");
+		    props.put("mail.smtp.port",587);
+		    
+		    Session session = Session.getInstance(props);
+		    
+		    Message msg = new MimeMessage(session);
+		    msg.setFrom(new InternetAddress(from));
+		    msg.setRecipients(Message.RecipientType.TO,InternetAddress.parse(to, false));
+		    msg.setSubject(subject);
+		    msg.setText(body);
+		    
+		    Transport.send(msg,from,password);
+		    return true;
+		}
 		
-		String password=systemMailPwd;
-		String from=systemMail;
-	    	       
-	    String host = "smtp.office365.com";
-	   
-		Properties props = System.getProperties();
-	    props.put("mail.smtp.host",host);
-	    props.put("mail.smtp.starttls.enable", "true");
-	    props.put("mail.smtp.port",587);
-	    
-	    Session session = Session.getInstance(props);
-	    
-	    Message msg = new MimeMessage(session);
-	    msg.setFrom(new InternetAddress(from));
-	    msg.setRecipients(Message.RecipientType.TO,InternetAddress.parse(to, false));
-	    msg.setSubject(subject);
-	    msg.setText(body);
-	    
-	    Transport.send(msg,from,password);
+		return false;
 	}
 	
 	public static Course getCourse(String courseName) throws ClassNotFoundException, SQLException {
@@ -116,33 +132,43 @@ public class Notifier {
 		return email;
 	}
 	
-	public static void send_professor_email(String usr, String pwd, String too, String subject, String body) throws SendFailedException, MessagingException{
-		String to = checkValidityMail(too);
-		
-		String password=pwd;
-		String username=usr;
-	    	       
-	    String host = "smtp.office365.com";
-	    String from=username;
-	   
-		Properties props = System.getProperties();
-	    props.put("mail.smtp.host",host);
-	    props.put("mail.smtp.starttls.enable", "true");
-	    props.put("mail.smtp.port",587);
-	    
-	    Session session = Session.getInstance(props);
-	    
-	    Message msg = new MimeMessage(session);
-	    msg.setFrom(new InternetAddress(from));
-	    msg.setRecipients(Message.RecipientType.TO,InternetAddress.parse(to, false));
-	    msg.setSubject(subject);
-	    msg.setText(body);
-	    
-	    Transport.send(msg,username,password);
+	public static boolean send_professor_email(String usr, String pwd, String too, String subject, String body) throws SendFailedException, MessagingException{
+		if(checkValidityEmail(too)) {
+			String password=pwd;
+			String username=usr;
+		    	       
+		    String host = "smtp.office365.com";
+		    String from=username;
+		   
+			Properties props = System.getProperties();
+		    props.put("mail.smtp.host",host);
+		    props.put("mail.smtp.starttls.enable", "true");
+		    props.put("mail.smtp.port",587);
+		    
+		    Session session = Session.getInstance(props);
+		    
+		    Message msg = new MimeMessage(session);
+		    msg.setFrom(new InternetAddress(from));
+		    msg.setRecipients(Message.RecipientType.TO,InternetAddress.parse(too, false));
+		    msg.setSubject(subject);
+		    msg.setText(body);
+		    Transport.send(msg,username,password);
+		    return true;
+		}
+		return false;
 	}
-	
-	private static String checkValidityMail(String to) {
-		return to;
-	}
+	    
+	    public static boolean checkValidityEmail(String email) {
+	    	boolean isValid = false;
+	    	try {
+	    		InternetAddress addr = new InternetAddress(email);
+	    		addr.validate();
+	    		isValid = true;
+	    	}
+	    	catch(AddressException e) {
+	    		return false;
+	    	}
+	    	return isValid;
+	    }
 	
 }

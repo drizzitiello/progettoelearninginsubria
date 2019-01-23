@@ -63,6 +63,7 @@ public class AssegnazioneDocenti extends MyFrame {
 				}
 			}
 		});
+		contentPane.add(cercaCorsi);
 		
 		setVisible(true);
 	}
