@@ -11,7 +11,7 @@ import socketDb.SocketDb;
 
 public class CourseContentManagement {
 	
-	SocketDb socket;
+	private SocketDb socket;
 	
 	public void uploadCourseMaterial(Course cor, Content con) throws Exception {
 		socket=SocketDb.getInstanceDb();
