@@ -17,7 +17,7 @@ import socketDb.SocketDb;
 
 public class FindCourse {
 	
-	SocketDb socket;
+	private SocketDb socket;
 	
 	public ArrayList<Course> getCourses() throws ClassNotFoundException, SQLException {
 		socket=SocketDb.getInstanceDb();
