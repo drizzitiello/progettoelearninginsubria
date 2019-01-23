@@ -28,19 +28,31 @@ public class StatisticheCorso extends MyFrame {
 	 3. Derivare il tempo medio di connessione degli studenti alle pagine del corso */
 
 	private JPanel contentPane;
+	private StatisticheCorso thisframe;
 
 	/**
 	 * Create the frame.
 	 * @param cor 
 	 * @param ses 
 	 */
-	public StatisticheCorso(Session ses, Course cor) {
+	public StatisticheCorso(PaginaCorso pc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisframe=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				pc.setVisible(true);
+				thisframe.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		try {
 			CourseAnalytics ca = new CourseAnalytics(cor.courseCode);

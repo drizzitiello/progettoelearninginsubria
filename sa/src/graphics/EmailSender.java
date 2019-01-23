@@ -15,6 +15,7 @@ import java.awt.FlowLayout;
 import javax.mail.MessagingException;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class EmailSender extends MyFrame {
@@ -23,6 +24,7 @@ public class EmailSender extends MyFrame {
 	private JTextField destinatari;
 	private JTextField testoOggetto;
 	private JTextField testoCorpo;
+	private EmailSender thisFrame;
 
 
 	/**
@@ -30,13 +32,24 @@ public class EmailSender extends MyFrame {
 	 * @param ses 
 	 * @param pwd 
 	 */
-	public EmailSender(Session ses, String pwd) {
+	public EmailSender(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisFrame=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hp.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel to = new JLabel("To:");
 		contentPane.add(to);

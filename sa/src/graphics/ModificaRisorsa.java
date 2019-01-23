@@ -21,18 +21,30 @@ import courseContentManagement.Section;
 public class ModificaRisorsa extends MyFrame {
 
 	private JPanel contentPane;
+	private ModificaRisorsa thisframe;
 
 	/**
 	 * Create the frame.
 	 * @param i 
 	 */
-	public ModificaRisorsa(int codRisorsa) {
+	public ModificaRisorsa(ModificaCorso mc, int codRisorsa) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisframe=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mc.setVisible(true);
+				thisframe.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		Resource r = null;
 		CourseContentManagement gc = new CourseContentManagement();
@@ -104,10 +116,11 @@ public class ModificaRisorsa extends MyFrame {
 				CourseContentManagement gc = new CourseContentManagement();
 				try {
 					gc.cancelResource(codRisorsa);
+					mc.setVisible(true);
+					thisframe.setVisible(false);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
-				//torna indietro
 			}
 		});
 		contentPane.add(cancellaQuestaRisorsa);

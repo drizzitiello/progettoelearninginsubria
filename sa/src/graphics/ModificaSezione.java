@@ -22,6 +22,7 @@ import session.Session;
 public class ModificaSezione extends MyFrame {
 
 	private JPanel contentPane;
+	private ModificaSezione thisframe;
 
 	/**
 	 * Create the frame.
@@ -29,13 +30,24 @@ public class ModificaSezione extends MyFrame {
 	 * @param ses 
 	 * @param string 
 	 */
-	public ModificaSezione(Session ses, Course cor, int codSezione) {
+	public ModificaSezione(ModificaCorso mc, Session ses, Course cor, int codSezione) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisframe=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mc.setVisible(true);
+				thisframe.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		Section s = null;
 		CourseContentManagement gc = new CourseContentManagement();
@@ -91,7 +103,7 @@ public class ModificaSezione extends MyFrame {
 		JButton creaRisorsa = new JButton("Crea risorsa");
 		creaRisorsa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreaRisorsa ms = new CreaRisorsa(ses, cor);
+				CreaRisorsa ms = new CreaRisorsa(thisframe, ses, cor);
 			}
 		});
 		contentPane.add(creaRisorsa);
@@ -102,10 +114,11 @@ public class ModificaSezione extends MyFrame {
 				CourseContentManagement gc = new CourseContentManagement();
 				try {
 					gc.cancelSection(codSezione);
+					mc.setVisible(true);
+					thisframe.setVisible(false);
 				} catch (ClassNotFoundException | SQLException e1) {
 					e1.printStackTrace();
 				}
-				//torna indietro
 			}
 		});
 		contentPane.add(cancellaQuestaSezione);

@@ -22,19 +22,31 @@ import session.Session;
 public class CreaSezione extends MyFrame {
 
 	private JPanel contentPane;
+	private CreaSezione thisframe;
 
 	/**
 	 * Create the frame.
 	 * @param cor 
 	 * @param ses 
 	 */
-	public CreaSezione(Session ses, Course cor) {
+	public CreaSezione(ModificaCorso mc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisframe=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mc.setVisible(true);
+				thisframe.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel tit = new JLabel("Titolo: ");
 		contentPane.add(tit);

@@ -20,18 +20,30 @@ import userManager.UserManager;
 public class RegistrazioneUtentiCorsi extends MyFrame {
 
 	private JPanel contentPane;
+	private RegistrazioneUtentiCorsi thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public RegistrazioneUtentiCorsi(Session ses) {
+	public RegistrazioneUtentiCorsi(HomePage hp, Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisFrame=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hp.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel inserisci = new JLabel("Inserisci percorso file csv da caricare");
 		contentPane.add(inserisci);

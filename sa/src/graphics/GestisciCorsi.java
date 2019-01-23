@@ -22,19 +22,31 @@ import session.Session;
 public class GestisciCorsi extends MyFrame {
 
 	private JPanel contentPane;
+	private GestisciCorsi thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public GestisciCorsi(Session ses, String pwd) {
+	public GestisciCorsi(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 800, 600);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisFrame=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hp.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		FindCourse rc = new FindCourse();
 		try {
@@ -55,7 +67,8 @@ public class GestisciCorsi extends MyFrame {
 				JButton modificaCorso = new JButton("Modifica Corso");
 				modificaCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModificaCorso ac = new ModificaCorso(ses, c);
+						thisFrame.setVisible(false);
+						ModificaCorso ac = new ModificaCorso(thisFrame, ses, c);
 					}
 				});
 				contentPane.add(modificaCorso);
@@ -66,7 +79,7 @@ public class GestisciCorsi extends MyFrame {
 		JButton aggiungiCorso = new JButton("Aggiungi corso");
 		aggiungiCorso.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AggiungiCorso ac = new AggiungiCorso(ses, pwd);
+				AggiungiCorso ac = new AggiungiCorso(thisFrame, ses, pwd);
 			}
 		});
 		contentPane.add(aggiungiCorso);

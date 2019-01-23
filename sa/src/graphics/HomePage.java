@@ -30,6 +30,7 @@ public class HomePage extends MyFrame {
 	private JTextField corso;
 	private JButton last;
 	private ArrayList<JButton> la;
+	private HomePage hp;
 
 	/**
 	 * Create the frame.
@@ -43,11 +44,26 @@ public class HomePage extends MyFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
+		hp=this;
+		
 		try {
 			ses.create(ses.getUser().getInfo().student_number);
 		} catch (Exception e2) {
 			e2.printStackTrace();
 		}
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					Login l = new Login();
+					hp.setVisible(false);
+				} catch (ClassNotFoundException | SQLException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel cerca = new JLabel("Cerca corsi");
 		contentPane.add(cerca);
@@ -66,7 +82,8 @@ public class HomePage extends MyFrame {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(ses, corso.getText(), false);
+								PaginaCorso pc = new PaginaCorso(hp, ses, corso.getText(), false);
+								hp.setVisible(false);
 							}
 						});
 						last=b;
@@ -98,7 +115,8 @@ public class HomePage extends MyFrame {
 						JButton b = new JButton((String) m.get("nome"));
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(ses, b.getText(), false);
+								PaginaCorso pc = new PaginaCorso(hp, ses, b.getText(), false);
+								hp.setVisible(false);
 							}
 						});
 						la.add(b);
@@ -117,7 +135,8 @@ public class HomePage extends MyFrame {
 			JButton email = new JButton("Accedi all'email");
 			email.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					EmailSender eh = new EmailSender(ses, pwd);
+					EmailSender eh = new EmailSender(hp, ses, pwd);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(email);
@@ -126,7 +145,8 @@ public class HomePage extends MyFrame {
 		JButton visualizzaInfo = new JButton("Informazioni personali");
 		visualizzaInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InfoUtente eh = new InfoUtente(ses, pwd);
+				InfoUtente eh = new InfoUtente(hp, ses, pwd);
+				hp.setVisible(false);
 			}
 		});
 		contentPane.add(visualizzaInfo);
@@ -135,7 +155,8 @@ public class HomePage extends MyFrame {
 			JButton modificaDatiUtenti = new JButton("Modifica dati utenti");
 			modificaDatiUtenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ModificaDatiUtenti mdu = new ModificaDatiUtenti(ses, pwd);
+					ModificaDatiUtenti mdu = new ModificaDatiUtenti(hp, ses, pwd);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(modificaDatiUtenti);
@@ -143,7 +164,8 @@ public class HomePage extends MyFrame {
 			JButton aggiungiCorsi = new JButton("Gestisci corsi");
 			aggiungiCorsi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					GestisciCorsi mdu = new GestisciCorsi(ses, pwd);
+					GestisciCorsi mdu = new GestisciCorsi(hp, ses, pwd);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(aggiungiCorsi);
@@ -151,7 +173,8 @@ public class HomePage extends MyFrame {
 			JButton statistiche = new JButton("Analisi statistiche");
 			statistiche.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Statistiche mdu = new Statistiche(ses);
+					Statistiche mdu = new Statistiche(hp, ses);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(statistiche);
@@ -159,7 +182,8 @@ public class HomePage extends MyFrame {
 			JButton registraUtenti = new JButton("Registra nuovi utenti e corsi");
 			registraUtenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					RegistrazioneUtentiCorsi mdu = new RegistrazioneUtentiCorsi(ses);
+					RegistrazioneUtentiCorsi mdu = new RegistrazioneUtentiCorsi(hp, ses);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(registraUtenti);
@@ -167,7 +191,8 @@ public class HomePage extends MyFrame {
 			JButton assegnaDocenti = new JButton("Assegna docenti a corsi");
 			assegnaDocenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AssegnazioneDocenti mdu = new AssegnazioneDocenti(ses);
+					AssegnazioneDocenti mdu = new AssegnazioneDocenti(hp, ses);
+					hp.setVisible(false);
 				}
 			});
 			contentPane.add(assegnaDocenti);

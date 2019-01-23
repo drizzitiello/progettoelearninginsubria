@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import graphics.HomePage;
 import graphics.PaginaCorso;
 import session.Session;
 import socketDb.SocketDb;
@@ -110,9 +111,9 @@ public class CourseContentManagement {
 		socket.query(sql);
 	}
 	
-	public static void viewAsStudent(String course) {
+	public static void viewAsStudent(HomePage thisFrame, String course) {
 		try {
-			PaginaCorso mc = new PaginaCorso(Session.getInstance(), course, true);
+			PaginaCorso mc = new PaginaCorso(thisFrame, Session.getInstance(), course, true);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}

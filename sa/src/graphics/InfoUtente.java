@@ -29,19 +29,31 @@ import java.util.Map;
 public class InfoUtente extends MyFrame {
 
 	private JPanel contentPane;
+	private InfoUtente thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public InfoUtente(Session ses, String pwd) {
+	public InfoUtente(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new GridLayout(0, 4, 0, 0));
+		
+		thisFrame=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hp.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel matricola = new JLabel("Matricola: "+ses.getUser().getInfo().student_number);
 		contentPane.add(matricola);

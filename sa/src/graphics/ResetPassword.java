@@ -26,17 +26,29 @@ public class ResetPassword extends MyFrame {
 	private JTextField codAttivazione;
 	private JTextField newPwd;
 	private JTextField newPwd2;
+	private ResetPassword thisframe;
 
 	/**
 	 * Create the frame.
 	 */
-	public ResetPassword() {
+	public ResetPassword(JFrame l) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisframe=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				l.setVisible(true);
+				thisframe.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
 		
 		JLabel codice = new JLabel("Inserire codice di attivazione");
 		contentPane.add(codice);

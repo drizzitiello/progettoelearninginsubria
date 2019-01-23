@@ -42,10 +42,11 @@ public class PaginaCorso extends JFrame {
 
 	/**
 	 * Create the frame.
+	 * @param hp 
 	 * @param corso 
 	 * @throws ClassNotFoundException 
 	 */
-	public PaginaCorso(Session ses, String corso, boolean visualComeStudente) {
+	public PaginaCorso(HomePage hp, Session ses, String corso, boolean visualComeStudente) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -59,21 +60,25 @@ public class PaginaCorso extends JFrame {
 		
 		user=ses.getUser();
 		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				hp.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
+		
 		addWindowListener(new java.awt.event.WindowAdapter() {
 		    @Override
 		    public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-		        if (JOptionPane.showConfirmDialog(thisFrame, 
-		            "Are you sure you want to close this window?", "Close Window?", 
-		            JOptionPane.YES_NO_OPTION,
-		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){
-		        	try {
-						gc.deleteSession(user, cor);
-						ses.destroy();
-					} catch (ClassNotFoundException | SQLException e) {
-						e.printStackTrace();
-					}
-		            System.exit(0);
-		        }
+		       try {
+					gc.deleteSession(user, cor);
+					ses.destroy();
+				} catch (ClassNotFoundException | SQLException e) {
+					e.printStackTrace();
+				}
+		        System.exit(0);
 		    }
 		});
 		
@@ -247,21 +252,23 @@ public class PaginaCorso extends JFrame {
 				JButton analisiCorso = new JButton("Analisi statistiche corso");
 				analisiCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						StatisticheCorso mc = new StatisticheCorso(ses, cor);
+						thisFrame.setVisible(false);
+						StatisticheCorso mc = new StatisticheCorso(thisFrame, ses, cor);
 					}
 				});
 				contentPane.add(analisiCorso);
 				JButton modificaCorso = new JButton("Modifica corso");
 				modificaCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModificaCorso mc = new ModificaCorso(ses, cor);
+						thisFrame.setVisible(false);
+						ModificaCorso mc = new ModificaCorso(thisFrame, ses, cor);
 					}
 				});
 				contentPane.add(modificaCorso);
 				JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
 				visualizzaComeStudente.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						CourseContentManagement.viewAsStudent(cor.name);
+						CourseContentManagement.viewAsStudent(hp, cor.name);
 					}
 				});
 				contentPane.add(visualizzaComeStudente);
@@ -322,14 +329,16 @@ public class PaginaCorso extends JFrame {
 					JButton analisiCorso = new JButton("Analisi statistiche corso");
 					analisiCorso.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							StatisticheCorso mc = new StatisticheCorso(ses, cor);
+							thisFrame.setVisible(false);
+							StatisticheCorso mc = new StatisticheCorso(thisFrame, ses, cor);
 						}
 					});
 					contentPane.add(analisiCorso);
 					JButton modificaCorso = new JButton("Modifica corso");
 					modificaCorso.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							ModificaCorso mc = new ModificaCorso(ses, cor);
+							thisFrame.setVisible(false);
+							ModificaCorso mc = new ModificaCorso(thisFrame, ses, cor);
 						}
 					});
 					contentPane.add(modificaCorso);

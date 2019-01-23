@@ -19,7 +19,7 @@ import authService.AuthenticationService;
 import session.Session;
 import socketDb.SocketDb;
 
-public class Login {
+public class Login{
 
 	private JFrame frame;
 	private JTextField pwd;
@@ -78,10 +78,12 @@ public class Login {
 				try {
 					String log = as.login(email.getText(), pwd.getText());
 					if(log.equals("Credenziali corrette")) {
+						frame.setVisible(false);
 						new HomePage(Session.getInstance(), pwd.getText());
 					}
 					else if(log.equals("Procedura Attivazione")) {
-						new ResetPassword();
+						frame.setVisible(false);
+						new ResetPassword(frame);
 					}
 					else {
 						JOptionPane.showMessageDialog(loginButton, log);
@@ -118,6 +120,7 @@ public class Login {
 			}
 		});
 		frame.getContentPane().add(recuperoButton);
+		frame.setVisible(true);
 	}
-
+	
 }
