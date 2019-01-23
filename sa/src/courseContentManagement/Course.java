@@ -9,7 +9,7 @@ public class Course {
 	
 	public int courseCode, weight, creator, activation_year;
 	public String name, description, faculty;
-	SocketDb socket;
+	private SocketDb socket;
 	
 	public Course() {
 		
