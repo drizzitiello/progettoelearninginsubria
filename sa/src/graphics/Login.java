@@ -5,6 +5,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
 
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
@@ -22,7 +23,7 @@ import socketDb.SocketDb;
 public class Login{
 
 	private JFrame frame;
-	private JTextField pwd;
+	private JPasswordField pwd;
 	private JTextField email;
 	AuthenticationService as;
 
@@ -69,7 +70,7 @@ public class Login{
 		
 		JLabel pwdLabel = new JLabel("Password");
 		
-		pwd = new JTextField();
+		pwd = new JPasswordField();
 		pwd.setColumns(10);
 		
 		JButton loginButton = new JButton("Login");

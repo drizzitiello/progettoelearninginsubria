@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -48,28 +49,27 @@ public class ModificaDatiUtenti extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
+		Box matricole = Box.createVerticalBox();
+		Box modifiche = Box.createVerticalBox();
 		Object[] params= {};
 		try {
 			ArrayList<Map<String,Object>> hm = SocketDb.getInstanceDb().function("getutentiregistrati", params);
-			ArrayList<JLabel> ajl = new ArrayList<JLabel>();
 			ArrayList<JButton> ajb = new ArrayList<JButton>();
 			for(Map<String,Object> m : hm) {
-				JLabel utente = new JLabel("Matricola n. "+m.get("matricola"));
-				contentPane.add(utente);
-				ajl.add(utente);
-				JButton modifica = new JButton("Modifica dati utente");
+				JButton modifica = new JButton("Matricola n. "+m.get("matricola")+": modifica dati utente");
 				modifica.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						InfoUtente iu = new InfoUtente(ses,m.get("matricola"));
 					}
 				});
-				contentPane.add(modifica);
+				modifiche.add(modifica);
 				ajb.add(modifica);
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
 		}
+		contentPane.add(matricole);
+		contentPane.add(modifiche);
 		setVisible(true);
 	}
-
 }

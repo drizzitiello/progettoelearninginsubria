@@ -2,6 +2,7 @@ package graphics;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 
 import notifier.Notifier;
@@ -23,7 +24,7 @@ public class EmailSender extends MyFrame {
 	private JPanel contentPane;
 	private JTextField destinatari;
 	private JTextField testoOggetto;
-	private JTextField testoCorpo;
+	private JTextArea testoCorpo;
 	private EmailSender thisFrame;
 
 
@@ -68,9 +69,10 @@ public class EmailSender extends MyFrame {
 		JLabel corpo = new JLabel("Corpo del messaggio:");
 		contentPane.add(corpo);
 		
-		testoCorpo = new JTextField();
+		testoCorpo = new JTextArea();
 		contentPane.add(testoCorpo);
-		testoCorpo.setColumns(50);
+		testoCorpo.setColumns(30);
+		testoCorpo.setRows(20);
 		
 		JButton bottoneInvio = new JButton("Invia");
 		bottoneInvio.addActionListener(new ActionListener() {

@@ -8,11 +8,15 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EmptyBorder;
 
 import courseContentManagement.Course;
@@ -52,18 +56,21 @@ public class GestisciCorsi extends MyFrame {
 		try {
 			ArrayList<Course> ali = rc.getCourses();
 			for(Course c : ali) {
-				JLabel codiceCorso = new JLabel("Codice corso: "+((Integer) c.courseCode).toString());
-				contentPane.add(codiceCorso);
-				JLabel nome = new JLabel("Nome: "+c.name);
-				contentPane.add(nome);
-				JLabel annoAttivazione = new JLabel("Anno attivazione: "+String.valueOf(c.activation_year));
-				contentPane.add(annoAttivazione);
-				JLabel facolta = new JLabel("Facolta: "+c.faculty);
-				contentPane.add(facolta);
-				JLabel descrizione = new JLabel("Descrizione: "+c.description);
-				contentPane.add(descrizione);
-				JLabel peso = new JLabel("CFU: "+((Integer) c.weight).toString());
-				contentPane.add(peso);
+				Box corso = Box.createVerticalBox();
+				JLabel codiceCorso = new JLabel("  Codice corso: "+((Integer) c.courseCode).toString());
+				corso.add(codiceCorso);
+				JLabel nome = new JLabel("  Nome: "+c.name);
+				corso.add(nome);
+				JLabel annoAttivazione = new JLabel("  Anno attivazione: "+String.valueOf(c.activation_year));
+				corso.add(annoAttivazione);
+				JLabel facolta = new JLabel("  Facolta: "+c.faculty);
+				corso.add(facolta);
+				String descr = "  Descrizione: "+c.description;
+				if (descr.length()>35) descr="  Descrizione: "+c.description.substring(0, 5)+"...";
+				JLabel descrizione = new JLabel(descr);
+				corso.add(descrizione);
+				JLabel peso = new JLabel("  CFU: "+((Integer) c.weight).toString()+"  ");
+				corso.add(peso);
 				JButton modificaCorso = new JButton("Modifica Corso");
 				modificaCorso.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
@@ -71,7 +78,8 @@ public class GestisciCorsi extends MyFrame {
 						ModificaCorso ac = new ModificaCorso(thisFrame, ses, c);
 					}
 				});
-				contentPane.add(modificaCorso);
+				corso.add(modificaCorso);
+				contentPane.add(corso);
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
@@ -84,6 +92,25 @@ public class GestisciCorsi extends MyFrame {
 		});
 		contentPane.add(aggiungiCorso);
 		setVisible(true);
+	}
+	
+	public String addLinebreaks(String input, int maxLineLength) {
+	    StringTokenizer tok = new StringTokenizer(input, " ");
+	    StringBuilder output = new StringBuilder(input.length());
+	    int lineLen = 0;
+	    while (tok.hasMoreTokens()) {
+	        String word = tok.nextToken();
+
+	        if (lineLen + word.length() > maxLineLength) {
+	            output.append("<br>");
+	            lineLen = 0;
+	        }
+	        output.append(word);
+	        output.append("\n");
+	        lineLen += word.length();
+	    }
+	    output.append("</html>");
+	    return output.toString();
 	}
 
 }

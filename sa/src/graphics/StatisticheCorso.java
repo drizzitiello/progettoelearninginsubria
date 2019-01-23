@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.Map;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -71,18 +72,24 @@ public class StatisticheCorso extends MyFrame {
 			contentPane.add(dataFine);
 			dataFine.setColumns(10);
 			
+			Box ab = Box.createVerticalBox();
+			
 			JButton downloadButton = new JButton("Calcola il n. di utenti che hanno effettuato download");
 			downloadButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					Map<Integer, Integer> downloads;
 					try {
+						if(ab.getComponentCount()!=0) {
+							ab.removeAll();
+						}
 						downloads = ca.downloadByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : downloads.keySet()) {
 							CourseContentManagement gcc = new CourseContentManagement();
 							Resource r = gcc.getResource(m);
 							JLabel nDownloadRisorsaPerTempo = new JLabel("N. utenti che hanno effettuato il download"
 									+ "della risorsa "+r.name+" : "+downloads.get(m));
-							contentPane.add(nDownloadRisorsaPerTempo);
+							//contentPane.add(nDownloadRisorsaPerTempo);
+							ab.add(nDownloadRisorsaPerTempo);
 							contentPane.revalidate();
 							validate();
 							repaint();
@@ -93,6 +100,7 @@ public class StatisticheCorso extends MyFrame {
 				}
 			});
 			contentPane.add(downloadButton);
+			contentPane.add(ab);
 			
 			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+
 			ca.avgMinsOnline());

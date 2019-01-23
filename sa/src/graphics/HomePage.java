@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
+import javax.swing.Box;
 
 //public class HomePage extends JFrame {
 public class HomePage extends MyFrame {
@@ -72,11 +73,13 @@ public class HomePage extends MyFrame {
 		contentPane.add(corso);
 		corso.setColumns(10);
 		
+		Box verticalBox = Box.createVerticalBox();
+		
 		JButton cercaCorsi = new JButton("Cerca");
 		cercaCorsi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
-					if(last!=null)contentPane.remove(last);
+					if(last!=null)verticalBox.remove(last);
 					Course i = Notifier.getCourse(corso.getText());
 					if(i!=null) {
 						JButton b = new JButton(corso.getText());
@@ -87,7 +90,7 @@ public class HomePage extends MyFrame {
 							}
 						});
 						last=b;
-						contentPane.add(b);
+						verticalBox.add(b);
 						contentPane.revalidate();
 					    validate();
 					}
@@ -100,17 +103,22 @@ public class HomePage extends MyFrame {
 			}
 		});
 		contentPane.add(cercaCorsi);
+		contentPane.add(verticalBox);
+		
+		Box verticalBox2 = Box.createVerticalBox();
 		
 		JButton corsiAssegnati = new JButton("I miei corsi");
 		corsiAssegnati.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(la!=null) for(JButton j : la) {
-						contentPane.remove(j);contentPane.revalidate();validate();
+						verticalBox2.remove(j);
+						contentPane.revalidate();validate();
 					}
 					ArrayList<Map<String, Object>> hm;
 					Object[] param = {ses.getUser().getInfo().student_number};
 					hm = SocketDb.getInstanceDb().function("getcorsiutente", param);
+					
 					for(Map<String,Object> m : hm) {
 						JButton b = new JButton((String) m.get("nome"));
 						b.addActionListener(new ActionListener() {
@@ -120,7 +128,7 @@ public class HomePage extends MyFrame {
 							}
 						});
 						la.add(b);
-						contentPane.add(b);
+						verticalBox2.add(b);
 						}
 					contentPane.revalidate();
 					validate();
@@ -130,6 +138,7 @@ public class HomePage extends MyFrame {
 			}
 		});
 		contentPane.add(corsiAssegnati);
+		contentPane.add(verticalBox2);
 		
 		if(ses.getUser().getInfo().userType!=1) {
 			JButton email = new JButton("Accedi all'email");
@@ -150,6 +159,8 @@ public class HomePage extends MyFrame {
 			}
 		});
 		contentPane.add(visualizzaInfo);
+		
+		
 		
 		if(ses.getUser().getInfo().userType==3) {
 			JButton modificaDatiUtenti = new JButton("Modifica dati utenti");
