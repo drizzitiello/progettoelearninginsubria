@@ -251,9 +251,11 @@ public class PaginaCorso extends JFrame {
 							JButton risorsa = new JButton(r.name);
 							risorsa.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
+									thisFrame.setVisible(false);
 									PaginaCartella pc = new PaginaCartella(r, thisFrame);
 								}
 							});
+							se.add(risorsa);
 						}
 						else {
 							JButton risorsa = new JButton(r.name);

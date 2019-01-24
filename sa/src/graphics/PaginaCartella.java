@@ -80,6 +80,7 @@ public class PaginaCartella extends MyFrame {
 		} catch (ClassNotFoundException | SQLException e2) {
 			e2.printStackTrace();
 		}
+		setVisible(true);
 	}
 
 }
