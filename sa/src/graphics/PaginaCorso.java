@@ -4,6 +4,7 @@ package graphics;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -97,8 +99,11 @@ public class PaginaCorso extends JFrame {
 		JLabel titoloCorso = new JLabel(cor.name);
 		contentPane.add(titoloCorso);
 		
+		Box de = Box.createHorizontalBox();
+		
 		JLabel descrizioneCorso = new JLabel(cor.description);
-		contentPane.add(descrizioneCorso);
+		de.add(descrizioneCorso);
+		contentPane.add(de);;
 		
 		ArrayList<User> u=new ArrayList<User>();
 		try {
@@ -117,43 +122,19 @@ public class PaginaCorso extends JFrame {
 		
 		try {
 			if(ses.info().userType==1||visualComeStudente) {
-			if(gc.studenteEnrolledInTheCourse(ses.getUser(), cor)||visualComeStudente) {
+			if(gc.studentEnrolledInTheCourse(ses.getUser(), cor)||visualComeStudente) {
+				Box all = Box.createVerticalBox();
 				for(Section s : c.sections) {
 					if(s.visibility) {
+					Box se = Box.createHorizontalBox();
 					JLabel sezione = new JLabel(s.title);
-					contentPane.add(sezione);
-					JButton accessoRisorse = new JButton("Cerca");
-					accessoRisorse.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							boolean set=true;
-							for(Component c : ac) {
-								Container parent = c.getParent();
-								System.out.println(c);
-								parent.remove(c);
-								contentPane.revalidate();
-								validate();
-								repaint();
-								accessoRisorse.add(c);
-								c.setVisible(false);
-								set=false;
-							}
-							if(!set) {ac.clear();}
-							if(set) {
-								for(Component c : accessoRisorse.getComponents()) {
-									contentPane.add(c);
-									c.setVisible(true);
-									ac.add(c);
-									System.out.println("agg");
-								}
-							}
-						}
-					});
-					contentPane.add(accessoRisorse);
+					se.add(sezione);
+					se.add(Box.createRigidArea(new Dimension(5,0)));
 					for(Resource r : s.resources) {
 						if(r.visibility) {
 						JLabel descrizioneRisorsa = new JLabel(r.description);
-						descrizioneRisorsa.setVisible(false);
-						accessoRisorse.add(descrizioneRisorsa);
+						se.add(descrizioneRisorsa);
+						se.add(Box.createRigidArea(new Dimension(5,0)));
 						JButton risorsa = new JButton(r.name);
 						risorsa.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
@@ -165,12 +146,14 @@ public class PaginaCorso extends JFrame {
 								}
 							}
 						});
-						risorsa.setVisible(false);
-						accessoRisorse.add(risorsa);
+						se.add(risorsa);
+						se.add(Box.createRigidArea(new Dimension(5,0)));
+						}
 					}
+					all.add(se);
 					}
-					}
-				}
+			}
+			contentPane.add(all);
 			}
 			else {
 				JLabel nonIscritto = new JLabel("Non sei iscritto al corso");
@@ -198,56 +181,34 @@ public class PaginaCorso extends JFrame {
 						break;
 					}
 				}
-				if(docenteCorso||gc.studenteEnrolledInTheCourse(ses.getUser(), cor)) {//se docente iscritto. funziona ma mettere a posto
-				for(Section s : c.sections) {
-					JLabel sezione = new JLabel(s.title);
-					contentPane.add(sezione);
-					JButton accessoRisorse = new JButton("Cerca");
-					accessoRisorse.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							boolean set=true;
-							for(Component c : ac) {
-								Container parent = c.getParent();
-								System.out.println(c);
-								parent.remove(c);
-								contentPane.revalidate();
-								validate();
-								repaint();
-								accessoRisorse.add(c);
-								c.setVisible(false);
-								set=false;
-							}
-							if(!set) {ac.clear();}
-							if(set) {
-								for(Component c : accessoRisorse.getComponents()) {
-									contentPane.add(c);
-									c.setVisible(true);
-									ac.add(c);
-									System.out.println("agg");
+				if(docenteCorso||gc.studentEnrolledInTheCourse(ses.getUser(), cor)) {//se docente iscritto. funziona ma mettere a posto
+					Box all = Box.createVerticalBox();
+					for(Section s : c.sections) {
+						Box se = Box.createHorizontalBox();
+						JLabel sezione = new JLabel(s.title);
+						se.add(sezione);
+						se.add(Box.createRigidArea(new Dimension(5,0)));
+						for(Resource r : s.resources) {
+							JLabel descrizioneRisorsa = new JLabel(r.description);
+							se.add(descrizioneRisorsa);
+							se.add(Box.createRigidArea(new Dimension(5,0)));
+							JButton risorsa = new JButton(r.name);
+							risorsa.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									FindCourse rc = new FindCourse();
+									try {
+										rc.download(r);
+									} catch (ClassNotFoundException | SQLException e1) {
+										e1.printStackTrace();
+									}
 								}
-							}
+							});
+							se.add(risorsa);
+							se.add(Box.createRigidArea(new Dimension(5,0)));
 						}
-					});
-					contentPane.add(accessoRisorse);
-					for(Resource r : s.resources) {
-						JLabel descrizioneRisorsa = new JLabel(r.description);
-						descrizioneRisorsa.setVisible(false);
-						accessoRisorse.add(descrizioneRisorsa);
-						JButton risorsa = new JButton(r.name);
-						risorsa.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								FindCourse rc = new FindCourse();
-								try {
-									rc.download(r);
-								} catch (ClassNotFoundException | SQLException e1) {
-									e1.printStackTrace();
-								}
-							}
-						});
-						risorsa.setVisible(false);
-						accessoRisorse.add(risorsa);
-					}
+						all.add(se);
 				}
+				contentPane.add(all);
 				if(docenteCorso) {
 				JButton analisiCorso = new JButton("Analisi statistiche corso");
 				analisiCorso.addActionListener(new ActionListener() {
@@ -275,42 +236,26 @@ public class PaginaCorso extends JFrame {
 				}
 				}
 			}
-			//visualComeStudente&&
 			else if(ses.info().userType==3) {
-					for(Section s : c.sections) {
-						JLabel sezione = new JLabel(s.title);
-						contentPane.add(sezione);
-						JButton accessoRisorse = new JButton("Cerca");
-						accessoRisorse.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								boolean set=true;
-								for(Component c : ac) {
-									Container parent = c.getParent();
-									System.out.println(c);
-									parent.remove(c);
-									contentPane.revalidate();
-									validate();
-									repaint();
-									accessoRisorse.add(c);
-									c.setVisible(false);
-									set=false;
+				Box all = Box.createVerticalBox();
+				for(Section s : c.sections) {
+					Box se = Box.createHorizontalBox();
+					JLabel sezione = new JLabel(s.title);
+					se.add(sezione);
+					se.add(Box.createRigidArea(new Dimension(5,0)));
+					for(Resource r : s.resources) {
+						JLabel descrizioneRisorsa = new JLabel(r.description);
+						se.add(descrizioneRisorsa);
+						se.add(Box.createRigidArea(new Dimension(5,0)));
+						if(r.type.equals("cartella")) {
+							JButton risorsa = new JButton(r.name);
+							risorsa.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									PaginaCartella pc = new PaginaCartella(r, thisFrame);
 								}
-								if(!set) {ac.clear();}
-								if(set) {
-									for(Component c : accessoRisorse.getComponents()) {
-										contentPane.add(c);
-										c.setVisible(true);
-										ac.add(c);
-										System.out.println("agg");
-									}
-								}
-							}
-						});
-						contentPane.add(accessoRisorse);
-						for(Resource r : s.resources) {
-							JLabel descrizioneRisorsa = new JLabel(r.description);
-							descrizioneRisorsa.setVisible(false);
-							accessoRisorse.add(descrizioneRisorsa);
+							});
+						}
+						else {
 							JButton risorsa = new JButton(r.name);
 							risorsa.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
@@ -322,10 +267,16 @@ public class PaginaCorso extends JFrame {
 									}
 								}
 							});
-							risorsa.setVisible(false);
-							accessoRisorse.add(risorsa);
+							se.add(risorsa);
+							se.add(Box.createRigidArea(new Dimension(5,0)));
 						}
 					}
+					all.add(se);
+			}
+				contentPane.add(all);
+					
+					Box anMod = Box.createHorizontalBox();
+					
 					JButton analisiCorso = new JButton("Analisi statistiche corso");
 					analisiCorso.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
@@ -333,7 +284,7 @@ public class PaginaCorso extends JFrame {
 							StatisticheCorso mc = new StatisticheCorso(thisFrame, ses, cor);
 						}
 					});
-					contentPane.add(analisiCorso);
+					anMod.add(analisiCorso);
 					JButton modificaCorso = new JButton("Modifica corso");
 					modificaCorso.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
@@ -341,7 +292,8 @@ public class PaginaCorso extends JFrame {
 							ModificaCorso mc = new ModificaCorso(thisFrame, ses, cor);
 						}
 					});
-					contentPane.add(modificaCorso);
+					anMod.add(modificaCorso);
+					contentPane.add(anMod);
 					
 			}
 		} catch (SQLException | ClassNotFoundException e2) {
@@ -355,14 +307,4 @@ public class PaginaCorso extends JFrame {
 		
 		setVisible(true);
 	}
-	
-	 protected void finalize() {   
-		    try {
-		    	gc.deleteSession(user, cor);
-				super.finalize();
-			} catch (Throwable e) {
-				e.printStackTrace();
-			}
-		}
-
 }
