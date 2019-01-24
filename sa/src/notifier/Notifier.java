@@ -32,9 +32,9 @@ import socketDb.SocketDb;
 
 public class Notifier {
 	
-	static String systemMail ="";
-	static String systemMailPwd ="";
-	static SocketDb socket;
+	private static String systemMail ="";
+	private static String systemMailPwd ="";
+	private static SocketDb socket;
 	
 	public static boolean sendMail(String usr, String pwd, String course, String subject, String body) throws Exception {
 		socket=SocketDb.getInstanceDb();

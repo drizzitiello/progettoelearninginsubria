@@ -7,10 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SocketDb {
-	static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
-	static final String USER = "postgres";
-	static final String PASS = "makaay";
+	private static final String JDBC_DRIVER = "org.postgresql.Driver";  
+	private static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
+	private static final String USER = "postgres";
+	private static final String PASS = "makaay";
 	public static SocketDb socketDb;
 	private Connection conn;
 	private static int nAttempts;
