@@ -141,7 +141,7 @@ public class CourseManagement {
 	
 	/** Verifica se uno studente risulta iscritto a un corso	
 	 * 	@return check di controllo	*/
-	public boolean studenteEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException {
+	public boolean studentEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException {
 		boolean response = false;
 		Object[] params = {student.getInfo().student_number, c.courseCode};
 		ArrayList<Map<String, Object>> outcome = socket.function("verifica_iscrizione_studente", params);
