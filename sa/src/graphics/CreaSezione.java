@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -109,17 +112,22 @@ public class CreaSezione extends MyFrame {
 				Section s = new Section(titolo.getText(),  descrizione.getText(), 
 						pubblica, Integer.parseInt(codSezione.getText()), Integer.parseInt(creatore.getText()), 
 						Integer.parseInt(codCorso.getText()), figlio);
-				CourseContentManagement gc = new CourseContentManagement();
+				CourseContentManagement gc;
 				try {
-					Notifier.sendMail(ses.info().email, "pwd?", cor.name,
-							"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+titolo.getText());
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				try {
-					gc.createSection(s);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+					gc = new CourseContentManagement();
+					try {
+						Notifier.sendMail(ses.info().email, "pwd?", cor.name,
+								"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+titolo.getText());
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+					try {
+						gc.createSection(s);
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				} catch (MalformedURLException | RemoteException | NotBoundException e3) {
+					e3.printStackTrace();
 				}
 			}
 		});

@@ -13,8 +13,14 @@ package authService;
 import java.sql.SQLException;
 import java.util.*;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.security.*;
 import javax.mail.*;
+
+import interfaccia.RemoteInterface;
 import notifier.Notifier;
 import session.Session;
 import socketDb.SocketDb;
@@ -28,8 +34,9 @@ public class AuthenticationService {
 		private int student_number;
 		private boolean isBlocked = false;	
 		
-		/** Fornisce le informazioni dell'utente dal database	*/
-		private void getInfoFromDb (String email) throws ClassNotFoundException, SQLException {
+		/** Fornisce le informazioni dell'utente dal database	
+		 * @throws RemoteException */
+		private void getInfoFromDb (String email) throws ClassNotFoundException, SQLException, RemoteException {
 			AuthenticationService.email=email;
 			String sqlScript = "SELECT password_hash, codice_attivazione, tentativi_login, matricola"
 					+ " FROM utente WHERE email = '" + email + "';";
@@ -46,13 +53,16 @@ public class AuthenticationService {
 	
 	//CAMPI
 	InfoFromDb user = new InfoFromDb();
-	private SocketDb socket;
+	private RemoteInterface socket;
 	private int studentNumber;
 	private static String email;
 	
-	/** Costruttore: assegnamento del socket */
-	public AuthenticationService () throws ClassNotFoundException, SQLException {
-		socket = SocketDb.getInstanceDb();
+	/** Costruttore: assegnamento del socket 
+	 * @throws NotBoundException 
+	 * @throws RemoteException 
+	 * @throws MalformedURLException */
+	public AuthenticationService () throws ClassNotFoundException, SQLException, MalformedURLException, RemoteException, NotBoundException {
+		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
 	}
 	
 	/** Effettua il login dell'utente con la piattaforma

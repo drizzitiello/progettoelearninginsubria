@@ -1,5 +1,8 @@
 package graphics;
 
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
@@ -14,7 +17,7 @@ public class MyFrame extends JFrame{
 	public MyFrame() {
 		try {
 			ses=Session.getInstance();
-		} catch (ClassNotFoundException e1) {
+		} catch (ClassNotFoundException | MalformedURLException | RemoteException | NotBoundException e1) {
 			e1.printStackTrace();
 		}
 		
@@ -29,7 +32,7 @@ public class MyFrame extends JFrame{
 		            JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION){*/
 		        	try {
 						ses.destroy();
-					} catch (ClassNotFoundException | SQLException e) {
+					} catch (ClassNotFoundException | SQLException | RemoteException e) {
 						e.printStackTrace();
 					}
 		            System.exit(0);

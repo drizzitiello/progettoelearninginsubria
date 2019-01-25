@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,37 +51,42 @@ public class GestisciCorsi extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		FindCourse rc = new FindCourse();
+		FindCourse rc;
 		try {
-			ArrayList<Course> ali = rc.getCourses();
-			for(Course c : ali) {
-				Box corso = Box.createVerticalBox();
-				JLabel codiceCorso = new JLabel("  Codice corso: "+((Integer) c.courseCode).toString());
-				corso.add(codiceCorso);
-				JLabel nome = new JLabel("  Nome: "+c.name);
-				corso.add(nome);
-				JLabel annoAttivazione = new JLabel("  Anno attivazione: "+String.valueOf(c.activation_year));
-				corso.add(annoAttivazione);
-				JLabel facolta = new JLabel("  Facolta: "+c.faculty);
-				corso.add(facolta);
-				String descr = "  Descrizione: "+c.description;
-				if (descr.length()>35) descr="  Descrizione: "+c.description.substring(0, 5)+"...";
-				JLabel descrizione = new JLabel(descr);
-				corso.add(descrizione);
-				JLabel peso = new JLabel("  CFU: "+((Integer) c.weight).toString()+"  ");
-				corso.add(peso);
-				JButton modificaCorso = new JButton("Modifica Corso");
-				modificaCorso.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						thisFrame.setVisible(false);
-						ModificaCorso ac = new ModificaCorso(thisFrame, ses, c);
-					}
-				});
-				corso.add(modificaCorso);
-				contentPane.add(corso);
+			rc = new FindCourse();
+			try {
+				ArrayList<Course> ali = rc.getCourses();
+				for(Course c : ali) {
+					Box corso = Box.createVerticalBox();
+					JLabel codiceCorso = new JLabel("  Codice corso: "+((Integer) c.courseCode).toString());
+					corso.add(codiceCorso);
+					JLabel nome = new JLabel("  Nome: "+c.name);
+					corso.add(nome);
+					JLabel annoAttivazione = new JLabel("  Anno attivazione: "+String.valueOf(c.activation_year));
+					corso.add(annoAttivazione);
+					JLabel facolta = new JLabel("  Facolta: "+c.faculty);
+					corso.add(facolta);
+					String descr = "  Descrizione: "+c.description;
+					if (descr.length()>35) descr="  Descrizione: "+c.description.substring(0, 5)+"...";
+					JLabel descrizione = new JLabel(descr);
+					corso.add(descrizione);
+					JLabel peso = new JLabel("  CFU: "+((Integer) c.weight).toString()+"  ");
+					corso.add(peso);
+					JButton modificaCorso = new JButton("Modifica Corso");
+					modificaCorso.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							thisFrame.setVisible(false);
+							ModificaCorso ac = new ModificaCorso(thisFrame, ses, c);
+						}
+					});
+					corso.add(modificaCorso);
+					contentPane.add(corso);
+				}
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
 			}
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
+		} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+			e1.printStackTrace();
 		}
 		JButton aggiungiCorso = new JButton("Aggiungi corso");
 		aggiungiCorso.addActionListener(new ActionListener() {

@@ -1,10 +1,13 @@
 package analytics;
 
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
 import session.Session;
@@ -26,14 +29,14 @@ import session.Session;
 public class GlobalAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
-     private SocketDb socket;
+	private RemoteInterface socket;
      
     /**
      * Istanzia l'oggetto relativo al SocketDb di sistema.
      * @throws Exception 
      */	
      public GlobalAnalytics() throws Exception {
-         this.socket = SocketDb.getInstanceDb();
+    	 socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
      }
 
 
@@ -42,8 +45,9 @@ public class GlobalAnalytics {
     * @return numero di utenti loggati sulla piattaforma 
     * @throws ClassNotFoundException 
     * @throws SQLException 
+ * @throws RemoteException 
     */	
-     public int onlineUsers() throws ClassNotFoundException, SQLException{
+     public int onlineUsers() throws ClassNotFoundException, SQLException, RemoteException{
         ArrayList<Map<String,Object>> response = this.socket.query("SELECT CAST(COUNT(matricola) as integer) AS uc FROM sessione WHERE fine_sessione IS NULL");
         return (int) response.get(0).get("uc");
      }
@@ -55,8 +59,9 @@ public class GlobalAnalytics {
     * @return mappa che associa un codice corso alla relativa somma degli accessi 
     * @throws ClassNotFoundException 
     * @throws SQLException 
+ * @throws RemoteException 
     */	
-     public Map<Integer, Integer> accessByInterval(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{ 
+     public Map<Integer, Integer> accessByInterval(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException, RemoteException{ 
          
          Map<Integer, Integer> accessList = new HashMap<Integer, Integer>();
       
@@ -77,8 +82,9 @@ public class GlobalAnalytics {
     * @return mappa che associa un codice corso al relativo tempo medio di accesso espresso in minuti
     * @throws ClassNotFoundException 
     * @throws SQLException 
+ * @throws RemoteException 
     */	
-    public Map<Integer, Integer> avgMinsOnlineForCourse() throws ClassNotFoundException, SQLException{
+    public Map<Integer, Integer> avgMinsOnlineForCourse() throws ClassNotFoundException, SQLException, RemoteException{
 
         Map<Integer, Integer> avgMins = new HashMap<Integer, Integer>();
 
@@ -97,8 +103,9 @@ public class GlobalAnalytics {
     * @return mappa che associa un codice corso al relativo numero complessivo di download
     * @throws ClassNotFoundException 
     * @throws SQLException 
+ * @throws RemoteException 
     */	
-    public Map<Integer, Integer> downloadsForCourse() throws ClassNotFoundException, SQLException{
+    public Map<Integer, Integer> downloadsForCourse() throws ClassNotFoundException, SQLException, RemoteException{
      
         Map<Integer, Integer> downloads = new HashMap<Integer, Integer>();
 

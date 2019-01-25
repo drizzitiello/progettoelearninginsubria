@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -47,24 +50,29 @@ public class PaginaCartella extends MyFrame {
 		
 		Box ver = Box.createVerticalBox();
 		
-		CourseContentManagement ccm = new CourseContentManagement();
-		ArrayList<Resource> resources = ccm.getFolderContent(r.resourceCode, r.name);
-			
-		for(Resource res : resources) {
-			JButton risorsa = new JButton(res.name);
-			risorsa.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					FindCourse rc = new FindCourse();
-					try {
-						rc.download(res);
-					} catch (ClassNotFoundException | SQLException e1) {
-						e1.printStackTrace();
+		CourseContentManagement ccm;
+		try {
+			ccm = new CourseContentManagement();
+			ArrayList<Resource> resources = ccm.getFolderContent(r.resourceCode, r.name);
+			for(Resource res : resources) {
+				JButton risorsa = new JButton(res.name);
+				risorsa.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						try {
+							FindCourse rc = new FindCourse();
+							rc.download(res);
+						} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+							e1.printStackTrace();
+						}
 					}
-				}
-			});
-			ver.add(risorsa);
+				});
+				ver.add(risorsa);
+			}
+			contentPane.add(ver);
+		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			e2.printStackTrace();
 		}
-		contentPane.add(ver);
+		
 		setVisible(true);
 	}
 

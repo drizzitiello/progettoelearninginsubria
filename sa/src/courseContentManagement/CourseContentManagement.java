@@ -1,25 +1,32 @@
 package courseContentManagement;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import graphics.HomePage;
 import graphics.PaginaCorso;
+import interfaccia.RemoteInterface;
 import session.Session;
 import socketDb.SocketDb;
 
 public class CourseContentManagement {
 	
-	private SocketDb socket;
+	private RemoteInterface socket;
+	
+	public CourseContentManagement() throws MalformedURLException, RemoteException, NotBoundException {
+		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+	}
 	
 	public void uploadCourseMaterial(Course cor, Content con) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		cor.setContents(con);
 	}
 	
 	public void createSection(Section s) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		String sql = "INSERT INTO sezione(codice_sezione, titolo, descrizione, is_pubblica, codice_corso, "
 				+ "figlio_di, matricola) "
 				+ "VALUES ("+s.sectionCode+", '"+s.title+"', '"+s.description+"', '"+s.visibility+"','"+
@@ -27,15 +34,13 @@ public class CourseContentManagement {
 		socket.query(sql);
 	}
 	
-	public void cancelSection(int sectionCode) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public void cancelSection(int sectionCode) throws ClassNotFoundException, SQLException, RemoteException {
 		String sql = "DELETE FROM sezione"
 				+ " WHERE codice_sezione = "+sectionCode;
 		socket.query(sql);
 	}
 	
-	public Section getSection(int sectionCode) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public Section getSection(int sectionCode) throws ClassNotFoundException, SQLException, RemoteException {
 		String sql = "SELECT * FROM sezione"
 				+ " WHERE codice_sezione = "+sectionCode;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
@@ -54,14 +59,12 @@ public class CourseContentManagement {
 	}
 	
 	public void modifySection(Section s) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		Object[] params = {s.sectionCode, s.title , s.visibility , s.description,  s.courseCode,
 				(Integer) s.sonOf, s.studentNumber};
 		socket.function("modificasezione", params);
 	}
 	
 	public void createResource(Resource r) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		String sql = "INSERT INTO risorsa(codice_risorsa, nome, descrizione, percorso, tipo, "
 				+ "codice_sezione, is_pubblica) "
 				+ "VALUES ("+r.resourceCode+", '"+r.name+"', '"+r.description+"', '"+r.path+"','"+r.type+"', "
@@ -69,22 +72,19 @@ public class CourseContentManagement {
 		socket.query(sql);
 	}
 	
-	public void cancelResource(int resourceCode) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public void cancelResource(int resourceCode) throws ClassNotFoundException, SQLException, RemoteException {
 		String sql = "DELETE FROM risorsa"
 				+ " WHERE codice_risorsa = "+resourceCode;
 		socket.query(sql);
 	}
 	
 	public void modifyResource(Resource r) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		Object[] params = {(short) r.resourceCode, r.name,  r.description,
 				 r.path, r.type, (short) r.sectionCode,r.visibility};
 		socket.function("modificarisorsa", params);
 	}
 	
-	public Resource getResource(int resourceCode) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public Resource getResource(int resourceCode) throws ClassNotFoundException, SQLException, RemoteException {
 		String sql = "SELECT * FROM risorsa"
 				+ " WHERE codice_risorsa = "+resourceCode;
 		ArrayList<Map<String,Object>> sez = socket.query(sql);
@@ -98,9 +98,8 @@ public class CourseContentManagement {
 		return resource;
 	}
 	
-	public ArrayList<Resource> getFolderContent(int resourceCode, String resourceName){
+	public ArrayList<Resource> getFolderContent(int resourceCode, String resourceName) throws RemoteException, MalformedURLException, NotBoundException{
 		try {
-			socket=SocketDb.getInstanceDb();
 			ArrayList<Map<String, Object>> hm;
 			Object[] param = {resourceCode, resourceName};
 			hm = SocketDb.getInstanceDb().function("get_contenuto_cartella", param);
@@ -119,19 +118,17 @@ public class CourseContentManagement {
 	}
 	
 	public void modifyTitle(int codSezione, String titolo) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET titolo = '"+titolo+
 				"' WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
 	
-	public void modifyVisibility(int codSezione) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public void modifyVisibility(int codSezione) throws ClassNotFoundException, SQLException, RemoteException {
 		String sql = "UPDATE sezione"+ " SET is_pubblica = true"+ " WHERE codice_sezione = "+codSezione;
 		socket.query(sql);
 	}
 	
-	public static void viewAsStudent(HomePage thisFrame, String course) {
+	public static void viewAsStudent(HomePage thisFrame, String course) throws MalformedURLException, RemoteException, NotBoundException {
 		try {
 			PaginaCorso mc = new PaginaCorso(thisFrame, Session.getInstance(), course, true);
 		} catch (ClassNotFoundException e) {

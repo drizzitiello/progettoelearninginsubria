@@ -1,10 +1,13 @@
 package user;
 
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 
 /**
@@ -41,7 +44,7 @@ public class User {
     static public final int student = 1; //modificare anche in stored crea_utente
 
     /* Dichiarazione dei componenti di servizio: */
-    private SocketDb socket;
+    private RemoteInterface socket;
     private boolean isCreated;
     private UserInfo myInfo;
     
@@ -52,7 +55,7 @@ public class User {
      * @throws Exception 
 	 */
     public User() throws Exception {
-        this.socket = SocketDb.getInstanceDb();
+        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
         this.isCreated = false;
     }
 
@@ -64,8 +67,9 @@ public class User {
 	 * @return	flag di avvenuta creazione dell'utente
      * @throws SQLException 
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean createFromStudentNumber(int studentNumber) throws ClassNotFoundException, SQLException{
+    public boolean createFromStudentNumber(int studentNumber) throws ClassNotFoundException, SQLException, RemoteException{
         this.isCreated = false;
 
 

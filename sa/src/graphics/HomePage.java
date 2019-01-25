@@ -15,6 +15,9 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -95,7 +98,7 @@ public class HomePage extends MyFrame {
 					else {
 						JOptionPane.showMessageDialog(cercaCorsi, "Il corso cercato non esiste");
 					}
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -200,7 +203,11 @@ public class HomePage extends MyFrame {
 			JButton assegnaDocenti = new JButton("Assegna docenti a corsi");
 			assegnaDocenti.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					AssegnazioneDocenti mdu = new AssegnazioneDocenti(hp, ses);
+					try {
+						AssegnazioneDocenti mdu = new AssegnazioneDocenti(hp, ses);
+					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+						e1.printStackTrace();
+					}
 					hp.setVisible(false);
 				}
 			});

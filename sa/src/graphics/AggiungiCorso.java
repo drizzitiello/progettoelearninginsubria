@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -96,6 +99,15 @@ public class AggiungiCorso extends MyFrame {
 	                corso.setCreator(ses.getUser().getInfo().student_number);
 					gc.createCourse(corso);
 				} catch (ClassNotFoundException | SQLException e1) {
+					e1.printStackTrace();
+				} catch (MalformedURLException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (RemoteException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (NotBoundException e1) {
+					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			}

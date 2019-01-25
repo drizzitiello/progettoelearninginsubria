@@ -2,10 +2,14 @@ package userManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,6 +25,7 @@ import authService.AuthenticationService;
 import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
 import courseManagement.CourseManagement;
+import interfaccia.RemoteInterface;
 import notifier.Notifier;
 import session.Session;
 
@@ -40,7 +45,7 @@ import session.Session;
 public class UserManager {
     
     /* Dichiarazione dei componenti di servizio */
-    private SocketDb socket;
+	private RemoteInterface socket;
     private Session session;
     private boolean enabled = false;
     
@@ -50,7 +55,7 @@ public class UserManager {
      * @throws Exception 
 	 */
     public UserManager() throws Exception {
-        this.socket = SocketDb.getInstanceDb();
+        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
         this.session = Session.getInstance();
         this.enabled = this.session.info().userType == User.admin;
     }
@@ -63,8 +68,9 @@ public class UserManager {
 	 * @return	flag di avvenuta modifica dei dati
      * @throws SQLException
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean modifiyUserData(User user) throws SQLException, ClassNotFoundException{
+    public boolean modifiyUserData(User user) throws SQLException, ClassNotFoundException, RemoteException{
         if(!user.created() || !enabled)
             return false;
 
@@ -94,8 +100,9 @@ public class UserManager {
 	 * @return	flag di avvenuta eliminazione utente
      * @throws SQLException
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean deleteUser(User user) throws SQLException, ClassNotFoundException{
+    public boolean deleteUser(User user) throws SQLException, ClassNotFoundException, RemoteException{
         if(!user.created() || !this.enabled)
             return false;
 
@@ -114,8 +121,9 @@ public class UserManager {
 	 * @return	flag di avvenuta eliminazione utente
      * @throws SQLException
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean unlockUser(User user) throws SQLException, ClassNotFoundException{
+    public boolean unlockUser(User user) throws SQLException, ClassNotFoundException, RemoteException{
         if(!user.created() || !this.enabled)
             return false;
 
@@ -133,8 +141,9 @@ public class UserManager {
 	 * @return	flag di avvenuta creazione
      * @throws SQLException
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean createUser(UserInfo info) throws SQLException, ClassNotFoundException{
+    public boolean createUser(UserInfo info) throws SQLException, ClassNotFoundException, RemoteException{
         if(!this.enabled)
         return false;
 
@@ -182,8 +191,11 @@ public class UserManager {
 	 * @return	flag di avvenuta importazione
      * @throws SQLException
      * @throws ClassNotFoundException 
+     * @throws NotBoundException 
+     * @throws RemoteException 
+     * @throws MalformedURLException 
 	 */
-    public boolean csvImportUser(String path) throws SQLException, ClassNotFoundException{
+    public boolean csvImportUser(String path) throws SQLException, ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException{
         if(!this.enabled)
             return false;
 

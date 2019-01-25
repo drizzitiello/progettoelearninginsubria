@@ -1,7 +1,12 @@
 package session;
 
+import java.net.MalformedURLException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
 import user.User.UserInfo;
@@ -22,7 +27,7 @@ public class Session {
     
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
-    private SocketDb socket;
+    private RemoteInterface socket;
     public User user;    
     public static Session s;
     
@@ -30,8 +35,11 @@ public class Session {
 	 * Ottiene l'istanza della sessione (pattern Singleton)
      * 
      * @return istanza della sessione o nuovo oggetto.
+     * @throws NotBoundException 
+     * @throws RemoteException 
+     * @throws MalformedURLException 
 	 */
-    public static Session getInstance() throws ClassNotFoundException {
+    public static Session getInstance() throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException {
 		if(s == null)
 			s = new Session();
 		return s;
@@ -41,9 +49,12 @@ public class Session {
     /**
      * Inizializza flag di riconoscimento di avvenuta creazione
      * della sessione a false.
+     * @throws NotBoundException 
+     * @throws RemoteException 
+     * @throws MalformedURLException 
 	 */	 
-    private Session() throws ClassNotFoundException{
-        this.socket = SocketDb.getInstanceDb();
+    private Session() throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException{
+        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
         this.isCreated = false;
 	}
 
@@ -81,8 +92,9 @@ public class Session {
 	 * @return	flag di avvenuta distruzione della sessione
      * @throws SQLException 
      * @throws ClassNotFoundException 
+     * @throws RemoteException 
 	 */
-    public boolean destroy() throws ClassNotFoundException, SQLException{
+    public boolean destroy() throws ClassNotFoundException, SQLException, RemoteException{
         if(!this.isCreated) return false;
         
         Object[] p = { this.user.getInfo().student_number };

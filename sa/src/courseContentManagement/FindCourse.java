@@ -1,6 +1,7 @@
 package courseContentManagement;
 
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
@@ -8,19 +9,26 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 
 public class FindCourse {
 	
-	private SocketDb socket;
+	private RemoteInterface socket;
 	
-	public ArrayList<Course> getCourses() throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public FindCourse() throws MalformedURLException, RemoteException, NotBoundException {
+		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+	}
+	
+	public ArrayList<Course> getCourses() throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
 		String sql = "getCorsi";
 		Object[] s= {};
 		ArrayList<Map<String, Object>> obj=socket.function(sql, s);
@@ -33,9 +41,8 @@ public class FindCourse {
 		return courses;
 	}
 	
-	public Content getContentCourse(Course c) throws ClassNotFoundException, SQLException{
+	public Content getContentCourse(Course c) throws ClassNotFoundException, SQLException, RemoteException{
 		Content cont=new Content();
-		socket=SocketDb.getInstanceDb();
 		String sql,sql2;
 		sql = "getContenutoCorso";
 		Object[] s= {c.courseCode};
@@ -67,7 +74,6 @@ public class FindCourse {
 	}
 	
 	public void download(Resource r) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
 		try {
 			String extension = "";
 			int i = r.path.lastIndexOf('.');

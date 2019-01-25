@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
@@ -31,8 +34,11 @@ public class AssegnazioneDocenti extends MyFrame {
 	/**
 	 * Create the frame.
 	 * @param ses 
+	 * @throws NotBoundException 
+	 * @throws RemoteException 
+	 * @throws MalformedURLException 
 	 */
-	public AssegnazioneDocenti(HomePage hp, Session ses) {
+	public AssegnazioneDocenti(HomePage hp, Session ses) throws MalformedURLException, RemoteException, NotBoundException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();

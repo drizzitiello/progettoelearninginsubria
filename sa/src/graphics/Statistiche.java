@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -94,7 +97,7 @@ public class Statistiche extends MyFrame {
 							validate();
 							repaint();
 						}
-					} catch (ClassNotFoundException | SQLException e) {
+					} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e) {
 						e.printStackTrace();
 					}
 				}
@@ -114,14 +117,13 @@ public class Statistiche extends MyFrame {
 							Course cor = Notifier.getCourse(m);
 							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
 									+ " il corso "+cor.name+" : "+tmc.get(m));
-							//contentPane.add(tempoMedioConnessioniCorso);
 							tmpc.add(tempoMedioConnessioniCorso);
 							contentPane.revalidate();
 							validate();
 							repaint();
 						}
 						}
-					} catch (ClassNotFoundException | SQLException e) {
+					} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e) {
 						e.printStackTrace();
 					}
 				}
@@ -147,7 +149,7 @@ public class Statistiche extends MyFrame {
 							repaint();
 						}
 						}
-					} catch (ClassNotFoundException | SQLException e) {
+					} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e) {
 						e.printStackTrace();
 					}
 				}

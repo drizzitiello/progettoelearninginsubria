@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -72,7 +75,7 @@ public class PaginaCorso extends JFrame {
 		       try {
 					gc.deleteSession(user, cor);
 					ses.destroy();
-				} catch (ClassNotFoundException | SQLException e) {
+				} catch (ClassNotFoundException | SQLException | RemoteException e) {
 					e.printStackTrace();
 				}
 		        System.exit(0);
@@ -142,10 +145,10 @@ public class PaginaCorso extends JFrame {
 							JButton risorsa = new JButton(r.name);
 							risorsa.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									FindCourse rc = new FindCourse();
 									try {
+										FindCourse rc = new FindCourse();
 										rc.download(r);
-									} catch (ClassNotFoundException | SQLException e1) {
+									} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 										e1.printStackTrace();
 									}
 								}
@@ -209,10 +212,10 @@ public class PaginaCorso extends JFrame {
 								JButton risorsa = new JButton(r.name);
 								risorsa.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
-										FindCourse rc = new FindCourse();
 										try {
+											FindCourse rc = new FindCourse();
 											rc.download(r);
-										} catch (ClassNotFoundException | SQLException e1) {
+										} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 											e1.printStackTrace();
 										}
 									}
@@ -244,7 +247,11 @@ public class PaginaCorso extends JFrame {
 				JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
 				visualizzaComeStudente.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						CourseContentManagement.viewAsStudent(hp, cor.name);
+						try {
+							CourseContentManagement.viewAsStudent(hp, cor.name);
+						} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+							e1.printStackTrace();
+						}
 					}
 				});
 				contentPane.add(visualizzaComeStudente);
@@ -276,10 +283,10 @@ public class PaginaCorso extends JFrame {
 							JButton risorsa = new JButton(r.name);
 							risorsa.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
-									FindCourse rc = new FindCourse();
 									try {
+										FindCourse rc = new FindCourse();
 										rc.download(r);
-									} catch (ClassNotFoundException | SQLException e1) {
+									} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 										e1.printStackTrace();
 									}
 								}
@@ -318,7 +325,7 @@ public class PaginaCorso extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		} catch (ClassNotFoundException | SQLException e3) {
+		} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e3) {
 			e3.printStackTrace();
 		}
 		

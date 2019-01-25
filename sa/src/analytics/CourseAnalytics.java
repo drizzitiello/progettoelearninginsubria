@@ -1,10 +1,13 @@
 package analytics;
 
+import java.rmi.Naming;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
 import session.Session;
@@ -26,7 +29,7 @@ import session.Session;
 public class CourseAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
-     private SocketDb socket;
+	 private RemoteInterface socket;
      private int courseCode;
      
      /**
@@ -34,7 +37,7 @@ public class CourseAnalytics {
       * @throws Exception 
       */
      public CourseAnalytics(int courseCode) throws Exception {
-         this.socket = SocketDb.getInstanceDb();
+    	 socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
          this.courseCode = courseCode;
      }
 
@@ -43,8 +46,9 @@ public class CourseAnalytics {
      * @return numero di utenti connessi al corso
      * @throws ClassNotFoundException 
      * @throws SQLException 
+     * @throws RemoteException 
      */
-     public int onlineUsers() throws ClassNotFoundException, SQLException{
+     public int onlineUsers() throws ClassNotFoundException, SQLException, RemoteException{
          Object[] p = {this.courseCode};  
          ArrayList<Map<String,Object>> r = this.socket.query("SELECT CAST(COUNT(matricola) AS INTEGER) AS uc FROM accesso_corso WHERE fine_accesso IS NULL AND codice_corso = ?", p);
          return (int) r.get(0).get("uc");
@@ -58,8 +62,9 @@ public class CourseAnalytics {
      * @return mappa che associa un codice risorsa al relativo numero complessivo di download
      * @throws ClassNotFoundException 
      * @throws SQLException 
+     * @throws RemoteException 
      */
-     public Map<Integer, Integer> downloadByInterval(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException{
+     public Map<Integer, Integer> downloadByInterval(String dateStart, String dateEnd) throws ClassNotFoundException, SQLException, RemoteException{
       
          Map<Integer, Integer> outmap = new HashMap<Integer, Integer>();
       
@@ -79,8 +84,9 @@ public class CourseAnalytics {
      * @return tempo medio di accesso al corso espresso in minuti
      * @throws ClassNotFoundException 
      * @throws SQLException 
+     * @throws RemoteException 
      */
-     public int avgMinsOnline() throws ClassNotFoundException, SQLException{
+     public int avgMinsOnline() throws ClassNotFoundException, SQLException, RemoteException{
          Object[] p = {this.courseCode};  
          ArrayList<Map<String,Object>> r = this.socket.function("get_tempo_medio_corso", p);
          if(r.get(0).get("tempo_medio")==null) return 0;

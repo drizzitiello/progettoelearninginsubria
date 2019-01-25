@@ -2,11 +2,16 @@ package courseManagement;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.*;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.*;
 import courseContentManagement.Course;
+import interfaccia.RemoteInterface;
 import notifier.Notifier;
 import socketDb.SocketDb;
 import user.User; 
@@ -22,17 +27,22 @@ import user.User;
 public class CourseManagement {
 	
 	//CAMPI
-	private SocketDb socket;
+	private RemoteInterface socket;
 	protected List<Course> courses = new ArrayList<Course>();
 	
-	/** Costruttore: assegnamento del socket */
-	public CourseManagement () throws ClassNotFoundException {
-		socket = SocketDb.getInstanceDb();
+	/** Costruttore: assegnamento del socket 
+	 * @throws NotBoundException 
+	 * @throws RemoteException 
+	 * @throws MalformedURLException */
+	public CourseManagement () throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException {
+		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
 	}
 	
 	/** Importazione dei dati dei corsi da file CSV e salvataggio 
-	 * 	degli stessi all'interno del database  */
-	public void dataInput (String CSV_fileName) throws ClassNotFoundException, SQLException {
+	 * 	degli stessi all'interno del database  
+	 * @throws RemoteException 
+	 * @throws NotBoundException */
+	public void dataInput (String CSV_fileName) throws ClassNotFoundException, SQLException, RemoteException, NotBoundException {
         Path pathToFile = Paths.get(CSV_fileName);
         try (BufferedReader br = Files.newBufferedReader(pathToFile,
                 StandardCharsets.US_ASCII)) {		
@@ -59,52 +69,60 @@ public class CourseManagement {
         	}
 	}
 	
-	/** Creazione di un nuovo corso nel database	*/
-	public void createCourse (Course c) throws ClassNotFoundException, SQLException {				
+	/** Creazione di un nuovo corso nel database	
+	 * @throws RemoteException */
+	public void createCourse (Course c) throws ClassNotFoundException, SQLException, RemoteException {				
         Object[] params = {c.courseCode, c.name, c.activation_year, c.faculty, c.description, c.weight, c.creator};
         socket.function("import_dati_corsi", params);
 	} 
 	
-	/** Eliminazione dei dati relativi ad un corso presente nel database	*/
-	protected void cancelCourse (Course c) throws ClassNotFoundException, SQLException {
+	/** Eliminazione dei dati relativi ad un corso presente nel database	
+	 * @throws RemoteException */
+	protected void cancelCourse (Course c) throws ClassNotFoundException, SQLException, RemoteException {
 		Object[] params = {c.courseCode};
 		socket.function("elimina_dati_corsi", params);
 	} 
 	
-	/** Modifica dei dati relativi ad un corso presente nel database	*/
-	public void modifyCourse (Course c) throws ClassNotFoundException, SQLException {
+	/** Modifica dei dati relativi ad un corso presente nel database	
+	 * @throws RemoteException */
+	public void modifyCourse (Course c) throws ClassNotFoundException, SQLException, RemoteException {
 		Object[] params = {c.courseCode, c.name, c.activation_year, c.faculty, c.description, c.weight, c.creator};
 		socket.function("modifica_dati_corsi", params);
 	} 
 
-	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
-	public void coursesAssignment(int studentNumber) throws ClassNotFoundException, SQLException {
+	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	
+	 * @throws RemoteException */
+	public void coursesAssignment(int studentNumber) throws ClassNotFoundException, SQLException, RemoteException {
 		Object[] params = {studentNumber};
 		socket.function("assegna_studenti", params);
 	}
 	
-	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	*/
-	public void coursesAssignment(User student) throws ClassNotFoundException, SQLException {
+	/** Assegnamento dei corsi di competenza di uno studente al suo piano di studi	
+	 * @throws RemoteException */
+	public void coursesAssignment(User student) throws ClassNotFoundException, SQLException, RemoteException {
 		Object[] params = {student.getInfo().student_number};
 		socket.function("assegna_studenti", params);
 	}
 	
-	/** Assegnamento dei corsi di competenza di piu' studenti ai loro piano di studi	*/
-	public void coursesAssignment(List<User> students) throws ClassNotFoundException, SQLException {
+	/** Assegnamento dei corsi di competenza di piu' studenti ai loro piano di studi	
+	 * @throws RemoteException */
+	public void coursesAssignment(List<User> students) throws ClassNotFoundException, SQLException, RemoteException {
 		for (User student : students) {
 			Object[] params = {student.getInfo().student_number};
 			socket.function("assegna_studenti", params);
 		}
 	}
 	
-	/** Assegnamento di un corso di competenza ad un docente	*/
-	public void coursesAssignment(User professor, Course c) throws ClassNotFoundException, SQLException {
+	/** Assegnamento di un corso di competenza ad un docente	
+	 * @throws RemoteException */
+	public void coursesAssignment(User professor, Course c) throws ClassNotFoundException, SQLException, RemoteException {
 		Object[] params = {professor.getInfo().student_number, c.name };
 		socket.function("assegna_docente", params);
 	}
 	
-	/** Assegnamento di piu' corsi ad un docente	*/
-	public void coursesAssignment(User professor, List<Course> courseList) throws ClassNotFoundException, SQLException {
+	/** Assegnamento di piu' corsi ad un docente	
+	 * @throws RemoteException */
+	public void coursesAssignment(User professor, List<Course> courseList) throws ClassNotFoundException, SQLException, RemoteException {
 		for (Course a : courseList) {
 			Object[] params = {professor.getInfo().student_number, a.name };
 			socket.function("assegna_docente", params);
@@ -140,8 +158,9 @@ public class CourseManagement {
 	}
 	
 	/** Verifica se uno studente risulta iscritto a un corso	
-	 * 	@return check di controllo	*/
-	public boolean studentEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException {
+	 * 	@return check di controllo	
+	 * @throws RemoteException */
+	public boolean studentEnrolledInTheCourse (User student, Course c) throws ClassNotFoundException, SQLException, RemoteException {
 		boolean response = false;
 		Object[] params = {student.getInfo().student_number, c.courseCode};
 		ArrayList<Map<String, Object>> outcome = socket.function("verifica_iscrizione_studente", params);
@@ -162,14 +181,16 @@ public class CourseManagement {
 		}
 	}
 	
-	/** Creazione di una nuova sessione relativa a un corso	*/
-	public void createSession (User u, Course c) throws ClassNotFoundException, SQLException {
+	/** Creazione di una nuova sessione relativa a un corso	
+	 * @throws RemoteException */
+	public void createSession (User u, Course c) throws ClassNotFoundException, SQLException, RemoteException {
         socket.query("DELETE FROM accesso_corso WHERE matricola = "+ u.getInfo().student_number + " AND codice_corso = " + c.courseCode + " AND fine_accesso IS NULL;");
         socket.query("INSERT INTO accesso_corso (matricola, codice_corso, inizio_accesso) VALUES (" + u.getInfo().student_number + ", " + c.courseCode + ", NOW());");
 	} 
 	
-	/** Terminazione di una sessione relativa a un corso	*/
-	public void deleteSession (User u, Course c) throws ClassNotFoundException, SQLException {
+	/** Terminazione di una sessione relativa a un corso	
+	 * @throws RemoteException */
+	public void deleteSession (User u, Course c) throws ClassNotFoundException, SQLException, RemoteException {
 		socket.query("UPDATE accesso_corso SET fine_accesso = NOW() WHERE matricola = " + u.getInfo().student_number + " AND codice_corso = " + c.courseCode + " AND fine_accesso IS NULL");
 	} 
 }

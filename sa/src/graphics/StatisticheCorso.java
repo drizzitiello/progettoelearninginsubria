@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.Map;
 
@@ -92,7 +95,7 @@ public class StatisticheCorso extends MyFrame {
 							validate();
 							repaint();
 						}
-					} catch (ClassNotFoundException | SQLException e) {
+					} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e) {
 						e.printStackTrace();
 					}
 				}

@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -107,44 +110,50 @@ public class ModificaCorso extends MyFrame {
 				try {
 					gc = new CourseManagement();
 					gc.modifyCourse(cor);
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		contentPane.add(modifica);
 		
-		FindCourse rc = new FindCourse();
-		Content c=null;
+		FindCourse rc;
+		try {
+			rc = new FindCourse();
+			Content c=null;
 			try {
 				c = rc.getContentCourse(cor);
+				
+				for(Section s : c.sections) {
+					
+					JTextField sezione = new JTextField(s.title);
+					contentPane.add(sezione);
+					nomeCorso.setColumns(10);
+					JButton modificaSezione = new JButton("Modifica sezione");
+					modificaSezione.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							ModificaSezione ms = new ModificaSezione(thisframe, ses, cor, s.sectionCode);
+						}
+					});
+					contentPane.add(modificaSezione);
+					for(Resource r : s.resources) {
+						JTextField risorsa = new JTextField(r.name);
+						contentPane.add(risorsa);
+						nomeCorso.setColumns(10);
+						JButton modificaRisorsa = new JButton("Modifica risorsa");
+						modificaRisorsa.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								ModificaRisorsa ms = new ModificaRisorsa(thisframe, r.resourceCode);
+							}
+						});
+						contentPane.add(modificaRisorsa);
+					}
+				}
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
 			}
-		for(Section s : c.sections) {
-			
-			JTextField sezione = new JTextField(s.title);
-			contentPane.add(sezione);
-			nomeCorso.setColumns(10);
-			JButton modificaSezione = new JButton("Modifica sezione");
-			modificaSezione.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					ModificaSezione ms = new ModificaSezione(thisframe, ses, cor, s.sectionCode);
-				}
-			});
-			contentPane.add(modificaSezione);
-			for(Resource r : s.resources) {
-				JTextField risorsa = new JTextField(r.name);
-				contentPane.add(risorsa);
-				nomeCorso.setColumns(10);
-				JButton modificaRisorsa = new JButton("Modifica risorsa");
-				modificaRisorsa.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						ModificaRisorsa ms = new ModificaRisorsa(thisframe, r.resourceCode);
-					}
-				});
-				contentPane.add(modificaRisorsa);
-			}
+		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			e2.printStackTrace();
 		}
 		
 		JButton creaSezione = new JButton("Crea sezione");
@@ -240,15 +249,17 @@ public class ModificaCorso extends MyFrame {
 				try {
 					gc = new CourseManagement();
 					gc.modifyCourse(cor);
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 					e1.printStackTrace();
 				}
 			}
 		});
 		contentPane.add(modifica);
 		
-		FindCourse rc = new FindCourse();
-		Content c=null;
+		FindCourse rc;
+		try {
+			rc = new FindCourse();
+			Content c=null;
 			try {
 				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e1) {
@@ -278,6 +289,9 @@ public class ModificaCorso extends MyFrame {
 				});
 				contentPane.add(modificaRisorsa);
 			}
+		}
+		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			e2.printStackTrace();
 		}
 		
 		JButton creaSezione = new JButton("Crea sezione");

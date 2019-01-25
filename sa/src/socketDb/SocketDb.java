@@ -1,12 +1,16 @@
 package socketDb;
 
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import interfaccia.RemoteInterface;
 
-public class SocketDb {
+public class SocketDb extends UnicastRemoteObject
+implements RemoteInterface {
 	private static final String JDBC_DRIVER = "org.postgresql.Driver";  
 	private static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
 	private static final String USER = "postgres";
@@ -16,7 +20,7 @@ public class SocketDb {
 	private static int nAttempts;
 	private PreparedStatement stmt;
 	
-	private SocketDb() throws ClassNotFoundException, SQLException{
+	private SocketDb() throws ClassNotFoundException, SQLException, RemoteException{
 		createSql();
 	}
 	
@@ -31,6 +35,8 @@ public class SocketDb {
 					getInstanceDb();
 				else
 					return null;
+			} catch (RemoteException e) {
+				e.printStackTrace();
 			}
 		}
 		return socketDb;

@@ -12,6 +12,9 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import authService.AuthenticationService;
@@ -47,7 +50,11 @@ public class Login{
 	 */
 	public Login() throws ClassNotFoundException, SQLException {
 		initialize();
-		as = new AuthenticationService();
+		try {
+			as = new AuthenticationService();
+		} catch (MalformedURLException | RemoteException | NotBoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

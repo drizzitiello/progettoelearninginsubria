@@ -3,6 +3,9 @@ package graphics;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.MalformedURLException;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -105,17 +108,22 @@ public class CreaRisorsa extends MyFrame {
 				Resource r = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
 						Integer.parseInt(codSezione.getText()), Integer.parseInt(codRisorsa.getText()), 
 						pubblica, tipo.getText());
-				CourseContentManagement gc = new CourseContentManagement();
+				CourseContentManagement gc;
 				try {
-					Notifier.sendMail(ses.info().email, "pwd?", cor.name, 
-							"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+nome.getText());
-				} catch (Exception e2) {
-					e2.printStackTrace();
-				}
-				try {
-					gc.createResource(r);
-				} catch (Exception e1) {
-					e1.printStackTrace();
+					gc = new CourseContentManagement();
+					try {
+						Notifier.sendMail(ses.info().email, "pwd?", cor.name, 
+								"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+nome.getText());
+						try {
+							gc.createResource(r);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+					} catch (Exception e2) {
+						e2.printStackTrace();
+					}
+				} catch (MalformedURLException | RemoteException | NotBoundException e3) {
+					e3.printStackTrace();
 				}
 			}
 		});

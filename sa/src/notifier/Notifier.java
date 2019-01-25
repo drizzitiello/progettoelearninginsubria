@@ -5,7 +5,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.MalformedURLException;
 import java.net.Socket;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -28,16 +32,20 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import courseContentManagement.Course;
+import interfaccia.RemoteInterface;
 import socketDb.SocketDb;
 
 public class Notifier {
 	
 	private static String systemMail ="";
 	private static String systemMailPwd ="";
-	private static SocketDb socket;
+	private static RemoteInterface socket;
+	
+	public Notifier() throws MalformedURLException, RemoteException, NotBoundException{
+		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+	}
 	
 	public static boolean sendMail(String usr, String pwd, String course, String subject, String body) throws Exception {
-		socket=SocketDb.getInstanceDb();
 		Course c = getCourse(course);
 		Integer codCourse=c.courseCode;
 		if(codCourse!=null) {
@@ -77,8 +85,7 @@ public class Notifier {
 		return false;
 	}
 	
-	public static Course getCourse(String courseName) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public static Course getCourse(String courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
 		Course c=new Course();
 		Object[] params = {courseName};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
@@ -99,8 +106,7 @@ public class Notifier {
 		}
 	}
 	
-	public static Course getCourse(int courseName) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public static Course getCourse(int courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
 		Course c=new Course();
 		Object[] params = {courseName};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
@@ -121,8 +127,7 @@ public class Notifier {
 		}
 	}
 	
-	public static ArrayList<String> getUsersMail(int courseCode) throws ClassNotFoundException, SQLException {
-		socket=SocketDb.getInstanceDb();
+	public static ArrayList<String> getUsersMail(int courseCode) throws ClassNotFoundException, SQLException, RemoteException {
 		ArrayList<String> email=new ArrayList<String>();
 		Object[] s= {courseCode};
 		ArrayList<Map<String, Object>> emailObj = socket.function("getEmailUtenti", s);
