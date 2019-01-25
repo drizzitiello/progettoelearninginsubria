@@ -11,14 +11,11 @@ import java.awt.FlowLayout;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 
-import javax.mail.MessagingException;
 import java.awt.event.ActionListener;
-import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import authService.AuthenticationService;
 import session.Session;
-import socketDb.SocketDb;
 
 public class Login{
 
@@ -77,10 +74,10 @@ public class Login{
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					String log = as.login(email.getText(), pwd.getText());
+					String log = as.login(email.getText(), String.valueOf(pwd.getPassword()));
 					if(log.equals("Credenziali corrette")) {
 						frame.setVisible(false);
-						new HomePage(Session.getInstance(), pwd.getText());
+						new HomePage(Session.getInstance(),String.valueOf(pwd.getPassword()));
 					}
 					else if(log.equals("Procedura Attivazione")) {
 						frame.setVisible(false);

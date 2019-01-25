@@ -3,7 +3,6 @@ package graphics;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 
 import session.Session;
 

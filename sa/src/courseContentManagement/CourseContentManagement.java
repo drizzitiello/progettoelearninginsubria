@@ -98,6 +98,26 @@ public class CourseContentManagement {
 		return resource;
 	}
 	
+	public ArrayList<Resource> getFolderContent(int resourceCode, String resourceName){
+		try {
+			socket=SocketDb.getInstanceDb();
+			ArrayList<Map<String, Object>> hm;
+			Object[] param = {resourceCode, resourceName};
+			hm = SocketDb.getInstanceDb().function("get_contenuto_cartella", param);
+			ArrayList<Resource> resources = new ArrayList<Resource>();
+			CourseContentManagement ccm = new CourseContentManagement();
+			
+			for(Map<String,Object> m : hm) {
+				resources.add(ccm.getResource((int) m.get("codice_risorsa")));
+			}
+			
+			return resources;
+		} catch (ClassNotFoundException | SQLException e2) {
+			e2.printStackTrace();
+		}
+		return null;
+	}
+	
 	public void modifyTitle(int codSezione, String titolo) throws Exception {
 		socket=SocketDb.getInstanceDb();
 		String sql = "UPDATE sezione"+ " SET titolo = '"+titolo+

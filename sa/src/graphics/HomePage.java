@@ -10,11 +10,9 @@ import session.Session;
 import socketDb.SocketDb;
 
 import javax.swing.JLabel;
-import javax.swing.JList;
 
 import java.awt.FlowLayout;
 import javax.swing.JTextField;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;

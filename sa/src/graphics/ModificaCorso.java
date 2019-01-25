@@ -1,9 +1,5 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Container;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,13 +14,11 @@ import javax.swing.border.EmptyBorder;
 
 import courseContentManagement.Content;
 import courseContentManagement.Course;
-import courseContentManagement.CourseContentManagement;
 import courseContentManagement.FindCourse;
 import courseContentManagement.Resource;
 import courseContentManagement.Section;
 import courseManagement.CourseManagement;
 import session.Session;
-import user.User;
 
 public class ModificaCorso extends MyFrame {
 

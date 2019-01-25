@@ -18,6 +18,8 @@ import socketDb.SocketDb;
 import user.User;
 import user.User.UserInfo;
 import authService.AuthenticationService;
+import courseContentManagement.CourseContentManagement;
+import courseContentManagement.Resource;
 import courseManagement.CourseManagement;
 import notifier.Notifier;
 import session.Session;
@@ -241,4 +243,43 @@ public class UserManager {
 
         return true;
     }
+
+	public ArrayList<User> getProfessors() {
+		try {
+			socket=SocketDb.getInstanceDb();
+			ArrayList<Map<String, Object>> hm;
+			Object[] param = {};
+			hm = SocketDb.getInstanceDb().function("get_docenti", param);
+			ArrayList<User> professors = new ArrayList<User>();
+			
+			for(Map<String,Object> m : hm) {
+				User us = new User();
+				us.createFromStudentNumber((int) m.get("matricola"));
+				professors.add(us);
+			}
+			
+			return professors;
+		} catch (ClassNotFoundException | SQLException e2) {
+			e2.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+
+	public ArrayList<Integer> getRegisteredUsers() {
+		try {
+			Object[] params= {};
+			ArrayList<Integer> studentNumbers = new ArrayList<Integer>();
+			ArrayList<Map<String,Object>> hm = SocketDb.getInstanceDb().function("getutentiregistrati", params);
+			for(Map<String,Object> m : hm) {
+				studentNumbers.add((int) m.get("matricola"));
+			}
+			return studentNumbers;
+		} catch (ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

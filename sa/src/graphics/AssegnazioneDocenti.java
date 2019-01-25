@@ -1,7 +1,5 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,15 +13,15 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 import courseContentManagement.Course;
+import courseContentManagement.FindCourse;
 import courseManagement.CourseManagement;
 import notifier.Notifier;
 import session.Session;
-import socketDb.SocketDb;
 import user.User;
+import userManager.UserManager;
 
 public class AssegnazioneDocenti extends MyFrame {
 
@@ -56,13 +54,13 @@ public class AssegnazioneDocenti extends MyFrame {
 		JLabel seleziona = new JLabel("Seleziona corso");
 		contentPane.add(seleziona);
 		
-		ArrayList<Map<String, Object>> hm;
 		try {
-			hm = SocketDb.getInstanceDb().function("getcorsi", new Object[] {});
-			String[] corsi = new String[hm.size()];
+			FindCourse fc = new FindCourse();
+			ArrayList<Course> courses = fc.getCourses();
+			String[] corsi = new String[courses.size()];
 			int i=0;
-			for(Map<String, Object> m : hm) {
-				String corso = (String) m.get("nome");
+			for(Course c : courses) {
+				String corso = c.name;
 				corsi[i] = corso;
 				i++;
 			}
@@ -76,12 +74,13 @@ public class AssegnazioneDocenti extends MyFrame {
 			JComboBox selezionaDocente;
 			ArrayList<Map<String, Object>> hm2;
 			try {
-				hm2 = SocketDb.getInstanceDb().function("get_docenti", new Object[] {});
-				String[] docenti = new String[hm2.size()];
+				UserManager um = new UserManager();
+				ArrayList<User> professors = um.getProfessors();
+				String[] docenti = new String[professors.size()];
 				int k=0;
-				for(Map<String, Object> m : hm2) {
-					String docente = (String) m.get("nome");
-					docente += " "+(String) m.get("cognome");
+				for(User p : professors) {
+					String docente = p.getInfo().name;
+					docente += " "+p.getInfo().surname;
 					docenti[k] = docente;
 					k++;
 				}
@@ -98,14 +97,12 @@ public class AssegnazioneDocenti extends MyFrame {
 				selezionaDocente.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
-							ArrayList<Map<String, Object>> hm;
+							User u = new User();
 							String nomeCognome = selezionaDocente.getSelectedItem().toString();
 							StringTokenizer st = new StringTokenizer(nomeCognome, " ");  
 						    String nome = st.nextToken();
 						    String cognome = st.nextToken();
-							hm = SocketDb.getInstanceDb().function("get_matricola_docente", 
-									new Object[] {nome, cognome});
-							int matr = (int) hm.get(0).get("matricola");
+						    int matr = u.getStudentNumber(nome, cognome);
 							String num = ""+matr;
 							numero.setText(""+num);
 						} catch (Exception e1) {
@@ -132,12 +129,9 @@ public class AssegnazioneDocenti extends MyFrame {
 				
 			} catch (ClassNotFoundException | SQLException e1) {
 				e1.printStackTrace();
+			} catch (Exception e2) {
+				e2.printStackTrace();
 			}
-			
-			/*JTextField docente = new JTextField();
-			contentPane.add(docente);
-			docente.setColumns(10);*/
-			
 			
 		} catch (ClassNotFoundException | SQLException e1) {
 			e1.printStackTrace();

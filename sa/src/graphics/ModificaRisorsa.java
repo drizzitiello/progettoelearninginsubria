@@ -1,7 +1,5 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +14,6 @@ import javax.swing.border.EmptyBorder;
 
 import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
-import courseContentManagement.Section;
 
 public class ModificaRisorsa extends MyFrame {
 

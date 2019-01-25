@@ -1,7 +1,5 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,12 +10,11 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import session.Session;
-import socketDb.SocketDb;
+import userManager.UserManager;
 
 public class ModificaDatiUtenti extends MyFrame {
 
@@ -53,13 +50,14 @@ public class ModificaDatiUtenti extends MyFrame {
 		Box modifiche = Box.createVerticalBox();
 		Object[] params= {};
 		try {
-			ArrayList<Map<String,Object>> hm = SocketDb.getInstanceDb().function("getutentiregistrati", params);
+			UserManager um = new UserManager();
+			ArrayList<Integer> kk = um.getRegisteredUsers();
 			ArrayList<JButton> ajb = new ArrayList<JButton>();
-			for(Map<String,Object> m : hm) {
-				JButton modifica = new JButton("Matricola n. "+m.get("matricola")+": modifica dati utente");
+			for(Integer u : kk) {
+				JButton modifica = new JButton("Matricola n. "+u+": modifica dati utente");
 				modifica.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						InfoUtente iu = new InfoUtente(ses,m.get("matricola"));
+						InfoUtente iu = new InfoUtente(thisFrame, ses,u);
 					}
 				});
 				modifiche.add(modifica);
@@ -67,6 +65,8 @@ public class ModificaDatiUtenti extends MyFrame {
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			e.printStackTrace();
+		} catch (Exception e1) {
+			e1.printStackTrace();
 		}
 		contentPane.add(matricole);
 		contentPane.add(modifiche);

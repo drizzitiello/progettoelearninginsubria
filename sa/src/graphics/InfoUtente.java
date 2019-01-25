@@ -1,7 +1,5 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -9,22 +7,15 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import socketDb.SocketDb;
 import user.User;
 import userManager.UserManager;
 import session.Session;
 
-import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class InfoUtente extends MyFrame {
 
@@ -99,7 +90,7 @@ public class InfoUtente extends MyFrame {
 		setVisible(true);
 	}
 
-	public InfoUtente(Session ses, Object matr) {
+	public InfoUtente(ModificaDatiUtenti mdu, Session ses, Object matr) {
 		int mat = (int) matr;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
@@ -107,6 +98,18 @@ public class InfoUtente extends MyFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		thisFrame=this;
+		
+		JButton backButton = new JButton("Indietro");
+		backButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				mdu.setVisible(true);
+				thisFrame.setVisible(false);
+			}
+		});
+		contentPane.add(backButton);
+		
 		User user;
 		try {
 			user = new User();
@@ -180,10 +183,6 @@ public class InfoUtente extends MyFrame {
 			JButton modifica = new JButton("Modifica dati utente");
 			modifica.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					/*Object[] params= {modificaMatricola.getText(), modificaNome.getText(), modificaCognome.getText(),
-							modificaEmail.getText(), modificaTipoUtente.getText(), modificaAnnoImmatricolazione.getText(),
-							modificaCorsoLaurea.getText(), modificaFacolta.getText(),
-							modificastatoCarriera.getText(), modificaStrutturaRiferimento.getText()};*/
 					user.getInfo().student_number=mat;
 					user.getInfo().name=modificaNome.getText();
 					user.getInfo().surname=modificaCognome.getText();

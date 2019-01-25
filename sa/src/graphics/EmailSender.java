@@ -16,7 +16,6 @@ import java.awt.FlowLayout;
 import javax.mail.MessagingException;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class EmailSender extends MyFrame {

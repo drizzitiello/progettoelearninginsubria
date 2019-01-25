@@ -1,11 +1,8 @@
 
 package graphics;
 
-import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +13,6 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -29,7 +25,6 @@ import courseContentManagement.Section;
 import courseManagement.CourseManagement;
 import notifier.Notifier;
 import session.Session;
-import socketDb.SocketDb;
 import user.User;
 
 public class PaginaCorso extends JFrame {
@@ -125,33 +120,41 @@ public class PaginaCorso extends JFrame {
 			if(gc.studentEnrolledInTheCourse(ses.getUser(), cor)||visualComeStudente) {
 				Box all = Box.createVerticalBox();
 				for(Section s : c.sections) {
-					if(s.visibility) {
 					Box se = Box.createHorizontalBox();
 					JLabel sezione = new JLabel(s.title);
 					se.add(sezione);
 					se.add(Box.createRigidArea(new Dimension(5,0)));
 					for(Resource r : s.resources) {
-						if(r.visibility) {
 						JLabel descrizioneRisorsa = new JLabel(r.description);
 						se.add(descrizioneRisorsa);
 						se.add(Box.createRigidArea(new Dimension(5,0)));
-						JButton risorsa = new JButton(r.name);
-						risorsa.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								FindCourse rc = new FindCourse();
-								try {
-									rc.download(r);
-								} catch (ClassNotFoundException | SQLException e1) {
-									e1.printStackTrace();
+						if(r.type.equals("cartella")) {
+							JButton risorsa = new JButton(r.name);
+							risorsa.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									thisFrame.setVisible(false);
+									PaginaCartella pc = new PaginaCartella(r, thisFrame);
 								}
-							}
-						});
-						se.add(risorsa);
-						se.add(Box.createRigidArea(new Dimension(5,0)));
+							});
+							se.add(risorsa);
+						}
+						else {
+							JButton risorsa = new JButton(r.name);
+							risorsa.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent e) {
+									FindCourse rc = new FindCourse();
+									try {
+										rc.download(r);
+									} catch (ClassNotFoundException | SQLException e1) {
+										e1.printStackTrace();
+									}
+								}
+							});
+							se.add(risorsa);
+							se.add(Box.createRigidArea(new Dimension(5,0)));
 						}
 					}
 					all.add(se);
-					}
 			}
 			contentPane.add(all);
 			}
@@ -192,19 +195,31 @@ public class PaginaCorso extends JFrame {
 							JLabel descrizioneRisorsa = new JLabel(r.description);
 							se.add(descrizioneRisorsa);
 							se.add(Box.createRigidArea(new Dimension(5,0)));
-							JButton risorsa = new JButton(r.name);
-							risorsa.addActionListener(new ActionListener() {
-								public void actionPerformed(ActionEvent e) {
-									FindCourse rc = new FindCourse();
-									try {
-										rc.download(r);
-									} catch (ClassNotFoundException | SQLException e1) {
-										e1.printStackTrace();
+							if(r.type.equals("cartella")) {
+								JButton risorsa = new JButton(r.name);
+								risorsa.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										thisFrame.setVisible(false);
+										PaginaCartella pc = new PaginaCartella(r, thisFrame);
 									}
-								}
-							});
-							se.add(risorsa);
-							se.add(Box.createRigidArea(new Dimension(5,0)));
+								});
+								se.add(risorsa);
+							}
+							else {
+								JButton risorsa = new JButton(r.name);
+								risorsa.addActionListener(new ActionListener() {
+									public void actionPerformed(ActionEvent e) {
+										FindCourse rc = new FindCourse();
+										try {
+											rc.download(r);
+										} catch (ClassNotFoundException | SQLException e1) {
+											e1.printStackTrace();
+										}
+									}
+								});
+								se.add(risorsa);
+								se.add(Box.createRigidArea(new Dimension(5,0)));
+							}
 						}
 						all.add(se);
 				}

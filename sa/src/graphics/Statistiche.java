@@ -1,12 +1,9 @@
 package graphics;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.swing.Box;
@@ -17,15 +14,10 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
-import analytics.CourseAnalytics;
 import analytics.GlobalAnalytics;
 import courseContentManagement.Course;
-import courseContentManagement.CourseContentManagement;
-import courseContentManagement.FindCourse;
-import courseContentManagement.Resource;
 import notifier.Notifier;
 import session.Session;
-import socketDb.SocketDb;
 
 public class Statistiche extends MyFrame {
 	
