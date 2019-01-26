@@ -11,7 +11,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.*;
 import courseContentManagement.Course;
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import notifier.Notifier;
 import socketDb.SocketDb;
 import user.User; 

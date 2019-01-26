@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
 public class FindCourse {

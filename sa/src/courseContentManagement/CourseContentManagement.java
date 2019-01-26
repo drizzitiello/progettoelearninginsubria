@@ -10,7 +10,7 @@ import java.util.Map;
 
 import graphics.HomePage;
 import graphics.PaginaCorso;
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import session.Session;
 import socketDb.SocketDb;
 

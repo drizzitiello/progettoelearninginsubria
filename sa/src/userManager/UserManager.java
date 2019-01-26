@@ -25,7 +25,7 @@ import authService.AuthenticationService;
 import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
 import courseManagement.CourseManagement;
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import notifier.Notifier;
 import session.Session;
 
@@ -57,7 +57,13 @@ public class UserManager {
     public UserManager() throws Exception {
         this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
         this.session = Session.getInstance();
-        this.enabled = this.session.info().userType == User.admin;
+        this.enabled = this.session.info().userType == User.ADMIN;
+    }
+    
+    public UserManager(String admin) throws Exception {
+        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+        this.session = Session.getInstance();
+        this.enabled = true;
     }
 
 
@@ -181,6 +187,44 @@ public class UserManager {
 
         return true;
     }
+    
+    public boolean createUser(UserInfo info, String pwd) throws SQLException, ClassNotFoundException, RemoteException{
+        if(!this.enabled)
+        return false;
+
+        int randomCodAttivaz = AuthenticationService.createActivationCode();
+
+        Object[] p = {
+                    info.name,
+                    info.surname,
+                    info.email,
+                    (short) (int)  info.userType,
+                    info.registrationYear,
+                    info.faculty,
+                    info.careerStatus,
+                    info.referenceStructure,
+                    info.student_number,
+                    pwd,
+                    randomCodAttivaz
+                    };
+        
+        this.socket.function("crea_utente", p);
+        
+        String body;
+        body = "Ciao " + info.name + "! Ti diamo il benvenuto su SeatIn.\n\n";
+        body += "Di seguito troverai le credenziali per accedere al portale:\n";
+        body += "Utente: " + info.email + "\n";
+        body += "Password: " + pwd + "\n";
+        body += "Codice di attivazione: " + Integer.toString(randomCodAttivaz) + "\n";
+
+        try {
+			Notifier.sendSystemMail(info.email, "SeatIn", body);
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+
+        return true;
+    }
 
      /**
 	 * Importa utenti tramite file Comma Separated (CSV),
@@ -216,15 +260,15 @@ public class UserManager {
 
                     switch(attributes[4]){
                         case "S":
-                            i.userType = User.student;
+                            i.userType = User.STUDENT;
                         break;
 
                         case "D":
-                            i.userType = User.professor;
+                            i.userType = User.PROFESSOR;
                         break;
 
                         case "A":
-                            i.userType = User.admin;
+                            i.userType = User.ADMIN;
                         break;
                     }
                     
@@ -284,14 +328,30 @@ public class UserManager {
 		try {
 			Object[] params= {};
 			ArrayList<Integer> studentNumbers = new ArrayList<Integer>();
-			ArrayList<Map<String,Object>> hm = SocketDb.getInstanceDb().function("getutentiregistrati", params);
+			ArrayList<Map<String,Object>> hm = socket.function("getutentiregistrati", params);
 			for(Map<String,Object> m : hm) {
 				studentNumbers.add((int) m.get("matricola"));
 			}
 			return studentNumbers;
-		} catch (ClassNotFoundException | SQLException e) {
+		} catch (ClassNotFoundException | SQLException | RemoteException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean dbContainsAdmin() {
+		try {
+			Object[] params= {};
+			ArrayList<Map<String,Object>> hm = socket.function("db_contains_admin", params);
+			if((boolean) hm.get(0).get("db_contains_admin")) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		} catch (ClassNotFoundException | SQLException | RemoteException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }

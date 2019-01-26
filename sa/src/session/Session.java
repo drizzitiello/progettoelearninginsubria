@@ -6,7 +6,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.sql.SQLException;
 
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
 import user.User.UserInfo;

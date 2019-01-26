@@ -133,7 +133,7 @@ public class HomePage extends MyFrame {
 						}
 					contentPane.revalidate();
 					validate();
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (ClassNotFoundException | SQLException | RemoteException e1) {
 					e1.printStackTrace();
 				}
 			}

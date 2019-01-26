@@ -20,7 +20,7 @@ import java.rmi.RemoteException;
 import java.security.*;
 import javax.mail.*;
 
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import notifier.Notifier;
 import session.Session;
 import socketDb.SocketDb;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
 /**
@@ -39,9 +39,9 @@ public class User {
 	}
     
     /* Dichiarazione livelli utente */
-    static public final int admin = 3;
-    static public final int professor = 2;
-    static public final int student = 1; //modificare anche in stored crea_utente
+    static public final int ADMIN = 3;
+    static public final int PROFESSOR = 2;
+    static public final int STUDENT = 1; //modificare anche in stored crea_utente
 
     /* Dichiarazione dei componenti di servizio: */
     private RemoteInterface socket;

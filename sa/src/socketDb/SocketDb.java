@@ -7,21 +7,48 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import interfaccia.RemoteInterface;
+
+import interfaces.RemoteInterface;
 
 public class SocketDb extends UnicastRemoteObject
 implements RemoteInterface {
 	private static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	private static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
-	private static final String USER = "postgres";
-	private static final String PASS = "makaay";
-	public static SocketDb socketDb;
-	private Connection conn;
+	//private static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
+	//private static final String USER = "postgres";
+	//private static final String PASS = "makaay";
+	private static String DB_URL = "";
+	private static String USER = "";
+	private static String PASS = "";
+	private static SocketDb socketDb;
+	private static Connection conn;
 	private static int nAttempts;
-	private PreparedStatement stmt;
+	private static PreparedStatement stmt;
+	private static boolean isActive;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException, RemoteException{
 		createSql();
+	}
+	
+	private SocketDb(String host, String user, String password) throws ClassNotFoundException, SQLException, RemoteException{
+		createSqlAdmin(host, user, password);
+	}
+	
+	public static SocketDb getAdminInstanceDb(String host, String user, String password) throws ClassNotFoundException {
+		if(socketDb==null) {
+			try {
+				socketDb=new SocketDb(host, user, password);
+				nAttempts=0;
+			} catch (SQLException e) {
+				nAttempts++;
+				if(nAttempts<=25)
+					getInstanceDb();
+				else
+					return null;
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+		return socketDb;
 	}
 	
 	public static SocketDb getInstanceDb() throws ClassNotFoundException {
@@ -46,14 +73,26 @@ implements RemoteInterface {
 		conn = null;
 		Class.forName(JDBC_DRIVER);
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		isActive=true;
 	}
 	
-	private void destroySql() throws ClassNotFoundException, SQLException {
+	private void createSqlAdmin(String host, String user, String password) throws ClassNotFoundException, SQLException, RemoteException {
+		conn = null;
+		Class.forName(JDBC_DRIVER);
+		SocketDb.DB_URL="jdbc:postgresql://"+host+":5432/sss";
+		SocketDb.USER=user;
+		SocketDb.PASS=password;
+		conn = DriverManager.getConnection(SocketDb.DB_URL,user,password);
+		isActive=true;
+	}
+	
+	public void destroySql() throws ClassNotFoundException, SQLException, RemoteException {
 		stmt.close();
 		conn.close();
+		isActive=false;
 	}
 	
-	private ArrayList<Map<String,Object>> executeSql(String sql) throws SQLException, ClassNotFoundException {
+	private ArrayList<Map<String,Object>> executeSql(String sql) throws SQLException, ClassNotFoundException, RemoteException {
 		ResultSet rs = null;
 		if(sql.toUpperCase().startsWith("SELECT")) 
 			rs = stmt.executeQuery();
@@ -62,18 +101,18 @@ implements RemoteInterface {
 		return rs==null ? null : getResults(rs);
 	}
 	
-	public ArrayList<Map<String,Object>> query(String sql, Object[] params) throws ClassNotFoundException, SQLException {			
+	public ArrayList<Map<String,Object>> query(String sql, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {			
 		createSql();
 		stmt=conn.prepareStatement(sql);
 		bindParams(params);
 		return executeSql(sql);
 	}
 	
-	public ArrayList<Map<String,Object>> query(String sql) throws ClassNotFoundException, SQLException{
+	public ArrayList<Map<String,Object>> query(String sql) throws ClassNotFoundException, SQLException, RemoteException{
 		return query(sql,new String[0]);
 	}
 	
-	public ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException {
+	public ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {
 		createSql();
 		String[] qmarks=new String[params.length];
 		Arrays.fill(qmarks, "?");
@@ -84,7 +123,7 @@ implements RemoteInterface {
 	}
 	
 	
-	private ArrayList<Map<String,Object>> getResults(ResultSet objResults) throws SQLException, ClassNotFoundException {
+	private ArrayList<Map<String,Object>> getResults(ResultSet objResults) throws SQLException, ClassNotFoundException, RemoteException {
 		ArrayList<Map<String, Object>> hm= new ArrayList<Map<String ,Object>>();
 		ResultSetMetaData rsmd= objResults.getMetaData();
 		while(objResults.next()) {			
@@ -103,5 +142,10 @@ implements RemoteInterface {
 		for(int i=0; i<params.length;i++) {
 			stmt.setObject(i+1, params[i]);
 		}
+	}
+
+	@Override
+	public boolean isActive() throws ClassNotFoundException, SQLException, RemoteException {
+		return isActive;
 	}
 }

@@ -7,7 +7,7 @@ import java.rmi.RemoteException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
 public class Course {

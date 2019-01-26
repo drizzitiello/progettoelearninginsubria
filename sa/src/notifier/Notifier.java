@@ -32,7 +32,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import courseContentManagement.Course;
-import interfaccia.RemoteInterface;
+import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
 public class Notifier {
