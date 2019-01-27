@@ -30,7 +30,7 @@ public class CourseContentManagement {
 		String sql = "INSERT INTO sezione(codice_sezione, titolo, descrizione, is_pubblica, codice_corso, "
 				+ "figlio_di, matricola) "
 				+ "VALUES ("+s.sectionCode+", '"+s.title+"', '"+s.description+"', '"+s.visibility+"','"+
-				s.courseCode+"', "+ " "+s.sonOf+", "+s.studentNumber+");";
+				s.courseCode+"', "+ " "+s.sonOf+", "+s.creator+");";
 		socket.query(sql);
 	}
 	
@@ -60,7 +60,7 @@ public class CourseContentManagement {
 	
 	public void modifySection(Section s) throws Exception {
 		Object[] params = {s.sectionCode, s.title , s.visibility , s.description,  s.courseCode,
-				(Integer) s.sonOf, s.studentNumber};
+				(Integer) s.sonOf, s.creator};
 		socket.function("modificasezione", params);
 	}
 	

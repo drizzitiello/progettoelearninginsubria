@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -56,7 +57,7 @@ public class ModificaSezione extends MyFrame {
 			gc = new CourseContentManagement();
 			try {
 				s=gc.getSection(codSezione);
-				final int matricola=s.studentNumber;
+				final int matricola=s.creator;
 				final int codCorso=s.courseCode;
 				final Integer figlioDi=s.sonOf;
 				
@@ -94,22 +95,25 @@ public class ModificaSezione extends MyFrame {
 									pubblica, codSezione, matricola, codCorso, figlioDi);
 							gc.modifySection(sezione);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 							e1.printStackTrace();
 						}
 					}
 				});
 				contentPane.add(modificaSezione);
 			} catch (ClassNotFoundException | SQLException e1) {
+				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e1.printStackTrace();
 			}
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e2.printStackTrace();
 		}
 		
 		JButton creaRisorsa = new JButton("Crea risorsa");
 		creaRisorsa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreaRisorsa ms = new CreaRisorsa(thisframe, ses, cor);
+				CreaRisorsa ms = new CreaRisorsa(thisframe, ses, cor, codSezione);
 			}
 		});
 		contentPane.add(creaRisorsa);
@@ -123,6 +127,7 @@ public class ModificaSezione extends MyFrame {
 					mc.setVisible(true);
 					thisframe.setVisible(false);
 				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+					JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 					e1.printStackTrace();
 				}
 			}

@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -102,15 +103,18 @@ public class ModificaRisorsa extends MyFrame {
 									pubblica, tipo.getText());
 							gc.modifyResource(risorsa);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 							e1.printStackTrace();
 						}
 					}
 				});
 				contentPane.add(modificaRisorsa);
 			} catch (ClassNotFoundException | SQLException e1) {
+				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e1.printStackTrace();
 			}
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e2.printStackTrace();
 		}
 		
@@ -125,9 +129,11 @@ public class ModificaRisorsa extends MyFrame {
 						mc.setVisible(true);
 						thisframe.setVisible(false);
 					} catch (ClassNotFoundException | SQLException e1) {
+						JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 						e1.printStackTrace();
 					}
 				} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+					JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 					e2.printStackTrace();
 				}
 			}

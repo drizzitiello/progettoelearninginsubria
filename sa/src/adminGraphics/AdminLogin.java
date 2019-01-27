@@ -61,13 +61,14 @@ public class AdminLogin extends JFrame{
 	startButton.addActionListener(new ActionListener() {
 		public void actionPerformed(ActionEvent arg0) {
 			try {
-				server= new Server(SocketDb.getAdminInstanceDb(host.getText(), email.getText(), String.valueOf(pwd.getPassword())));
+				//server = new Server(SocketDb.getAdminInstanceDb(host.getText(), email.getText(), String.valueOf(pwd.getPassword())));
+				server=Server.getInstance(SocketDb.getAdminInstanceDb(host.getText(), email.getText(), String.valueOf(pwd.getPassword())));
+				server.bind();
 				UserManager um = new UserManager("");
 				if(!um.dbContainsAdmin()) {
 					RegistraAdmin ra = new RegistraAdmin(thisFrame);
 					thisFrame.setVisible(false);
 				}
-				System.out.println(server.isActive());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

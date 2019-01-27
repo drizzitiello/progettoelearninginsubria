@@ -26,7 +26,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.JOptionPane;
 import javax.swing.Box;
 
-//public class HomePage extends JFrame {
 public class HomePage extends MyFrame {
 
 	private JPanel contentPane;
@@ -52,6 +51,7 @@ public class HomePage extends MyFrame {
 		try {
 			ses.create(ses.getUser().getInfo().student_number);
 		} catch (Exception e2) {
+			JOptionPane.showMessageDialog(contentPane, "Errore nella creazione della sessione");
 			e2.printStackTrace();
 		}
 		
@@ -63,6 +63,7 @@ public class HomePage extends MyFrame {
 					Login l = new Login();
 					hp.setVisible(false);
 				} catch (ClassNotFoundException | SQLException | RemoteException e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore nella distruzione della sessione");
 					e1.printStackTrace();
 				}
 			}
@@ -102,6 +103,7 @@ public class HomePage extends MyFrame {
 						JOptionPane.showMessageDialog(cercaCorsi, "Il corso cercato non esiste");
 					}
 				} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore nel caricamento dei corsi");
 					e1.printStackTrace();
 				}
 			}
@@ -137,6 +139,7 @@ public class HomePage extends MyFrame {
 					contentPane.revalidate();
 					validate();
 				} catch (ClassNotFoundException | SQLException | RemoteException e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore nel caricamento dei corsi");
 					e1.printStackTrace();
 				} catch (Exception e1) {
 					e1.printStackTrace();
@@ -211,6 +214,7 @@ public class HomePage extends MyFrame {
 					try {
 						AssegnazioneDocenti mdu = new AssegnazioneDocenti(hp, ses);
 					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 						e1.printStackTrace();
 					}
 					hp.setVisible(false);

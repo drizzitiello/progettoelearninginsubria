@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -99,15 +100,10 @@ public class AggiungiCorso extends MyFrame {
 	                corso.setCreator(ses.getUser().getInfo().student_number);
 					gc.createCourse(corso);
 				} catch (ClassNotFoundException | SQLException e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore nella connessione al database");
 					e1.printStackTrace();
-				} catch (MalformedURLException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (RemoteException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				} catch (NotBoundException e1) {
-					// TODO Auto-generated catch block
+				} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 					e1.printStackTrace();
 				}
 			}

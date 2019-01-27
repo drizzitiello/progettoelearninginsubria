@@ -15,6 +15,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -77,8 +78,6 @@ public class AssegnazioneDocenti extends MyFrame {
 			JLabel sel = new JLabel("Seleziona docente");
 			contentPane.add(sel);
 			
-			JComboBox selezionaDocente;
-			ArrayList<Map<String, Object>> hm2;
 			try {
 				UserManager um = new UserManager();
 				ArrayList<User> professors = um.getProfessors();
@@ -90,14 +89,21 @@ public class AssegnazioneDocenti extends MyFrame {
 					docenti[k] = docente;
 					k++;
 				}
-				selezionaDocente = new JComboBox(docenti);
+				JComboBox selezionaDocente = new JComboBox(docenti);
 				selezionaDocente.setMaximumRowCount(100);
 				contentPane.add(selezionaDocente);
 				
 				JLabel matricola = new JLabel("Matricola docente: ");
 				contentPane.add(matricola);
 				
-				JLabel numero = new JLabel("");
+				User u = new User();
+				String nomeCognome = selezionaDocente.getSelectedItem().toString();
+				StringTokenizer st = new StringTokenizer(nomeCognome, " ");  
+			    String nome = st.nextToken();
+			    String cognome = st.nextToken();
+			    int matr = u.getStudentNumber(nome, cognome);
+				String num = ""+matr;
+				JLabel numero = new JLabel(num);
 				contentPane.add(numero);
 				
 				selezionaDocente.addActionListener(new ActionListener() {
@@ -112,6 +118,7 @@ public class AssegnazioneDocenti extends MyFrame {
 							String num = ""+matr;
 							numero.setText(""+num);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane, "Errore nel caricamento dei docenti");
 							e1.printStackTrace();
 						}
 					}
@@ -128,6 +135,7 @@ public class AssegnazioneDocenti extends MyFrame {
 							CourseManagement gc = new CourseManagement();
 							gc.coursesAssignment(doc, c);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane, "Errore nell'assegnazione del corso");
 							e1.printStackTrace();
 						}
 					}
@@ -135,12 +143,14 @@ public class AssegnazioneDocenti extends MyFrame {
 				contentPane.add(assegnaCorsi);
 				
 			} catch (ClassNotFoundException | SQLException e1) {
+				JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 				e1.printStackTrace();
 			} catch (Exception e2) {
 				e2.printStackTrace();
 			}
 			
 		} catch (ClassNotFoundException | SQLException e1) {
+			JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 			e1.printStackTrace();
 		}
 		

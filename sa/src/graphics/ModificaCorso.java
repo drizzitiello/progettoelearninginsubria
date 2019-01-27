@@ -11,6 +11,7 @@ import java.sql.SQLException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -111,6 +112,7 @@ public class ModificaCorso extends MyFrame {
 					gc = new CourseManagement();
 					gc.modifyCourse(cor);
 				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+					JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 					e1.printStackTrace();
 				}
 			}
@@ -150,9 +152,11 @@ public class ModificaCorso extends MyFrame {
 					}
 				}
 			} catch (ClassNotFoundException | SQLException e1) {
+				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e1.printStackTrace();
 			}
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e2.printStackTrace();
 		}
 		
@@ -250,6 +254,7 @@ public class ModificaCorso extends MyFrame {
 					gc = new CourseManagement();
 					gc.modifyCourse(cor);
 				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+					JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 					e1.printStackTrace();
 				}
 			}
@@ -263,6 +268,7 @@ public class ModificaCorso extends MyFrame {
 			try {
 				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e1) {
+				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e1.printStackTrace();
 			}
 		for(Section s : c.sections) {
@@ -291,6 +297,7 @@ public class ModificaCorso extends MyFrame {
 			}
 		}
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e2.printStackTrace();
 		}
 		

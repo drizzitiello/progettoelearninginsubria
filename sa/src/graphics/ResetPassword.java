@@ -75,6 +75,7 @@ public class ResetPassword extends MyFrame {
 						as.resetLoginAttempts();
 						
 					} catch (Exception e) {
+						JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 						e.printStackTrace();
 					}
 				}

@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -64,8 +65,10 @@ public class ModificaDatiUtenti extends MyFrame {
 				ajb.add(modifica);
 			}
 		} catch (ClassNotFoundException | SQLException e) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 			e.printStackTrace();
 		} catch (Exception e1) {
+			JOptionPane.showMessageDialog(contentPane,"Errore");
 			e1.printStackTrace();
 		}
 		contentPane.add(matricole);

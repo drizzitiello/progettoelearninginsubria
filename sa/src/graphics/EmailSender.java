@@ -89,8 +89,10 @@ public class EmailSender extends MyFrame {
 								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
 					}
 					} catch (MessagingException e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio dell'email");
 					e1.printStackTrace();
 				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio dell'email");
 					e1.printStackTrace();
 				}
 			}

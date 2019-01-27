@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -62,6 +63,7 @@ public class PaginaCartella extends MyFrame {
 							FindCourse rc = new FindCourse();
 							rc.download(res);
 						} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+							JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 							e1.printStackTrace();
 						}
 					}
@@ -70,6 +72,7 @@ public class PaginaCartella extends MyFrame {
 			}
 			contentPane.add(ver);
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e2.printStackTrace();
 		}
 		

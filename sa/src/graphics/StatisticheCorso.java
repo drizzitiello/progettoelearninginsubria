@@ -13,6 +13,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -96,6 +97,7 @@ public class StatisticheCorso extends MyFrame {
 							repaint();
 						}
 					} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e) {
+						JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 						e.printStackTrace();
 					}
 				}
@@ -107,6 +109,7 @@ public class StatisticheCorso extends MyFrame {
 			ca.avgMinsOnline());
 			contentPane.add(tempoMedioConnessioniPagina);
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(contentPane,"Errore");
 			e.printStackTrace();
 		}
 		

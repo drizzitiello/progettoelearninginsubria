@@ -47,7 +47,7 @@ public class Course {
 					+ "VALUES(?, ?, ?, ?, ?, ?, ?);";
 			Object[] p = {section.sectionCode, section.title, section.description,
 					section.visibility, section.courseCode, section.sonOf,
-					section.studentNumber};
+					section.creator};
 			socket.query(sql,p);
 			for(Resource resource : section.resources) {
 				resources.add(resource);

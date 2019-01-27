@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -77,13 +78,6 @@ public class CreaSezione extends MyFrame {
 		contentPane.add(visibilita);
 		visibilita.setColumns(10);
 		
-		JLabel creat = new JLabel("Creatore: ");
-		contentPane.add(creat);
-
-		JTextField creatore = new JTextField();
-		contentPane.add(creatore);
-		creatore.setColumns(10);
-		
 		JLabel codCo = new JLabel("Codice corso: ");
 		contentPane.add(codCo);
 		
@@ -110,24 +104,27 @@ public class CreaSezione extends MyFrame {
 					figlio=Integer.parseInt(figlioDi.getText());
 				}
 				Section s = new Section(titolo.getText(),  descrizione.getText(), 
-						pubblica, Integer.parseInt(codSezione.getText()), Integer.parseInt(creatore.getText()), 
+						pubblica, Integer.parseInt(codSezione.getText()), ses.getUser().getInfo().student_number, 
 						Integer.parseInt(codCorso.getText()), figlio);
 				CourseContentManagement gc;
 				try {
 					gc = new CourseContentManagement();
 					try {
+						gc.createSection(s);
+					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore di connessione al databse");
+						e1.printStackTrace();
+					}
+					try {
 						Notifier n = new Notifier();
 						n.sendMail(ses.info().email, "pwd?", cor.name,
 								"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+titolo.getText());
 					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio dell'email");
 						e2.printStackTrace();
 					}
-					try {
-						gc.createSection(s);
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
 				} catch (MalformedURLException | RemoteException | NotBoundException e3) {
+					JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 					e3.printStackTrace();
 				}
 			}

@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -57,6 +58,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 					UserManager um = new UserManager();
 					um.csvImportUser(path.getText());
 				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(contentPane,"Errore durante il caricamento dei file");
 					e1.printStackTrace();
 				}
 			}
@@ -70,6 +72,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 					CourseManagement gc = new CourseManagement();
 					gc.dataInput(path.getText());
 				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(contentPane,"Errore durante il caricamento dei file");
 					e1.printStackTrace();
 				}
 			}

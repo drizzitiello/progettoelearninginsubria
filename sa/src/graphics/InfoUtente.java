@@ -12,6 +12,7 @@ import userManager.UserManager;
 import session.Session;
 
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -190,7 +191,7 @@ public class InfoUtente extends MyFrame {
 					
 					user.getInfo().userType=Integer.parseInt(modificaTipoUtente.getText());
 					System.out.println(modificaAnnoImmatricolazione.getText());
-					if(modificaAnnoImmatricolazione.getText().equals("")) user.getInfo().registrationYear = null;
+					if(modificaAnnoImmatricolazione.getText().equals("")) user.getInfo().registrationYear = 0;
 	                else user.getInfo().registrationYear = Integer.parseInt(modificaAnnoImmatricolazione.getText());
 					user.getInfo().faculty=modificaCorsoLaurea.getText();
 					user.getInfo().careerStatus=modificastatoCarriera.getText();
@@ -199,8 +200,10 @@ public class InfoUtente extends MyFrame {
 						UserManager um = new UserManager();
 						um.modifiyUserData(user);
 					} catch (SQLException e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore di connessione al database");
 						e1.printStackTrace();
 					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore");
 						e1.printStackTrace();
 					}
 				}
@@ -213,7 +216,10 @@ public class InfoUtente extends MyFrame {
 					try {
 						UserManager um = new UserManager();
 						um.deleteUser(user);
+						mdu.setVisible(true);
+						thisFrame.setVisible(false);
 					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore di connessione al database");
 						e1.printStackTrace();
 					}
 					
@@ -228,6 +234,7 @@ public class InfoUtente extends MyFrame {
 						UserManager um = new UserManager();
 						um.unlockUser(user);
 					} catch (Exception e1) {
+						JOptionPane.showMessageDialog(contentPane, "Errore di connessione al database");
 						e1.printStackTrace();
 					}
 					
@@ -235,6 +242,7 @@ public class InfoUtente extends MyFrame {
 			});
 			contentPane.add(sblocca);
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(contentPane, "Errore");
 			e.printStackTrace();
 		}
 		

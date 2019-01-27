@@ -12,15 +12,15 @@ public class Section {
 	public Integer courseCode;
 	public List<Resource> resources=new ArrayList<Resource>();
 	public int sectionCode;
-	public int studentNumber;
+	public int creator;
 	public Section(String title, String descr, boolean visibility, Integer sectionCode, 
-			int studentNumber, int courseCode, Integer sonOf) {
+			int creator, int courseCode, Integer sonOf) {
 		this.title=title;
 		this.sectionCode=sectionCode;
 		this.description=descr;
 		this.visibility=visibility;
 		this.courseCode=courseCode;
-		this.studentNumber=studentNumber;
+		this.creator=creator;
 		this.sonOf=sonOf;
 	}
 

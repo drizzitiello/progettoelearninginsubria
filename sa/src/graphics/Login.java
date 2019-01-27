@@ -76,6 +76,7 @@ public class Login{
 						JOptionPane.showMessageDialog(loginButton, log);
 					}
 				} catch (Exception e) {
+					JOptionPane.showMessageDialog(frame, "Errore di connessione");
 					e.printStackTrace();
 				}
 			}
@@ -102,6 +103,7 @@ public class Login{
 						JOptionPane.showMessageDialog(recuperoButton,"Inserire l'email nel campo apposito");
 					}
 				} catch (Exception e1) {
+					JOptionPane.showMessageDialog(frame,"Errore di connessione al database");
 					e1.printStackTrace();
 				}
 			}

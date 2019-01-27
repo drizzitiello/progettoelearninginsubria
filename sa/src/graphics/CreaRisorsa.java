@@ -10,6 +10,7 @@ import java.rmi.RemoteException;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -29,8 +30,9 @@ public class CreaRisorsa extends MyFrame {
 	 * Create the frame.
 	 * @param cor 
 	 * @param ses 
+	 * @param codSezione 
 	 */
-	public CreaRisorsa(ModificaSezione ms, Session ses, Course cor) {
+	public CreaRisorsa(ModificaSezione ms, Session ses, Course cor, int codSezione) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -70,13 +72,6 @@ public class CreaRisorsa extends MyFrame {
 		contentPane.add(path);
 		path.setColumns(10);
 		
-		JLabel sez = new JLabel("Codice sezione: ");
-		contentPane.add(sez);
-
-		JTextField codSezione = new JTextField();
-		contentPane.add(codSezione);
-		codSezione.setColumns(10);
-		
 		JLabel ris = new JLabel("Codice risorsa: ");
 		contentPane.add(ris);
 
@@ -106,7 +101,7 @@ public class CreaRisorsa extends MyFrame {
 					pubblica=true;
 				}
 				Resource r = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
-						Integer.parseInt(codSezione.getText()), Integer.parseInt(codRisorsa.getText()), 
+						codSezione, Integer.parseInt(codRisorsa.getText()), 
 						pubblica, tipo.getText());
 				CourseContentManagement gc;
 				try {
@@ -118,9 +113,11 @@ public class CreaRisorsa extends MyFrame {
 						try {
 							gc.createResource(r);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane, "Errore di connessione al databse");
 							e1.printStackTrace();
 						}
 					} catch (Exception e2) {
+						JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio delle email");
 						e2.printStackTrace();
 					}
 				} catch (MalformedURLException | RemoteException | NotBoundException e3) {

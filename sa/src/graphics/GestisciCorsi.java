@@ -15,6 +15,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -83,9 +84,11 @@ public class GestisciCorsi extends MyFrame {
 					contentPane.add(corso);
 				}
 			} catch (ClassNotFoundException | SQLException e) {
+				JOptionPane.showMessageDialog(contentPane, "Errore durante la connessione al databse");
 				e.printStackTrace();
 			}
 		} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+			JOptionPane.showMessageDialog(contentPane, "Errore durante la connessione al database");
 			e1.printStackTrace();
 		}
 		JButton aggiungiCorso = new JButton("Aggiungi corso");

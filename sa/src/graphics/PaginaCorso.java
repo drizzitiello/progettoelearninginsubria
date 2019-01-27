@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -76,6 +77,7 @@ public class PaginaCorso extends JFrame {
 					gc.deleteSession(user, cor);
 					ses.destroy();
 				} catch (ClassNotFoundException | SQLException | RemoteException e) {
+					JOptionPane.showMessageDialog(contentPane,"Errore durante la distruzione della sessione");
 					e.printStackTrace();
 				}
 		        System.exit(0);
@@ -92,6 +94,7 @@ public class PaginaCorso extends JFrame {
 				FindCourse rc = new FindCourse();
 				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e) {
+				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e.printStackTrace();
 			}
 			
@@ -108,6 +111,7 @@ public class PaginaCorso extends JFrame {
 		try {
 			u=gc.whoTeachCourse(cor);
 		} catch (Exception e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 			e2.printStackTrace();
 		}
 		
@@ -173,6 +177,7 @@ public class PaginaCorso extends JFrame {
 							CourseManagement gc = new CourseManagement();
 							gc.signUpForCourse(ses.getUser(), cor);
 						} catch (Exception e1) {
+							JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 							e1.printStackTrace();
 						}
 					}
@@ -217,6 +222,7 @@ public class PaginaCorso extends JFrame {
 											FindCourse rc = new FindCourse();
 											rc.download(r);
 										} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+											JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 											e1.printStackTrace();
 										}
 									}
@@ -251,6 +257,7 @@ public class PaginaCorso extends JFrame {
 						try {
 							CourseContentManagement.viewAsStudent(hp, cor.name);
 						} catch (MalformedURLException | RemoteException | NotBoundException e1) {
+							JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 							e1.printStackTrace();
 						}
 					}
@@ -288,6 +295,7 @@ public class PaginaCorso extends JFrame {
 										FindCourse rc = new FindCourse();
 										rc.download(r);
 									} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
+										JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 										e1.printStackTrace();
 									}
 								}
@@ -322,11 +330,14 @@ public class PaginaCorso extends JFrame {
 					
 			}
 		} catch (SQLException | ClassNotFoundException e2) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 			e2.printStackTrace();
 		} catch (Exception e) {
+			JOptionPane.showMessageDialog(contentPane,"Errore");
 			e.printStackTrace();
 		}
 		} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e3) {
+			JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
 			e3.printStackTrace();
 		}
 		
