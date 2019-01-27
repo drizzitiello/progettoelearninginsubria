@@ -102,7 +102,7 @@ public class CourseContentManagement {
 		try {
 			ArrayList<Map<String, Object>> hm;
 			Object[] param = {resourceCode, resourceName};
-			hm = SocketDb.getInstanceDb().function("get_contenuto_cartella", param);
+			hm = socket.function("get_contenuto_cartella", param);
 			ArrayList<Resource> resources = new ArrayList<Resource>();
 			CourseContentManagement ccm = new CourseContentManagement();
 			

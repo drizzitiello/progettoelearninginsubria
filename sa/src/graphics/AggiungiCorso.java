@@ -31,7 +31,7 @@ public class AggiungiCorso extends MyFrame {
 	 */
 	public AggiungiCorso(GestisciCorsi gc, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

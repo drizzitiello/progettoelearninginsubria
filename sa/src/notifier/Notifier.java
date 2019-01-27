@@ -45,7 +45,7 @@ public class Notifier {
 		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
 	}
 	
-	public static boolean sendMail(String usr, String pwd, String course, String subject, String body) throws Exception {
+	public boolean sendMail(String usr, String pwd, String course, String subject, String body) throws Exception {
 		Course c = getCourse(course);
 		Integer codCourse=c.courseCode;
 		if(codCourse!=null) {
@@ -85,7 +85,7 @@ public class Notifier {
 		return false;
 	}
 	
-	public static Course getCourse(String courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
+	public Course getCourse(String courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
 		Course c=new Course();
 		Object[] params = {courseName};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
@@ -106,7 +106,7 @@ public class Notifier {
 		}
 	}
 	
-	public static Course getCourse(int courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
+	public Course getCourse(int courseName) throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {
 		Course c=new Course();
 		Object[] params = {courseName};
 		ArrayList<Map<String, Object>> cc= socket.function("getCorso", params);
@@ -127,7 +127,7 @@ public class Notifier {
 		}
 	}
 	
-	public static ArrayList<String> getUsersMail(int courseCode) throws ClassNotFoundException, SQLException, RemoteException {
+	public ArrayList<String> getUsersMail(int courseCode) throws ClassNotFoundException, SQLException, RemoteException {
 		ArrayList<String> email=new ArrayList<String>();
 		Object[] s= {courseCode};
 		ArrayList<Map<String, Object>> emailObj = socket.function("getEmailUtenti", s);

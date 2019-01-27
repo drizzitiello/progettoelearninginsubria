@@ -48,7 +48,7 @@ public class PaginaCorso extends JFrame {
 	 */
 	public PaginaCorso(HomePage hp, Session ses, String corso, boolean visualComeStudente) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -85,9 +85,10 @@ public class PaginaCorso extends JFrame {
 		
 		try {
 			gc = new CourseManagement();
-			gc.createSession(ses.getUser(), Notifier.getCourse(corso));
+			Notifier n = new Notifier();
+			gc.createSession(ses.getUser(), n.getCourse(corso));
 			try {
-				cor= Notifier.getCourse(corso);
+				cor= n.getCourse(corso);
 				FindCourse rc = new FindCourse();
 				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e) {

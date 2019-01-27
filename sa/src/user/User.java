@@ -133,10 +133,9 @@ public class User {
 
 	public int getStudentNumber(String nome, String cognome) {
 		try {
-			socket=SocketDb.getInstanceDb();
 			ArrayList<Map<String, Object>> hm;
 			Object[] param = {nome, cognome};
-			hm = SocketDb.getInstanceDb().function("get_matricola_docente", param);
+			hm = socket.function("get_matricola_docente", param);
 			int studentNumber = (int) hm.get(0).get("matricola");
 			return studentNumber;
 		} catch (ClassNotFoundException | SQLException e2) {

@@ -34,7 +34,7 @@ public class EmailSender extends MyFrame {
 	 */
 	public EmailSender(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -77,8 +77,9 @@ public class EmailSender extends MyFrame {
 		bottoneInvio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					Notifier n = new Notifier();
 					if(!destinatari.getText().contains("@")) {
-						if(!Notifier.sendMail(ses.getUser().getInfo().email, pwd,
+						if(!n.sendMail(ses.getUser().getInfo().email, pwd,
 								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText())) {
 							JOptionPane.showMessageDialog(bottoneInvio, "Destinatario non valido");
 						}

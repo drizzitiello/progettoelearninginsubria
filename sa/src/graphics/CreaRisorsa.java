@@ -32,7 +32,7 @@ public class CreaRisorsa extends MyFrame {
 	 */
 	public CreaRisorsa(ModificaSezione ms, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -112,7 +112,8 @@ public class CreaRisorsa extends MyFrame {
 				try {
 					gc = new CourseContentManagement();
 					try {
-						Notifier.sendMail(ses.info().email, "pwd?", cor.name, 
+						Notifier n = new Notifier();
+						n.sendMail(ses.info().email, "pwd?", cor.name, 
 								"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+nome.getText());
 						try {
 							gc.createResource(r);

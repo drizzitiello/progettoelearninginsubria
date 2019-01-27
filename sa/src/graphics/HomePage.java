@@ -8,6 +8,7 @@ import courseContentManagement.Course;
 import notifier.Notifier;
 import session.Session;
 import socketDb.SocketDb;
+import userManager.UserManager;
 
 import javax.swing.JLabel;
 
@@ -40,7 +41,7 @@ public class HomePage extends MyFrame {
 	 */
 	public HomePage(Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -58,9 +59,10 @@ public class HomePage extends MyFrame {
 		backButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
+					ses.destroy();
 					Login l = new Login();
 					hp.setVisible(false);
-				} catch (ClassNotFoundException | SQLException e1) {
+				} catch (ClassNotFoundException | SQLException | RemoteException e1) {
 					e1.printStackTrace();
 				}
 			}
@@ -81,7 +83,8 @@ public class HomePage extends MyFrame {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(last!=null)verticalBox.remove(last);
-					Course i = Notifier.getCourse(corso.getText());
+					Notifier n = new Notifier();
+					Course i = n.getCourse(corso.getText());
 					if(i!=null) {
 						JButton b = new JButton(corso.getText());
 						b.addActionListener(new ActionListener() {
@@ -116,12 +119,12 @@ public class HomePage extends MyFrame {
 						verticalBox2.remove(j);
 						contentPane.revalidate();validate();
 					}
-					ArrayList<Map<String, Object>> hm;
-					Object[] param = {ses.getUser().getInfo().student_number};
-					hm = SocketDb.getInstanceDb().function("getcorsiutente", param);
 					
-					for(Map<String,Object> m : hm) {
-						JButton b = new JButton((String) m.get("nome"));
+					UserManager um = new UserManager();
+					ArrayList<String> c = um.getStudentCourses(ses.getUser().getInfo().student_number);
+					
+					for(String s : c) {
+						JButton b = new JButton(s);
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 								PaginaCorso pc = new PaginaCorso(hp, ses, b.getText(), false);
@@ -134,6 +137,8 @@ public class HomePage extends MyFrame {
 					contentPane.revalidate();
 					validate();
 				} catch (ClassNotFoundException | SQLException | RemoteException e1) {
+					e1.printStackTrace();
+				} catch (Exception e1) {
 					e1.printStackTrace();
 				}
 			}

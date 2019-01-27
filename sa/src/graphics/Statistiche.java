@@ -38,7 +38,7 @@ public class Statistiche extends MyFrame {
 	 */
 	public Statistiche(HomePage hp, Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,7 +88,8 @@ public class Statistiche extends MyFrame {
 						}
 						Map<Integer, Integer> tmc = ga.accessByInterval(dataInizio.getText(), dataFine.getText());
 						for(Integer m : tmc.keySet()) {
-							Course cor = Notifier.getCourse(m);
+							Notifier n = new Notifier();
+							Course cor = n.getCourse(m);
 							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.name+" "
 									+ "nella fascia temporale data : "
 									+ tmc.get(m));
@@ -114,7 +115,8 @@ public class Statistiche extends MyFrame {
 						if(tmpc.getComponentCount()==0) {
 						Map<Integer, Integer> tmc = ga.avgMinsOnlineForCourse();
 						for(Integer m : tmc.keySet()) {
-							Course cor = Notifier.getCourse(m);
+							Notifier n = new Notifier();
+							Course cor = n.getCourse(m);
 							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
 									+ " il corso "+cor.name+" : "+tmc.get(m));
 							tmpc.add(tempoMedioConnessioniCorso);
@@ -140,7 +142,8 @@ public class Statistiche extends MyFrame {
 						if(ndpc.getComponentCount()==0) {
 						Map<Integer, Integer> dpc = ga.downloadsForCourse();
 						for(Integer m : dpc.keySet()) {
-							Course cor = Notifier.getCourse(m);
+							Notifier n = new Notifier();
+							Course cor = n.getCourse(m);
 							JLabel numeroAccessiCorso = new JLabel("Numero di download per"
 									+ " il corso "+cor.name+" : "+dpc.get(m));
 							ndpc.add(numeroAccessiCorso);

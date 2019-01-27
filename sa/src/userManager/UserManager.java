@@ -302,10 +302,9 @@ public class UserManager {
 
 	public ArrayList<User> getProfessors() {
 		try {
-			socket=SocketDb.getInstanceDb();
 			ArrayList<Map<String, Object>> hm;
 			Object[] param = {};
-			hm = SocketDb.getInstanceDb().function("get_docenti", param);
+			hm = socket.function("get_docenti", param);
 			ArrayList<User> professors = new ArrayList<User>();
 			
 			for(Map<String,Object> m : hm) {
@@ -353,5 +352,20 @@ public class UserManager {
 			e.printStackTrace();
 		}
 		return false;
+	}
+	
+	public ArrayList<String> getStudentCourses(int studentNumber) {
+		try {
+			ArrayList<String> response = new ArrayList<String>();
+			Object[] params= {studentNumber};
+			ArrayList<Map<String,Object>> hm = socket.function("getcorsiutente", params);
+			for(Map<String,Object> m : hm) {
+				response.add((String) m.get("nome"));
+			}
+			return response;
+		} catch (ClassNotFoundException | SQLException | RemoteException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

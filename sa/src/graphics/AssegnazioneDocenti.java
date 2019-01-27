@@ -40,7 +40,7 @@ public class AssegnazioneDocenti extends MyFrame {
 	 */
 	public AssegnazioneDocenti(HomePage hp, Session ses) throws MalformedURLException, RemoteException, NotBoundException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -123,7 +123,8 @@ public class AssegnazioneDocenti extends MyFrame {
 						try {
 							User doc = new User();
 							doc.createFromStudentNumber(Integer.parseInt(numero.getText()));
-							Course c = Notifier.getCourse(selezionaCorso.getSelectedItem().toString());
+							Notifier n = new Notifier();
+							Course c = n.getCourse(selezionaCorso.getSelectedItem().toString());
 							CourseManagement gc = new CourseManagement();
 							gc.coursesAssignment(doc, c);
 						} catch (Exception e1) {
