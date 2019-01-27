@@ -2,11 +2,14 @@ package user;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
@@ -45,6 +48,7 @@ public class User {
 
     /* Dichiarazione dei componenti di servizio: */
     private RemoteInterface socket;
+	private AnotherInterface server;
     private boolean isCreated;
     private UserInfo myInfo;
     
@@ -55,7 +59,11 @@ public class User {
      * @throws Exception 
 	 */
     public User() throws Exception {
-        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+    	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
         this.isCreated = false;
     }
 

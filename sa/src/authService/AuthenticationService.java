@@ -17,9 +17,12 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.security.*;
 import javax.mail.*;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import notifier.Notifier;
 import session.Session;
@@ -54,6 +57,7 @@ public class AuthenticationService {
 	//CAMPI
 	InfoFromDb user = new InfoFromDb();
 	private RemoteInterface socket;
+	private AnotherInterface server;
 	private int studentNumber;
 	private static String email;
 	
@@ -62,7 +66,11 @@ public class AuthenticationService {
 	 * @throws RemoteException 
 	 * @throws MalformedURLException */
 	public AuthenticationService () throws ClassNotFoundException, SQLException, MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 	
 	/** Effettua il login dell'utente con la piattaforma

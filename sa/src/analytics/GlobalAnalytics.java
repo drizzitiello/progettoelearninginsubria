@@ -2,11 +2,14 @@ package analytics;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
@@ -30,13 +33,18 @@ public class GlobalAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
 	private RemoteInterface socket;
+	private AnotherInterface server;
      
     /**
      * Istanzia l'oggetto relativo al SocketDb di sistema.
      * @throws Exception 
      */	
      public GlobalAnalytics() throws Exception {
-    	 socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+    	 server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+ 		int i = server.getRegistry();
+ 		System.out.println(i);
+ 		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+ 		socket = (RemoteInterface) registry.lookup ("SocketDb");
      }
 
 

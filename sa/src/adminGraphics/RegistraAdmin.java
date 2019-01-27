@@ -13,6 +13,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import server.Server;
+import socketDb.SocketDb;
 import user.User;
 import userManager.UserManager;
 
@@ -92,7 +94,7 @@ public class RegistraAdmin extends JFrame {
 		loginButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				try {
-					UserManager um = new UserManager("");
+					UserManager um = new UserManager(Server.getInstance(SocketDb.getInstanceDb()));
 					User.UserInfo info = new User.UserInfo();
 					info.student_number=Integer.parseInt(matricola.getText());
 					info.surname=cognome.getText();

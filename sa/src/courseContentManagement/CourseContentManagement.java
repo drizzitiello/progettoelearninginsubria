@@ -4,12 +4,15 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Map;
 
 import graphics.HomePage;
 import graphics.PaginaCorso;
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import session.Session;
 import socketDb.SocketDb;
@@ -17,9 +20,14 @@ import socketDb.SocketDb;
 public class CourseContentManagement {
 	
 	private RemoteInterface socket;
+	private AnotherInterface server;
 	
 	public CourseContentManagement() throws MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 	
 	public void uploadCourseMaterial(Course cor, Content con) throws Exception {

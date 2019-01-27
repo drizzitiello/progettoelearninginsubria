@@ -4,8 +4,11 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
@@ -28,6 +31,7 @@ public class Session {
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
     private RemoteInterface socket;
+	private AnotherInterface server;
     public User user;    
     public static Session s;
     
@@ -54,7 +58,11 @@ public class Session {
      * @throws MalformedURLException 
 	 */	 
     private Session() throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException{
-        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+    	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
         this.isCreated = false;
 	}
 

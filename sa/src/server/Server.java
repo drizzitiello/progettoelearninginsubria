@@ -8,16 +8,18 @@ import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.SQLException;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
-public class Server {
+public class Server extends UnicastRemoteObject
+implements AnotherInterface{
 	private RemoteInterface server;
-	private SocketDb adminInstanceDb;
+	public SocketDb adminInstanceDb;
 	
 	private static Server singleton;
 	public static int connessioni;
-	public static int stubs;
+	public static int registry;
 	
 	/*private Server(SocketDb adminInstanceDb) {
 		this.adminInstanceDb=adminInstanceDb;
@@ -61,15 +63,15 @@ public class Server {
 		}
 	}*/
 	
-	private Server(SocketDb adminInstanceDb) {
+	private Server(SocketDb adminInstanceDb) throws RemoteException{
 		this.adminInstanceDb=adminInstanceDb;
 		server = adminInstanceDb;
 		connessioni = 0;
-		stubs = 0;
+		registry = 2000;
 		createStub();
 	}
 
-	public static Server getInstance(SocketDb adminInstanceDb) {
+	public static Server getInstance(SocketDb adminInstanceDb) throws RemoteException {
 		if(singleton==null) {
 			singleton = new Server(adminInstanceDb);
 		}
@@ -82,11 +84,11 @@ public class Server {
 	
 	private void createStub() {
 		try {
-			Naming.rebind("rmi://localhost/SocketDb",server);
+			//Naming.rebind("rmi://localhost/Server",singleton);
 			//UnicastRemoteObject.exportObject(server, 3939);
-			//Registry registry = LocateRegistry.createRegistry(1099);
-			//registry.rebind("rmi://localhost/SocketDb", server); 
-		} catch (RemoteException | MalformedURLException  e) {
+			Registry reg = LocateRegistry.createRegistry(registry);
+			reg.rebind("SocketDb", server); 
+		} catch (RemoteException e) {
 			e.printStackTrace();
 		}
 	}
@@ -101,8 +103,22 @@ public class Server {
 
 	public void bind() {
 		if(connessioni>20) {
-			stubs++;
+			registry++;
 			createStub();
+		}
+	}
+
+	@Override
+	public int getRegistry() throws RemoteException {
+		return registry;
+	}
+
+	public void starting() throws RemoteException{
+		try {
+			AnotherInterface ai = singleton;
+			Naming.rebind("rmi://localhost/Server",ai);
+		} catch (RemoteException | MalformedURLException e) {
+			e.printStackTrace();
 		}
 	}
 }

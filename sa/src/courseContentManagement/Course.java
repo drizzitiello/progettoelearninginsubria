@@ -4,9 +4,12 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
@@ -15,9 +18,14 @@ public class Course {
 	public int courseCode, weight, creator, activation_year;
 	public String name, description, faculty;
 	private RemoteInterface socket;
+	private AnotherInterface server;
 	
 	public Course() throws MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 
 	public Course(int courseCode, String name, int activation_year, String faculty, String description,

@@ -12,20 +12,28 @@ import java.nio.file.StandardCopyOption;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
 public class FindCourse {
 	
 	private RemoteInterface socket;
+	private AnotherInterface server;
 	
 	public FindCourse() throws MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 	
 	public ArrayList<Course> getCourses() throws ClassNotFoundException, SQLException, RemoteException, MalformedURLException, NotBoundException {

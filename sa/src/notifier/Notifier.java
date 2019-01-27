@@ -10,6 +10,8 @@ import java.net.Socket;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -32,6 +34,7 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 
 import courseContentManagement.Course;
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 
@@ -39,10 +42,15 @@ public class Notifier {
 	
 	private static String systemMail ="";
 	private static String systemMailPwd ="";
-	private static RemoteInterface socket;
+	private RemoteInterface socket;
+	private AnotherInterface server;
 	
 	public Notifier() throws MalformedURLException, RemoteException, NotBoundException{
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 	
 	public boolean sendMail(String usr, String pwd, String course, String subject, String body) throws Exception {

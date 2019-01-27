@@ -10,6 +10,8 @@ import java.nio.file.Paths;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,8 +27,10 @@ import authService.AuthenticationService;
 import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
 import courseManagement.CourseManagement;
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import notifier.Notifier;
+import server.Server;
 import session.Session;
 
 /**
@@ -46,6 +50,7 @@ public class UserManager {
     
     /* Dichiarazione dei componenti di servizio */
 	private RemoteInterface socket;
+	private AnotherInterface server;
     private Session session;
     private boolean enabled = false;
     
@@ -55,14 +60,18 @@ public class UserManager {
      * @throws Exception 
 	 */
     public UserManager() throws Exception {
-        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+    	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
         this.session = Session.getInstance();
         this.enabled = this.session.info().userType == User.ADMIN;
     }
     
-    public UserManager(String admin) throws Exception {
-        this.socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
-        this.session = Session.getInstance();
+    public UserManager(Server admin) throws Exception {
+    	server = admin; 
+		socket = admin.adminInstanceDb;
         this.enabled = true;
     }
 

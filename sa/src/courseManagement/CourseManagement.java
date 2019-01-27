@@ -8,9 +8,12 @@ import java.nio.file.*;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.*;
 import courseContentManagement.Course;
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import notifier.Notifier;
 import socketDb.SocketDb;
@@ -28,6 +31,7 @@ public class CourseManagement {
 	
 	//CAMPI
 	private RemoteInterface socket;
+	private AnotherInterface server;
 	protected List<Course> courses = new ArrayList<Course>();
 	
 	/** Costruttore: assegnamento del socket 
@@ -35,7 +39,11 @@ public class CourseManagement {
 	 * @throws RemoteException 
 	 * @throws MalformedURLException */
 	public CourseManagement () throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
+		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+		int i = server.getRegistry();
+		System.out.println(i);
+		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
 	
 	/** Importazione dei dati dei corsi da file CSV e salvataggio 

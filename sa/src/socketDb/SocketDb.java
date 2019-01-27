@@ -13,9 +13,6 @@ import interfaces.RemoteInterface;
 public class SocketDb extends UnicastRemoteObject
 implements RemoteInterface {
 	private static final String JDBC_DRIVER = "org.postgresql.Driver";  
-	//private static final String DB_URL = "jdbc:postgresql://localhost:5432/sss";
-	//private static final String USER = "postgres";
-	//private static final String PASS = "makaay";
 	private static String DB_URL = "";
 	private static String USER = "";
 	private static String PASS = "";
@@ -72,6 +69,9 @@ implements RemoteInterface {
 	private synchronized void createSql() throws ClassNotFoundException, SQLException {
 		conn = null;
 		Class.forName(JDBC_DRIVER);
+		SocketDb.DB_URL="jdbc:postgresql://localhost:5432/sss";
+		SocketDb.USER="postgres";
+		SocketDb.PASS="makaay";
 		conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		isActive=true;
 	}

@@ -2,11 +2,14 @@ package analytics;
 
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import socketDb.SocketDb;
 import user.User;
@@ -29,7 +32,8 @@ import session.Session;
 public class CourseAnalytics {
 
      /* Dichiarazione dei componenti di servizio */
-	 private RemoteInterface socket;
+	private RemoteInterface socket;
+	private AnotherInterface server;
      private int courseCode;
      
      /**
@@ -37,8 +41,12 @@ public class CourseAnalytics {
       * @throws Exception 
       */
      public CourseAnalytics(int courseCode) throws Exception {
-    	 socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
-         this.courseCode = courseCode;
+    	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
+ 		int i = server.getRegistry();
+ 		System.out.println(i);
+ 		Registry registry = LocateRegistry.getRegistry("localhost",i); 
+ 		socket = (RemoteInterface) registry.lookup ("SocketDb");
+        this.courseCode = courseCode;
      }
 
      /**
