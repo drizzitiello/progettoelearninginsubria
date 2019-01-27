@@ -21,6 +21,8 @@ implements RemoteInterface {
 	private static int nAttempts;
 	private static PreparedStatement stmt;
 	private static boolean isActive;
+	private final static int max=30;
+	private static int users;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException, RemoteException{
 		createSql();
@@ -31,7 +33,8 @@ implements RemoteInterface {
 	}
 	
 	public static synchronized SocketDb getAdminInstanceDb(String host, String user, String password) throws ClassNotFoundException {
-		if(socketDb==null) {
+		users++;
+		if(socketDb==null&&users<max) {
 			try {
 				socketDb=new SocketDb(host, user, password);
 				nAttempts=0;
@@ -49,7 +52,8 @@ implements RemoteInterface {
 	}
 	
 	public static synchronized SocketDb getInstanceDb() throws ClassNotFoundException {
-		if(socketDb==null) {
+		users++;
+		if(socketDb==null&&users<max) {
 			try {
 				socketDb=new SocketDb();
 				nAttempts=0;
@@ -72,7 +76,7 @@ implements RemoteInterface {
 		SocketDb.DB_URL="jdbc:postgresql://localhost:5432/sss";
 		SocketDb.USER="postgres";
 		SocketDb.PASS="makaay";
-		conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		if(users<max) conn = DriverManager.getConnection(DB_URL,USER,PASS);
 		isActive=true;
 	}
 	
@@ -82,7 +86,7 @@ implements RemoteInterface {
 		SocketDb.DB_URL="jdbc:postgresql://"+host+":5432/sss";
 		SocketDb.USER=user;
 		SocketDb.PASS=password;
-		conn = DriverManager.getConnection(SocketDb.DB_URL,user,password);
+		if(users<max) conn = DriverManager.getConnection(SocketDb.DB_URL,user,password);
 		isActive=true;
 	}
 	
@@ -102,6 +106,7 @@ implements RemoteInterface {
 	}
 	
 	public synchronized ArrayList<Map<String,Object>> query(String sql, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {			
+		users++;
 		createSql();
 		stmt=conn.prepareStatement(sql);
 		bindParams(params);
@@ -113,6 +118,7 @@ implements RemoteInterface {
 	}
 	
 	public synchronized ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {
+		users++;
 		createSql();
 		String[] qmarks=new String[params.length];
 		Arrays.fill(qmarks, "?");

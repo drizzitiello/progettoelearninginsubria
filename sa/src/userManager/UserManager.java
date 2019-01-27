@@ -63,6 +63,7 @@ public class UserManager {
     	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
 		int i = server.getRegistry();
 		System.out.println(i);
+		server.starting();
 		Registry registry = LocateRegistry.getRegistry("localhost",i); 
 		socket = (RemoteInterface) registry.lookup ("SocketDb");
         this.session = Session.getInstance();
@@ -71,6 +72,7 @@ public class UserManager {
     
     public UserManager(Server admin) throws Exception {
     	server = admin; 
+    	server.starting();
 		socket = admin.adminInstanceDb;
         this.enabled = true;
     }

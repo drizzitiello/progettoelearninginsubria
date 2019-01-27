@@ -31,7 +31,7 @@ public class Session {
     /* Dichiarazione dei componenti di servizio: */
     private boolean isCreated;
     private RemoteInterface socket;
-	private AnotherInterface server;
+	private static AnotherInterface server;
     public User user;    
     public static Session s;
     
@@ -44,8 +44,10 @@ public class Session {
      * @throws MalformedURLException 
 	 */
     public static Session getInstance() throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException {
-		if(s == null)
+    	if(s == null)
 			s = new Session();
+    	else
+    		server.starting();
 		return s;
 	}
     
@@ -60,7 +62,7 @@ public class Session {
     private Session() throws ClassNotFoundException, MalformedURLException, RemoteException, NotBoundException{
     	server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
 		int i = server.getRegistry();
-		System.out.println(i);
+		server.starting();
 		Registry registry = LocateRegistry.getRegistry("localhost",i); 
 		socket = (RemoteInterface) registry.lookup ("SocketDb");
         this.isCreated = false;
@@ -74,8 +76,9 @@ public class Session {
 	 * @return	flag di avvenuta creazione della sessione
      * @throws Exception 
 	 */
-    public boolean create(int student_number) throws Exception{
-        this.isCreated = false;
+    public boolean create(int student_number){
+        try{
+        	this.isCreated = false;
         this.user = new User();
         this.user.createFromStudentNumber(student_number);
         this.isCreated = this.user.created();
@@ -88,6 +91,11 @@ public class Session {
 
         //Apertura nuova sessione
         this.socket.query("INSERT INTO sessione (matricola, inizio_sessione) VALUES (?, NOW())", p);
+        }
+        catch(Exception e) {
+        	this.isCreated=false;
+        	return this.isCreated;
+        }
 
         return this.isCreated;
     }

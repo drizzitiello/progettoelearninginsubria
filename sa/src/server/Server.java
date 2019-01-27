@@ -103,6 +103,8 @@ implements AnotherInterface{
 
 	public void bind() {
 		if(connessioni>20) {
+			System.out.println("+");
+			connessioni=0;
 			registry++;
 			createStub();
 		}
@@ -114,11 +116,14 @@ implements AnotherInterface{
 	}
 
 	public void starting() throws RemoteException{
-		try {
+		connessioni++;
+		System.out.println(connessioni);
+		bind();
+		/*try {
 			AnotherInterface ai = singleton;
 			Naming.rebind("rmi://localhost/Server",ai);
 		} catch (RemoteException | MalformedURLException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

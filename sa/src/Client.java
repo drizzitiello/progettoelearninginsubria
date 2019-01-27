@@ -31,8 +31,8 @@ public class Client {
 			}*/
 		try
 		  {
-			//AnotherInterface s = Server.getInstance(SocketDb.getAdminInstanceDb("localhost", "postgres", "makaay"));
-			//Naming.rebind("rmi://localhost/Server",s);
+			AnotherInterface s = Server.getInstance(SocketDb.getAdminInstanceDb("localhost", "postgres", "makaay"));
+			Naming.rebind("rmi://localhost/Server",s);
 			RemoteInterface se = SocketDb.getAdminInstanceDb("localhost", "postgres", "makaay");
 			System.out.println(se);
 			Naming.rebind("rmi://localhost/SocketDb",se);
@@ -44,7 +44,7 @@ public class Client {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		for(int i=0; i<50; i++) {
+		/*for(int i=0; i<50; i++) {
 			try {
 				CourseManagement cm = new CourseManagement();
 				System.out.println(i);
@@ -52,6 +52,17 @@ public class Client {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}*/
+		for(int i=0; i<50; i++) {
+			Session ses;
+			try {
+				ses = Session.getInstance();
+				ses.create(2);
+				HomePage hp = new HomePage(ses, "ciao");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	 }
 }

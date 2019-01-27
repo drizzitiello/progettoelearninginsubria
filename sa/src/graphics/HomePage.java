@@ -47,13 +47,12 @@ public class HomePage extends MyFrame {
 		contentPane.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		hp=this;
-		
 		try {
-			ses.create(ses.getUser().getInfo().student_number);
-		} catch (Exception e2) {
-			JOptionPane.showMessageDialog(contentPane, "Errore nella creazione della sessione");
-			e2.printStackTrace();
+		if(!ses.create(ses.getUser().getInfo().student_number)) {
+			JOptionPane.showMessageDialog(contentPane, "Troppi utenti connessi");
 		}
+		else {
+		
 		
 		JButton backButton = new JButton("Indietro");
 		backButton.addActionListener(new ActionListener() {
@@ -225,6 +224,11 @@ public class HomePage extends MyFrame {
 		
 		la=new ArrayList<JButton>();
 		setVisible(true);
+		}
+		}
+		catch(NullPointerException e) {
+			JOptionPane.showMessageDialog(contentPane, "Troppi utenti connessi");
+		}
 	}
 
 }

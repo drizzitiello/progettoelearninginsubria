@@ -49,6 +49,7 @@ public class Notifier {
 		server = (AnotherInterface) Naming.lookup ("rmi://localhost/Server");
 		int i = server.getRegistry();
 		System.out.println(i);
+		server.starting();
 		Registry registry = LocateRegistry.getRegistry("localhost",i); 
 		socket = (RemoteInterface) registry.lookup ("SocketDb");
 	}
