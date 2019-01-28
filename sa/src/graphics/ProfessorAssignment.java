@@ -27,10 +27,10 @@ import session.Session;
 import user.User;
 import userManager.UserManager;
 
-public class AssegnazioneDocenti extends MyFrame {
+public class ProfessorAssignment extends MyFrame {
 
 	private JPanel contentPane;
-	private AssegnazioneDocenti thisFrame;
+	private ProfessorAssignment thisFrame;
 
 	/**
 	 * Create the frame.
@@ -39,7 +39,7 @@ public class AssegnazioneDocenti extends MyFrame {
 	 * @throws RemoteException 
 	 * @throws MalformedURLException 
 	 */
-	public AssegnazioneDocenti(HomePage hp, Session ses) throws MalformedURLException, RemoteException, NotBoundException {
+	public ProfessorAssignment(HomePage hp, Session ses) throws MalformedURLException, RemoteException, NotBoundException {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -58,22 +58,22 @@ public class AssegnazioneDocenti extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel seleziona = new JLabel("Seleziona corso");
-		contentPane.add(seleziona);
+		JLabel select = new JLabel("Seleziona corso");
+		contentPane.add(select);
 		
 		try {
 			FindCourse fc = new FindCourse();
 			ArrayList<Course> courses = fc.getCourses();
-			String[] corsi = new String[courses.size()];
+			String[] coursesName = new String[courses.size()];
 			int i=0;
 			for(Course c : courses) {
 				String corso = c.name;
-				corsi[i] = corso;
+				coursesName[i] = corso;
 				i++;
 			}
-			JComboBox selezionaCorso = new JComboBox(corsi);
-			selezionaCorso.setMaximumRowCount(100);
-			contentPane.add(selezionaCorso);
+			JComboBox selectCourse = new JComboBox(coursesName);
+			selectCourse.setMaximumRowCount(100);
+			contentPane.add(selectCourse);
 			
 			JLabel sel = new JLabel("Seleziona docente");
 			contentPane.add(sel);
@@ -81,42 +81,42 @@ public class AssegnazioneDocenti extends MyFrame {
 			try {
 				UserManager um = new UserManager();
 				ArrayList<User> professors = um.getProfessors();
-				String[] docenti = new String[professors.size()];
+				String[] professorsName = new String[professors.size()];
 				int k=0;
 				for(User p : professors) {
 					String docente = p.getInfo().name;
 					docente += " "+p.getInfo().surname;
-					docenti[k] = docente;
+					professorsName[k] = docente;
 					k++;
 				}
-				JComboBox selezionaDocente = new JComboBox(docenti);
-				selezionaDocente.setMaximumRowCount(100);
-				contentPane.add(selezionaDocente);
+				JComboBox selectProfessor = new JComboBox(professorsName);
+				selectProfessor.setMaximumRowCount(100);
+				contentPane.add(selectProfessor);
 				
-				JLabel matricola = new JLabel("Matricola docente: ");
-				contentPane.add(matricola);
+				JLabel studentNumber = new JLabel("Matricola docente: ");
+				contentPane.add(studentNumber);
 				
 				User u = new User();
-				String nomeCognome = selezionaDocente.getSelectedItem().toString();
-				StringTokenizer st = new StringTokenizer(nomeCognome, " ");  
-			    String nome = st.nextToken();
-			    String cognome = st.nextToken();
-			    int matr = u.getStudentNumber(nome, cognome);
-				String num = ""+matr;
-				JLabel numero = new JLabel(num);
-				contentPane.add(numero);
+				String nameSurname = selectProfessor.getSelectedItem().toString();
+				StringTokenizer st = new StringTokenizer(nameSurname, " ");  
+			    String name = st.nextToken();
+			    String surname = st.nextToken();
+			    int numb = u.getStudentNumber(name, surname);
+				String num = ""+numb;
+				JLabel number = new JLabel(num);
+				contentPane.add(number);
 				
-				selezionaDocente.addActionListener(new ActionListener() {
+				selectProfessor.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							User u = new User();
-							String nomeCognome = selezionaDocente.getSelectedItem().toString();
-							StringTokenizer st = new StringTokenizer(nomeCognome, " ");  
-						    String nome = st.nextToken();
-						    String cognome = st.nextToken();
-						    int matr = u.getStudentNumber(nome, cognome);
-							String num = ""+matr;
-							numero.setText(""+num);
+							String nameSurname = selectProfessor.getSelectedItem().toString();
+							StringTokenizer st = new StringTokenizer(nameSurname, " ");  
+						    String name = st.nextToken();
+						    String surname = st.nextToken();
+						    int numb = u.getStudentNumber(name, surname);
+							String num = ""+numb;
+							number.setText(""+num);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(contentPane, "Errore nel caricamento dei docenti");
 							e1.printStackTrace();
@@ -124,14 +124,14 @@ public class AssegnazioneDocenti extends MyFrame {
 					}
 				});
 				
-				JButton assegnaCorsi = new JButton("Assegna");
-				assegnaCorsi.addActionListener(new ActionListener() {
+				JButton assignCourse = new JButton("Assegna");
+				assignCourse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							User doc = new User();
-							doc.createFromStudentNumber(Integer.parseInt(numero.getText()));
+							doc.createFromStudentNumber(Integer.parseInt(number.getText()));
 							Notifier n = new Notifier();
-							Course c = n.getCourse(selezionaCorso.getSelectedItem().toString());
+							Course c = n.getCourse(selectCourse.getSelectedItem().toString());
 							CourseManagement gc = new CourseManagement();
 							gc.coursesAssignment(doc, c);
 						} catch (Exception e1) {
@@ -140,7 +140,7 @@ public class AssegnazioneDocenti extends MyFrame {
 						}
 					}
 				});
-				contentPane.add(assegnaCorsi);
+				contentPane.add(assignCourse);
 				
 			} catch (ClassNotFoundException | SQLException e1) {
 				JOptionPane.showMessageDialog(contentPane, "Errore di connessione");

@@ -21,10 +21,10 @@ import courseContentManagement.Resource;
 import notifier.Notifier;
 import session.Session;
 
-public class CreaRisorsa extends MyFrame {
+public class CreateResource extends MyFrame {
 
 	private JPanel contentPane;
-	private CreaRisorsa thisframe;
+	private CreateResource thisframe;
 
 	/**
 	 * Create the frame.
@@ -32,7 +32,7 @@ public class CreaRisorsa extends MyFrame {
 	 * @param ses 
 	 * @param codSezione 
 	 */
-	public CreaRisorsa(ModificaSezione ms, Session ses, Course cor, int codSezione) {
+	public CreateResource(ModifySection ms, Session ses, Course cor, int codSezione) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -54,62 +54,62 @@ public class CreaRisorsa extends MyFrame {
 		JLabel no = new JLabel("Nome: ");
 		contentPane.add(no);
 		
-		JTextField nome = new JTextField();
-		contentPane.add(nome);
-		nome.setColumns(10);
+		JTextField name = new JTextField();
+		contentPane.add(name);
+		name.setColumns(10);
 		
 		JLabel descr = new JLabel("Descrizione: ");
 		contentPane.add(descr);
 
-		JTextField descrizione = new JTextField();
-		contentPane.add(descrizione);
-		descrizione.setColumns(10);
+		JTextField description = new JTextField();
+		contentPane.add(description);
+		description.setColumns(10);
 		
-		JLabel percorso = new JLabel("Percorso: ");
-		contentPane.add(percorso);
-
-		JTextField path = new JTextField();
+		JLabel path = new JLabel("Percorso: ");
 		contentPane.add(path);
-		path.setColumns(10);
-		
-		JLabel ris = new JLabel("Codice risorsa: ");
-		contentPane.add(ris);
 
-		JTextField codRisorsa = new JTextField();
-		contentPane.add(codRisorsa);
-		codRisorsa.setColumns(10);
+		JTextField pth = new JTextField();
+		contentPane.add(pth);
+		pth.setColumns(10);
+		
+		JLabel res = new JLabel("Codice risorsa: ");
+		contentPane.add(res);
+
+		JTextField resourceCode = new JTextField();
+		contentPane.add(resourceCode);
+		resourceCode.setColumns(10);
 		
 		JLabel vis = new JLabel("Visibilita: ");
 		contentPane.add(vis);
 		
-		JTextField visibilita = new JTextField();
-		contentPane.add(visibilita);
-		visibilita.setColumns(10);
+		JTextField visibility = new JTextField();
+		contentPane.add(visibility);
+		visibility.setColumns(10);
 		
 		JLabel type = new JLabel("Tipo: ");
 		contentPane.add(type);
 
-		JTextField tipo = new JTextField();
-		contentPane.add(tipo);
-		tipo.setColumns(10);
+		JTextField tp = new JTextField();
+		contentPane.add(tp);
+		tp.setColumns(10);
 		
-		JButton creaRisorsa = new JButton("Crea risorsa");
-		creaRisorsa.addActionListener(new ActionListener() {
+		JButton createResource = new JButton("Crea risorsa");
+		createResource.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				boolean pubblica=false;
-				if(visibilita.getText().equals("pubblica")) {
-					pubblica=true;
+				boolean pubblic=false;
+				if(visibility.getText().equals("pubblica")) {
+					pubblic=true;
 				}
-				Resource r = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
-						codSezione, Integer.parseInt(codRisorsa.getText()), 
-						pubblica, tipo.getText());
+				Resource r = new Resource(name.getText(),  description.getText(), pth.getText(), 
+						codSezione, Integer.parseInt(resourceCode.getText()), 
+						pubblic, tp.getText());
 				CourseContentManagement gc;
 				try {
 					gc = new CourseContentManagement();
 					try {
 						Notifier n = new Notifier();
 						n.sendMail(ses.info().email, "pwd?", cor.name, 
-								"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+nome.getText());
+								"Aggiornamento contenuti corso "+cor.name, "Aggiunta risorsa "+name.getText());
 						try {
 							gc.createResource(r);
 						} catch (Exception e1) {
@@ -125,7 +125,7 @@ public class CreaRisorsa extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(creaRisorsa);
+		contentPane.add(createResource);
 		
 		setVisible(true);
 	}

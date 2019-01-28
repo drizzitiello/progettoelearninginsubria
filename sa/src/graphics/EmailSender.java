@@ -21,9 +21,9 @@ import java.awt.event.ActionEvent;
 public class EmailSender extends MyFrame {
 
 	private JPanel contentPane;
-	private JTextField destinatari;
-	private JTextField testoOggetto;
-	private JTextArea testoCorpo;
+	private JTextField receivers;
+	private JTextField objectText;
+	private JTextArea bodyText;
 	private EmailSender thisFrame;
 
 
@@ -54,39 +54,39 @@ public class EmailSender extends MyFrame {
 		JLabel to = new JLabel("To:");
 		contentPane.add(to);
 		
-		destinatari = new JTextField();
-		contentPane.add(destinatari);
-		destinatari.setColumns(10);
+		receivers = new JTextField();
+		contentPane.add(receivers);
+		receivers.setColumns(10);
 		
-		JLabel oggetto = new JLabel("oggetto");
-		contentPane.add(oggetto);
+		JLabel object = new JLabel("oggetto");
+		contentPane.add(object);
 		
-		testoOggetto = new JTextField();
-		contentPane.add(testoOggetto);
-		testoOggetto.setColumns(10);
+		objectText = new JTextField();
+		contentPane.add(objectText);
+		objectText.setColumns(10);
 		
-		JLabel corpo = new JLabel("Corpo del messaggio:");
-		contentPane.add(corpo);
+		JLabel body = new JLabel("Corpo del messaggio:");
+		contentPane.add(body);
 		
-		testoCorpo = new JTextArea();
-		contentPane.add(testoCorpo);
-		testoCorpo.setColumns(30);
-		testoCorpo.setRows(20);
+		bodyText = new JTextArea();
+		contentPane.add(bodyText);
+		bodyText.setColumns(30);
+		bodyText.setRows(20);
 		
-		JButton bottoneInvio = new JButton("Invia");
-		bottoneInvio.addActionListener(new ActionListener() {
+		JButton submitButton = new JButton("Invia");
+		submitButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					Notifier n = new Notifier();
-					if(!destinatari.getText().contains("@")) {
+					if(!receivers.getText().contains("@")) {
 						if(!n.sendMail(ses.getUser().getInfo().email, pwd,
-								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText())) {
-							JOptionPane.showMessageDialog(bottoneInvio, "Destinatario non valido");
+								receivers.getText(), objectText.getText(), bodyText.getText())) {
+							JOptionPane.showMessageDialog(submitButton, "Destinatario non valido");
 						}
 					}
 					else{
 						Notifier.send_professor_email(ses.getUser().getInfo().email, pwd,
-								destinatari.getText(), testoOggetto.getText(), testoCorpo.getText());
+								receivers.getText(), objectText.getText(), bodyText.getText());
 					}
 					} catch (MessagingException e1) {
 						JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio dell'email");
@@ -97,7 +97,7 @@ public class EmailSender extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(bottoneInvio);
+		contentPane.add(submitButton);
 		setVisible(true);
 	}
 

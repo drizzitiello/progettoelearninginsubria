@@ -21,48 +21,6 @@ implements AnotherInterface{
 	public static int connessioni;
 	public static int registry;
 	
-	/*private Server(SocketDb adminInstanceDb) {
-		this.adminInstanceDb=adminInstanceDb;
-		server = adminInstanceDb;
-		connessioni = 0;
-		stubs = 0;
-		createStub();
-	}
-
-	public static Server getInstance(SocketDb adminInstanceDb) {
-		if(singleton==null) {
-			singleton = new Server(adminInstanceDb);
-		}
-		return singleton;
-	}
-
-	public void connectionIncremented() {
-		connessioni++;
-	}
-	
-	private void createStub() {
-		try {
-			Naming.rebind("rmi://localhost/SocketDb"+stubs,server);
-		} catch (RemoteException | MalformedURLException e) {
-			e.printStackTrace();
-		}
-	}
-
-	public void close() throws ClassNotFoundException, RemoteException, SQLException {
-		SocketDb.getInstanceDb().destroySql();
-	}
-
-	public boolean isActive() throws ClassNotFoundException, RemoteException, SQLException {
-		return adminInstanceDb.isActive();
-	}
-
-	public void bind() {
-		if(connessioni>20) {
-			stubs++;
-			createStub();
-		}
-	}*/
-	
 	private Server(SocketDb adminInstanceDb) throws RemoteException{
 		this.adminInstanceDb=adminInstanceDb;
 		server = adminInstanceDb;
@@ -84,8 +42,9 @@ implements AnotherInterface{
 	
 	private void createStub() {
 		try {
-			//Naming.rebind("rmi://localhost/Server",singleton);
-			//UnicastRemoteObject.exportObject(server, 3939);
+			if(registry>2100) {
+				registry=2000;
+			}
 			Registry reg = LocateRegistry.createRegistry(registry);
 			reg.rebind("SocketDb", server); 
 		} catch (RemoteException e) {
@@ -114,16 +73,22 @@ implements AnotherInterface{
 	public int getRegistry() throws RemoteException {
 		return registry;
 	}
+	
+	public void sta() {
+		try {
+			connessioni++;
+			System.out.println(connessioni);
+			bind();
+			AnotherInterface ai = singleton;
+			Naming.rebind("rmi://localhost/Server",ai);
+		} catch (RemoteException | MalformedURLException e) {
+			e.printStackTrace();
+		}
+	}
 
 	public void starting() throws RemoteException{
 		connessioni++;
 		System.out.println(connessioni);
 		bind();
-		/*try {
-			AnotherInterface ai = singleton;
-			Naming.rebind("rmi://localhost/Server",ai);
-		} catch (RemoteException | MalformedURLException e) {
-			e.printStackTrace();
-		}*/
 	}
 }

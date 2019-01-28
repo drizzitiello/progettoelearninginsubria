@@ -29,7 +29,7 @@ import javax.swing.Box;
 public class HomePage extends MyFrame {
 
 	private JPanel contentPane;
-	private JTextField corso;
+	private JTextField course;
 	private JButton last;
 	private ArrayList<JButton> la;
 	private HomePage hp;
@@ -69,27 +69,27 @@ public class HomePage extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel cerca = new JLabel("Cerca corsi");
-		contentPane.add(cerca);
+		JLabel find = new JLabel("Cerca corsi");
+		contentPane.add(find);
 		
-		corso = new JTextField();
-		contentPane.add(corso);
-		corso.setColumns(10);
+		course = new JTextField();
+		contentPane.add(course);
+		course.setColumns(10);
 		
 		Box verticalBox = Box.createVerticalBox();
 		
-		JButton cercaCorsi = new JButton("Cerca");
-		cercaCorsi.addActionListener(new ActionListener() {
+		JButton findCourses = new JButton("Cerca");
+		findCourses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(last!=null)verticalBox.remove(last);
 					Notifier n = new Notifier();
-					Course i = n.getCourse(corso.getText());
+					Course i = n.getCourse(course.getText());
 					if(i!=null) {
-						JButton b = new JButton(corso.getText());
+						JButton b = new JButton(course.getText());
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(hp, ses, corso.getText(), false);
+								CoursePage pc = new CoursePage(hp, ses, course.getText(), false);
 								hp.setVisible(false);
 							}
 						});
@@ -99,7 +99,7 @@ public class HomePage extends MyFrame {
 					    validate();
 					}
 					else {
-						JOptionPane.showMessageDialog(cercaCorsi, "Il corso cercato non esiste");
+						JOptionPane.showMessageDialog(findCourses, "Il corso cercato non esiste");
 					}
 				} catch (ClassNotFoundException | SQLException | RemoteException | MalformedURLException | NotBoundException e1) {
 					JOptionPane.showMessageDialog(contentPane, "Errore nel caricamento dei corsi");
@@ -107,13 +107,13 @@ public class HomePage extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(cercaCorsi);
+		contentPane.add(findCourses);
 		contentPane.add(verticalBox);
 		
 		Box verticalBox2 = Box.createVerticalBox();
 		
-		JButton corsiAssegnati = new JButton("I miei corsi");
-		corsiAssegnati.addActionListener(new ActionListener() {
+		JButton assignedCourses = new JButton("I miei corsi");
+		assignedCourses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(la!=null) for(JButton j : la) {
@@ -128,7 +128,7 @@ public class HomePage extends MyFrame {
 						JButton b = new JButton(s);
 						b.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								PaginaCorso pc = new PaginaCorso(hp, ses, b.getText(), false);
+								CoursePage pc = new CoursePage(hp, ses, b.getText(), false);
 								hp.setVisible(false);
 							}
 						});
@@ -145,7 +145,7 @@ public class HomePage extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(corsiAssegnati);
+		contentPane.add(assignedCourses);
 		contentPane.add(verticalBox2);
 		
 		if(ses.getUser().getInfo().userType!=1) {
@@ -159,59 +159,59 @@ public class HomePage extends MyFrame {
 			contentPane.add(email);
 		}
 		
-		JButton visualizzaInfo = new JButton("Informazioni personali");
-		visualizzaInfo.addActionListener(new ActionListener() {
+		JButton visualizeInfo = new JButton("Informazioni personali");
+		visualizeInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				InfoUtente eh = new InfoUtente(hp, ses, pwd);
+				UserInfo eh = new UserInfo(hp, ses, pwd);
 				hp.setVisible(false);
 			}
 		});
-		contentPane.add(visualizzaInfo);
+		contentPane.add(visualizeInfo);
 		
 		
 		
 		if(ses.getUser().getInfo().userType==3) {
-			JButton modificaDatiUtenti = new JButton("Modifica dati utenti");
-			modificaDatiUtenti.addActionListener(new ActionListener() {
+			JButton modifyUsersData = new JButton("Modifica dati utenti");
+			modifyUsersData.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ModificaDatiUtenti mdu = new ModificaDatiUtenti(hp, ses, pwd);
+					ModifyUsersData mdu = new ModifyUsersData(hp, ses, pwd);
 					hp.setVisible(false);
 				}
 			});
-			contentPane.add(modificaDatiUtenti);
+			contentPane.add(modifyUsersData);
 			
-			JButton aggiungiCorsi = new JButton("Gestisci corsi");
-			aggiungiCorsi.addActionListener(new ActionListener() {
+			JButton addCourses = new JButton("Gestisci corsi");
+			addCourses.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					GestisciCorsi mdu = new GestisciCorsi(hp, ses, pwd);
+					ManageCourses mdu = new ManageCourses(hp, ses, pwd);
 					hp.setVisible(false);
 				}
 			});
-			contentPane.add(aggiungiCorsi);
+			contentPane.add(addCourses);
 			
-			JButton statistiche = new JButton("Analisi statistiche");
-			statistiche.addActionListener(new ActionListener() {
+			JButton statistics = new JButton("Analisi statistiche");
+			statistics.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					Statistiche mdu = new Statistiche(hp, ses);
+					Statistics mdu = new Statistics(hp, ses);
 					hp.setVisible(false);
 				}
 			});
-			contentPane.add(statistiche);
+			contentPane.add(statistics);
 			
-			JButton registraUtenti = new JButton("Registra nuovi utenti e corsi");
-			registraUtenti.addActionListener(new ActionListener() {
+			JButton registerUsers = new JButton("Registra nuovi utenti e corsi");
+			registerUsers.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					RegistrazioneUtentiCorsi mdu = new RegistrazioneUtentiCorsi(hp, ses);
+					UsersCoursesRegistration mdu = new UsersCoursesRegistration(hp, ses);
 					hp.setVisible(false);
 				}
 			});
-			contentPane.add(registraUtenti);
+			contentPane.add(registerUsers);
 			
-			JButton assegnaDocenti = new JButton("Assegna docenti a corsi");
-			assegnaDocenti.addActionListener(new ActionListener() {
+			JButton assignProfessor = new JButton("Assegna docenti a corsi");
+			assignProfessor.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					try {
-						AssegnazioneDocenti mdu = new AssegnazioneDocenti(hp, ses);
+						ProfessorAssignment mdu = new ProfessorAssignment(hp, ses);
 					} catch (MalformedURLException | RemoteException | NotBoundException e1) {
 						JOptionPane.showMessageDialog(contentPane, "Errore di connessione");
 						e1.printStackTrace();
@@ -219,7 +219,7 @@ public class HomePage extends MyFrame {
 					hp.setVisible(false);
 				}
 			});
-			contentPane.add(assegnaDocenti);
+			contentPane.add(assignProfessor);
 		}
 		
 		la=new ArrayList<JButton>();

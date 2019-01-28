@@ -31,7 +31,7 @@ import notifier.Notifier;
 import session.Session;
 import user.User;
 
-public class PaginaCorso extends JFrame {
+public class CoursePage extends JFrame {
 
 	private JPanel contentPane;
 	private User user;
@@ -39,15 +39,15 @@ public class PaginaCorso extends JFrame {
 	private Content c;
 	private ArrayList<Component> ac;
 	private CourseManagement gc;
-	private PaginaCorso thisFrame;
+	private CoursePage thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param hp 
-	 * @param corso 
+	 * @param course 
 	 * @throws ClassNotFoundException 
 	 */
-	public PaginaCorso(HomePage hp, Session ses, String corso, boolean visualComeStudente) {
+	public CoursePage(HomePage hp, Session ses, String course, boolean visualAsStudent) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -88,9 +88,9 @@ public class PaginaCorso extends JFrame {
 		try {
 			gc = new CourseManagement();
 			Notifier n = new Notifier();
-			gc.createSession(ses.getUser(), n.getCourse(corso));
+			gc.createSession(ses.getUser(), n.getCourse(course));
 			try {
-				cor= n.getCourse(corso);
+				cor= n.getCourse(course);
 				FindCourse rc = new FindCourse();
 				c = rc.getContentCourse(cor);
 			} catch (ClassNotFoundException | SQLException e) {
@@ -98,13 +98,13 @@ public class PaginaCorso extends JFrame {
 				e.printStackTrace();
 			}
 			
-		JLabel titoloCorso = new JLabel(cor.name);
-		contentPane.add(titoloCorso);
+		JLabel courseTitle = new JLabel(cor.name);
+		contentPane.add(courseTitle);
 		
 		Box de = Box.createHorizontalBox();
 		
-		JLabel descrizioneCorso = new JLabel(cor.description);
-		de.add(descrizioneCorso);
+		JLabel courseDescription = new JLabel(cor.description);
+		de.add(courseDescription);
 		contentPane.add(de);;
 		
 		ArrayList<User> u=new ArrayList<User>();
@@ -115,40 +115,40 @@ public class PaginaCorso extends JFrame {
 			e2.printStackTrace();
 		}
 		
-		String elencoDocenti="Elenco docenti corso : ";
+		String professorsList="Elenco docenti corso : ";
 		for(User ut : u) {
-			elencoDocenti=elencoDocenti+ut.getInfo().name+" "+ut.getInfo().surname+" ";
+			professorsList=professorsList+ut.getInfo().name+" "+ut.getInfo().surname+" ";
 		}
-		JLabel docentiCorso = new JLabel(elencoDocenti);
-		contentPane.add(docentiCorso);
+		JLabel courseProfessors = new JLabel(professorsList);
+		contentPane.add(courseProfessors);
 		
 		
 		try {
-			if(ses.info().userType==1||visualComeStudente) {
-			if(gc.studentEnrolledInTheCourse(ses.getUser(), cor)||visualComeStudente) {
+			if(ses.info().userType==1||visualAsStudent) {
+			if(gc.studentEnrolledInTheCourse(ses.getUser(), cor)||visualAsStudent) {
 				Box all = Box.createVerticalBox();
 				for(Section s : c.sections) {
 					Box se = Box.createHorizontalBox();
-					JLabel sezione = new JLabel(s.title);
-					se.add(sezione);
+					JLabel section = new JLabel(s.title);
+					se.add(section);
 					se.add(Box.createRigidArea(new Dimension(5,0)));
 					for(Resource r : s.resources) {
-						JLabel descrizioneRisorsa = new JLabel(r.description);
-						se.add(descrizioneRisorsa);
+						JLabel resourceDescription = new JLabel(r.description);
+						se.add(resourceDescription);
 						se.add(Box.createRigidArea(new Dimension(5,0)));
 						if(r.type.equals("cartella")) {
-							JButton risorsa = new JButton(r.name);
-							risorsa.addActionListener(new ActionListener() {
+							JButton resource = new JButton(r.name);
+							resource.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
 									thisFrame.setVisible(false);
-									PaginaCartella pc = new PaginaCartella(r, thisFrame);
+									FolderPage pc = new FolderPage(r, thisFrame);
 								}
 							});
-							se.add(risorsa);
+							se.add(resource);
 						}
 						else {
-							JButton risorsa = new JButton(r.name);
-							risorsa.addActionListener(new ActionListener() {
+							JButton resource = new JButton(r.name);
+							resource.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
 									try {
 										FindCourse rc = new FindCourse();
@@ -158,7 +158,7 @@ public class PaginaCorso extends JFrame {
 									}
 								}
 							});
-							se.add(risorsa);
+							se.add(resource);
 							se.add(Box.createRigidArea(new Dimension(5,0)));
 						}
 					}
@@ -167,11 +167,11 @@ public class PaginaCorso extends JFrame {
 			contentPane.add(all);
 			}
 			else {
-				JLabel nonIscritto = new JLabel("Non sei iscritto al corso");
-				contentPane.add(nonIscritto);
+				JLabel notSigned = new JLabel("Non sei iscritto al corso");
+				contentPane.add(notSigned);
 				
-				JButton iscriviti = new JButton("Iscriviti al corso");
-				iscriviti.addActionListener(new ActionListener() {
+				JButton signIn = new JButton("Iscriviti al corso");
+				signIn.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							CourseManagement gc = new CourseManagement();
@@ -182,41 +182,41 @@ public class PaginaCorso extends JFrame {
 						}
 					}
 				});
-				contentPane.add(iscriviti);
+				contentPane.add(signIn);
 			}
 			}
-			else if(!visualComeStudente&&ses.info().userType==2) {
-				boolean docenteCorso=false;
+			else if(!visualAsStudent&&ses.info().userType==2) {
+				boolean courseProfessor=false;
 				for(User utente : gc.whoTeachCourse(cor)) {
 					if(utente.getInfo().student_number==ses.info().student_number) {
-						docenteCorso=true;
+						courseProfessor=true;
 						break;
 					}
 				}
-				if(docenteCorso||gc.studentEnrolledInTheCourse(ses.getUser(), cor)) {//se docente iscritto. funziona ma mettere a posto
+				if(courseProfessor||gc.studentEnrolledInTheCourse(ses.getUser(), cor)) {//se docente iscritto. funziona ma mettere a posto
 					Box all = Box.createVerticalBox();
 					for(Section s : c.sections) {
 						Box se = Box.createHorizontalBox();
-						JLabel sezione = new JLabel(s.title);
-						se.add(sezione);
+						JLabel section = new JLabel(s.title);
+						se.add(section);
 						se.add(Box.createRigidArea(new Dimension(5,0)));
 						for(Resource r : s.resources) {
-							JLabel descrizioneRisorsa = new JLabel(r.description);
-							se.add(descrizioneRisorsa);
+							JLabel resourceDescription = new JLabel(r.description);
+							se.add(resourceDescription);
 							se.add(Box.createRigidArea(new Dimension(5,0)));
 							if(r.type.equals("cartella")) {
-								JButton risorsa = new JButton(r.name);
-								risorsa.addActionListener(new ActionListener() {
+								JButton resource = new JButton(r.name);
+								resource.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
 										thisFrame.setVisible(false);
-										PaginaCartella pc = new PaginaCartella(r, thisFrame);
+										FolderPage pc = new FolderPage(r, thisFrame);
 									}
 								});
-								se.add(risorsa);
+								se.add(resource);
 							}
 							else {
-								JButton risorsa = new JButton(r.name);
-								risorsa.addActionListener(new ActionListener() {
+								JButton resource = new JButton(r.name);
+								resource.addActionListener(new ActionListener() {
 									public void actionPerformed(ActionEvent e) {
 										try {
 											FindCourse rc = new FindCourse();
@@ -227,32 +227,32 @@ public class PaginaCorso extends JFrame {
 										}
 									}
 								});
-								se.add(risorsa);
+								se.add(resource);
 								se.add(Box.createRigidArea(new Dimension(5,0)));
 							}
 						}
 						all.add(se);
 				}
 				contentPane.add(all);
-				if(docenteCorso) {
-				JButton analisiCorso = new JButton("Analisi statistiche corso");
-				analisiCorso.addActionListener(new ActionListener() {
+				if(courseProfessor) {
+				JButton courseAnalysis = new JButton("Analisi statistiche corso");
+				courseAnalysis.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						thisFrame.setVisible(false);
-						StatisticheCorso mc = new StatisticheCorso(thisFrame, ses, cor);
+						CourseStatistics mc = new CourseStatistics(thisFrame, ses, cor);
 					}
 				});
-				contentPane.add(analisiCorso);
-				JButton modificaCorso = new JButton("Modifica corso");
-				modificaCorso.addActionListener(new ActionListener() {
+				contentPane.add(courseAnalysis);
+				JButton modifyCourse = new JButton("Modifica corso");
+				modifyCourse.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						thisFrame.setVisible(false);
-						ModificaCorso mc = new ModificaCorso(thisFrame, ses, cor);
+						ModifyCourse mc = new ModifyCourse(thisFrame, ses, cor);
 					}
 				});
-				contentPane.add(modificaCorso);
-				JButton visualizzaComeStudente = new JButton("Visualizza corso come studente");
-				visualizzaComeStudente.addActionListener(new ActionListener() {
+				contentPane.add(modifyCourse);
+				JButton visualizeAsStudent = new JButton("Visualizza corso come studente");
+				visualizeAsStudent.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							CourseContentManagement.viewAsStudent(hp, cor.name);
@@ -262,7 +262,7 @@ public class PaginaCorso extends JFrame {
 						}
 					}
 				});
-				contentPane.add(visualizzaComeStudente);
+				contentPane.add(visualizeAsStudent);
 				}
 				}
 			}
@@ -270,26 +270,26 @@ public class PaginaCorso extends JFrame {
 				Box all = Box.createVerticalBox();
 				for(Section s : c.sections) {
 					Box se = Box.createHorizontalBox();
-					JLabel sezione = new JLabel(s.title);
-					se.add(sezione);
+					JLabel section = new JLabel(s.title);
+					se.add(section);
 					se.add(Box.createRigidArea(new Dimension(5,0)));
 					for(Resource r : s.resources) {
-						JLabel descrizioneRisorsa = new JLabel(r.description);
-						se.add(descrizioneRisorsa);
+						JLabel respurceDescription = new JLabel(r.description);
+						se.add(respurceDescription);
 						se.add(Box.createRigidArea(new Dimension(5,0)));
 						if(r.type.equals("cartella")) {
-							JButton risorsa = new JButton(r.name);
-							risorsa.addActionListener(new ActionListener() {
+							JButton resource = new JButton(r.name);
+							resource.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
 									thisFrame.setVisible(false);
-									PaginaCartella pc = new PaginaCartella(r, thisFrame);
+									FolderPage pc = new FolderPage(r, thisFrame);
 								}
 							});
-							se.add(risorsa);
+							se.add(resource);
 						}
 						else {
-							JButton risorsa = new JButton(r.name);
-							risorsa.addActionListener(new ActionListener() {
+							JButton resource = new JButton(r.name);
+							resource.addActionListener(new ActionListener() {
 								public void actionPerformed(ActionEvent e) {
 									try {
 										FindCourse rc = new FindCourse();
@@ -300,7 +300,7 @@ public class PaginaCorso extends JFrame {
 									}
 								}
 							});
-							se.add(risorsa);
+							se.add(resource);
 							se.add(Box.createRigidArea(new Dimension(5,0)));
 						}
 					}
@@ -310,22 +310,22 @@ public class PaginaCorso extends JFrame {
 					
 					Box anMod = Box.createHorizontalBox();
 					
-					JButton analisiCorso = new JButton("Analisi statistiche corso");
-					analisiCorso.addActionListener(new ActionListener() {
+					JButton courseAnalysis = new JButton("Analisi statistiche corso");
+					courseAnalysis.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							thisFrame.setVisible(false);
-							StatisticheCorso mc = new StatisticheCorso(thisFrame, ses, cor);
+							CourseStatistics mc = new CourseStatistics(thisFrame, ses, cor);
 						}
 					});
-					anMod.add(analisiCorso);
-					JButton modificaCorso = new JButton("Modifica corso");
-					modificaCorso.addActionListener(new ActionListener() {
+					anMod.add(courseAnalysis);
+					JButton modifyCourse = new JButton("Modifica corso");
+					modifyCourse.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							thisFrame.setVisible(false);
-							ModificaCorso mc = new ModificaCorso(thisFrame, ses, cor);
+							ModifyCourse mc = new ModifyCourse(thisFrame, ses, cor);
 						}
 					});
-					anMod.add(modificaCorso);
+					anMod.add(modifyCourse);
 					contentPane.add(anMod);
 					
 			}

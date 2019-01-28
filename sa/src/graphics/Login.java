@@ -89,18 +89,18 @@ public class Login{
 		frame.getContentPane().add(pwd);
 		frame.getContentPane().add(loginButton);
 		
-		JLabel recuperoPwd = new JLabel("Hai dimenticato la password? Effettua il reset");
-		frame.getContentPane().add(recuperoPwd);
+		JLabel pwdRecovery = new JLabel("Hai dimenticato la password? Effettua il reset");
+		frame.getContentPane().add(pwdRecovery);
 		
-		JButton recuperoButton = new JButton("Reset password");
-		recuperoButton.addActionListener(new ActionListener() {
+		JButton recoveryButton = new JButton("Reset password");
+		recoveryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					if(!email.getText().equals("")) {
 						as.sendNewLoginCredentials(email.getText());
 					}
 					else {
-						JOptionPane.showMessageDialog(recuperoButton,"Inserire l'email nel campo apposito");
+						JOptionPane.showMessageDialog(recoveryButton,"Inserire l'email nel campo apposito");
 					}
 				} catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame,"Errore di connessione al database");
@@ -108,7 +108,7 @@ public class Login{
 				}
 			}
 		});
-		frame.getContentPane().add(recuperoButton);
+		frame.getContentPane().add(recoveryButton);
 		frame.setVisible(true);
 	}
 	

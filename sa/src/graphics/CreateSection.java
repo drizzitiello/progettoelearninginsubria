@@ -21,17 +21,17 @@ import courseContentManagement.Section;
 import notifier.Notifier;
 import session.Session;
 
-public class CreaSezione extends MyFrame {
+public class CreateSection extends MyFrame {
 
 	private JPanel contentPane;
-	private CreaSezione thisframe;
+	private CreateSection thisframe;
 
 	/**
 	 * Create the frame.
 	 * @param cor 
 	 * @param ses 
 	 */
-	public CreaSezione(ModificaCorso mc, Session ses, Course cor) {
+	public CreateSection(ModifyCourse mc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -53,59 +53,59 @@ public class CreaSezione extends MyFrame {
 		JLabel tit = new JLabel("Titolo: ");
 		contentPane.add(tit);
 		
-		JTextField titolo = new JTextField();
-		contentPane.add(titolo);
-		titolo.setColumns(10);
+		JTextField title = new JTextField();
+		contentPane.add(title);
+		title.setColumns(10);
 		
 		JLabel sez = new JLabel("Codice sezione: ");
 		contentPane.add(sez);
 
-		JTextField codSezione = new JTextField();
-		contentPane.add(codSezione);
-		codSezione.setColumns(10);
+		JTextField sectionCode = new JTextField();
+		contentPane.add(sectionCode);
+		sectionCode.setColumns(10);
 		
 		JLabel descr = new JLabel("Descrizione: ");
 		contentPane.add(descr);
 
-		JTextField descrizione = new JTextField();
-		contentPane.add(descrizione);
-		descrizione.setColumns(10);
+		JTextField description = new JTextField();
+		contentPane.add(description);
+		description.setColumns(10);
 		
 		JLabel vis = new JLabel("Visibilita: ");
 		contentPane.add(vis);
 
-		JTextField visibilita = new JTextField();
-		contentPane.add(visibilita);
-		visibilita.setColumns(10);
+		JTextField visibility = new JTextField();
+		contentPane.add(visibility);
+		visibility.setColumns(10);
 		
-		JLabel codCo = new JLabel("Codice corso: ");
-		contentPane.add(codCo);
+		JLabel courseCo = new JLabel("Codice corso: ");
+		contentPane.add(courseCo);
 		
-		JTextField codCorso = new JTextField();
-		contentPane.add(codCorso);
-		codCorso.setColumns(10);
+		JTextField courseCode = new JTextField();
+		contentPane.add(courseCode);
+		courseCode.setColumns(10);
 
-		JLabel fig = new JLabel("Figlio di: ");
-		contentPane.add(fig);
+		JLabel son = new JLabel("Figlio di: ");
+		contentPane.add(son);
 		
-		JTextField figlioDi = new JTextField();
-		contentPane.add(figlioDi);
-		figlioDi.setColumns(10);
+		JTextField sonOf = new JTextField();
+		contentPane.add(sonOf);
+		sonOf.setColumns(10);
 		
-		JButton creaSezione = new JButton("Crea sezione");
-		creaSezione.addActionListener(new ActionListener() {
+		JButton createSection = new JButton("Crea sezione");
+		createSection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				boolean pubblica=false;
-				if(visibilita.getText().equals("pubblica")) {
-					pubblica=true;
+				boolean pubblic=false;
+				if(visibility.getText().equals("pubblica")) {
+					pubblic=true;
 				}
-				Integer figlio = null;
-				if(!figlioDi.getText().equals("")) {
-					figlio=Integer.parseInt(figlioDi.getText());
+				Integer sonn = null;
+				if(!sonOf.getText().equals("")) {
+					sonn=Integer.parseInt(sonOf.getText());
 				}
-				Section s = new Section(titolo.getText(),  descrizione.getText(), 
-						pubblica, Integer.parseInt(codSezione.getText()), ses.getUser().getInfo().student_number, 
-						Integer.parseInt(codCorso.getText()), figlio);
+				Section s = new Section(title.getText(),  description.getText(), 
+						pubblic, Integer.parseInt(sectionCode.getText()), ses.getUser().getInfo().student_number, 
+						Integer.parseInt(courseCode.getText()), sonn);
 				CourseContentManagement gc;
 				try {
 					gc = new CourseContentManagement();
@@ -118,7 +118,7 @@ public class CreaSezione extends MyFrame {
 					try {
 						Notifier n = new Notifier();
 						n.sendMail(ses.info().email, "pwd?", cor.name,
-								"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+titolo.getText());
+								"Aggiornamento contenuti corso "+cor.name, "Aggiunta sezione "+title.getText());
 					} catch (Exception e2) {
 						JOptionPane.showMessageDialog(contentPane, "Errore durante l'invio dell'email");
 						e2.printStackTrace();
@@ -129,7 +129,7 @@ public class CreaSezione extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(creaSezione);
+		contentPane.add(createSection);
 		
 		setVisible(true);
 	}

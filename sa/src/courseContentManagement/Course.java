@@ -31,7 +31,6 @@ public class Course {
 
 	public Course(int courseCode, String name, int activation_year, String faculty, String description,
 			int weight, int creator) throws MalformedURLException, RemoteException, NotBoundException {
-		socket = (RemoteInterface) Naming.lookup ("rmi://localhost/SocketDb");
 		this.courseCode=courseCode;
 		this.name=name;
 		this.activation_year=activation_year;

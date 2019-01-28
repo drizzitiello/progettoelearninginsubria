@@ -23,17 +23,17 @@ import courseContentManagement.Course;
 import courseContentManagement.FindCourse;
 import session.Session;
 
-public class GestisciCorsi extends MyFrame {
+public class ManageCourses extends MyFrame {
 
 	private JPanel contentPane;
-	private GestisciCorsi thisFrame;
+	private ManageCourses thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public GestisciCorsi(HomePage hp, Session ses, String pwd) {
+	public ManageCourses(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -58,30 +58,30 @@ public class GestisciCorsi extends MyFrame {
 			try {
 				ArrayList<Course> ali = rc.getCourses();
 				for(Course c : ali) {
-					Box corso = Box.createVerticalBox();
-					JLabel codiceCorso = new JLabel("  Codice corso: "+((Integer) c.courseCode).toString());
-					corso.add(codiceCorso);
-					JLabel nome = new JLabel("  Nome: "+c.name);
-					corso.add(nome);
-					JLabel annoAttivazione = new JLabel("  Anno attivazione: "+String.valueOf(c.activation_year));
-					corso.add(annoAttivazione);
-					JLabel facolta = new JLabel("  Facolta: "+c.faculty);
-					corso.add(facolta);
+					Box course = Box.createVerticalBox();
+					JLabel courseCode = new JLabel("  Codice corso: "+((Integer) c.courseCode).toString());
+					course.add(courseCode);
+					JLabel name = new JLabel("  Nome: "+c.name);
+					course.add(name);
+					JLabel activationYear = new JLabel("  Anno attivazione: "+String.valueOf(c.activation_year));
+					course.add(activationYear);
+					JLabel faculty = new JLabel("  Facolta: "+c.faculty);
+					course.add(faculty);
 					String descr = "  Descrizione: "+c.description;
 					if (descr.length()>35) descr="  Descrizione: "+c.description.substring(0, 5)+"...";
-					JLabel descrizione = new JLabel(descr);
-					corso.add(descrizione);
-					JLabel peso = new JLabel("  CFU: "+((Integer) c.weight).toString()+"  ");
-					corso.add(peso);
-					JButton modificaCorso = new JButton("Modifica Corso");
-					modificaCorso.addActionListener(new ActionListener() {
+					JLabel description = new JLabel(descr);
+					course.add(description);
+					JLabel weight = new JLabel("  CFU: "+((Integer) c.weight).toString()+"  ");
+					course.add(weight);
+					JButton modifyCourse = new JButton("Modifica Corso");
+					modifyCourse.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 							thisFrame.setVisible(false);
-							ModificaCorso ac = new ModificaCorso(thisFrame, ses, c);
+							ModifyCourse ac = new ModifyCourse(thisFrame, ses, c);
 						}
 					});
-					corso.add(modificaCorso);
-					contentPane.add(corso);
+					course.add(modifyCourse);
+					contentPane.add(course);
 				}
 			} catch (ClassNotFoundException | SQLException e) {
 				JOptionPane.showMessageDialog(contentPane, "Errore durante la connessione al databse");
@@ -91,33 +91,13 @@ public class GestisciCorsi extends MyFrame {
 			JOptionPane.showMessageDialog(contentPane, "Errore durante la connessione al database");
 			e1.printStackTrace();
 		}
-		JButton aggiungiCorso = new JButton("Aggiungi corso");
-		aggiungiCorso.addActionListener(new ActionListener() {
+		JButton addCourse = new JButton("Aggiungi corso");
+		addCourse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AggiungiCorso ac = new AggiungiCorso(thisFrame, ses, pwd);
+				AddCourse ac = new AddCourse(thisFrame, ses, pwd);
 			}
 		});
-		contentPane.add(aggiungiCorso);
+		contentPane.add(addCourse);
 		setVisible(true);
 	}
-	
-	public String addLinebreaks(String input, int maxLineLength) {
-	    StringTokenizer tok = new StringTokenizer(input, " ");
-	    StringBuilder output = new StringBuilder(input.length());
-	    int lineLen = 0;
-	    while (tok.hasMoreTokens()) {
-	        String word = tok.nextToken();
-
-	        if (lineLen + word.length() > maxLineLength) {
-	            output.append("<br>");
-	            lineLen = 0;
-	        }
-	        output.append(word);
-	        output.append("\n");
-	        lineLen += word.length();
-	    }
-	    output.append("</html>");
-	    return output.toString();
-	}
-
 }

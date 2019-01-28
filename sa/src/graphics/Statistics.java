@@ -23,7 +23,7 @@ import courseContentManagement.Course;
 import notifier.Notifier;
 import session.Session;
 
-public class Statistiche extends MyFrame {
+public class Statistics extends MyFrame {
 	
 	/*Mostrare il numero complessivo di utenti contemporaneamente connessi a seatIn 
 	2. Mostrare il numero complessivo accessi per corso in una fascia temporale 
@@ -31,13 +31,13 @@ public class Statistiche extends MyFrame {
 	4. Derivare il numero complessivo di download per ogni corso */
 
 	private JPanel contentPane;
-	private Statistiche thisFrame;
+	private Statistics thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public Statistiche(HomePage hp, Session ses) {
+	public Statistics(HomePage hp, Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -59,23 +59,23 @@ public class Statistiche extends MyFrame {
 		try {
 			GlobalAnalytics ga = new GlobalAnalytics();
 			
-			JLabel utentiComplessivi;
-			utentiComplessivi = new JLabel("Utenti connessi: "+ga.onlineUsers());
-			contentPane.add(utentiComplessivi);
+			JLabel totalUsers;
+			totalUsers = new JLabel("Utenti connessi: "+ga.onlineUsers());
+			contentPane.add(totalUsers);
 			
-			JLabel numeroAccessiPerOra = new JLabel("N. accessi per corso per fascia oraria");
-			contentPane.add(numeroAccessiPerOra);
+			JLabel numberAccessForHour = new JLabel("N. accessi per corso per fascia oraria");
+			contentPane.add(numberAccessForHour);
 			
 			JLabel date = new JLabel("Inserire data inizio e data fine: ");
 			contentPane.add(date);
 			
-			JTextField dataInizio = new JTextField();
-			contentPane.add(dataInizio);
-			dataInizio.setColumns(10);
+			JTextField startDate = new JTextField();
+			contentPane.add(startDate);
+			startDate.setColumns(10);
 			
-			JTextField dataFine = new JTextField();
-			contentPane.add(dataFine);
-			dataFine.setColumns(10);
+			JTextField endDate = new JTextField();
+			contentPane.add(endDate);
+			endDate.setColumns(10);
 			
 			Box ab = Box.createVerticalBox();
 			
@@ -87,14 +87,14 @@ public class Statistiche extends MyFrame {
 						if(ab.getComponentCount()!=0) {
 							ab.removeAll();
 						}
-						Map<Integer, Integer> tmc = ga.accessByInterval(dataInizio.getText(), dataFine.getText());
+						Map<Integer, Integer> tmc = ga.accessByInterval(startDate.getText(), endDate.getText());
 						for(Integer m : tmc.keySet()) {
 							Notifier n = new Notifier();
 							Course cor = n.getCourse(m);
-							JLabel accessiCorsoFasciaTemporale = new JLabel("N. accessi al corso "+cor.name+" "
+							JLabel accessCourseTimeBand = new JLabel("N. accessi al corso "+cor.name+" "
 									+ "nella fascia temporale data : "
 									+ tmc.get(m));
-							ab.add(accessiCorsoFasciaTemporale);
+							ab.add(accessCourseTimeBand);
 							contentPane.revalidate();
 							validate();
 							repaint();
@@ -110,8 +110,8 @@ public class Statistiche extends MyFrame {
 			
 			Box tmpc = Box.createVerticalBox();
 			
-			JButton tempoMedioPerCorso = new JButton("Calcola il tempo medio degli accessi ai corsi");
-			tempoMedioPerCorso.addActionListener(new ActionListener() {
+			JButton avgTimeForCourse = new JButton("Calcola il tempo medio degli accessi ai corsi");
+			avgTimeForCourse.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
 						if(tmpc.getComponentCount()==0) {
@@ -119,9 +119,9 @@ public class Statistiche extends MyFrame {
 						for(Integer m : tmc.keySet()) {
 							Notifier n = new Notifier();
 							Course cor = n.getCourse(m);
-							JLabel tempoMedioConnessioniCorso = new JLabel("Tempo medio connessioni per"
+							JLabel avgTimeConnectionCourse = new JLabel("Tempo medio connessioni per"
 									+ " il corso "+cor.name+" : "+tmc.get(m));
-							tmpc.add(tempoMedioConnessioniCorso);
+							tmpc.add(avgTimeConnectionCourse);
 							contentPane.revalidate();
 							validate();
 							repaint();
@@ -133,13 +133,13 @@ public class Statistiche extends MyFrame {
 					}
 				}
 			});
-			contentPane.add(tempoMedioPerCorso);
+			contentPane.add(avgTimeForCourse);
 			contentPane.add(tmpc);
 			
 			Box ndpc = Box.createVerticalBox();
 			
-			JButton nDownloadPerCorso = new JButton("Calcola il numero di download per corso");
-			nDownloadPerCorso.addActionListener(new ActionListener() {
+			JButton nDownloadForCourse = new JButton("Calcola il numero di download per corso");
+			nDownloadForCourse.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					try {
 						if(ndpc.getComponentCount()==0) {
@@ -147,9 +147,9 @@ public class Statistiche extends MyFrame {
 						for(Integer m : dpc.keySet()) {
 							Notifier n = new Notifier();
 							Course cor = n.getCourse(m);
-							JLabel numeroAccessiCorso = new JLabel("Numero di download per"
+							JLabel numberAccessCourse = new JLabel("Numero di download per"
 									+ " il corso "+cor.name+" : "+dpc.get(m));
-							ndpc.add(numeroAccessiCorso);
+							ndpc.add(numberAccessCourse);
 							contentPane.revalidate();
 							validate();
 							repaint();
@@ -161,7 +161,7 @@ public class Statistiche extends MyFrame {
 					}
 				}
 			});
-			contentPane.add(nDownloadPerCorso);
+			contentPane.add(nDownloadForCourse);
 			contentPane.add(ndpc);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(contentPane,"Errore");

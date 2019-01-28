@@ -24,12 +24,12 @@ import courseContentManagement.Section;
 import courseManagement.CourseManagement;
 import session.Session;
 
-public class ModificaCorso extends MyFrame {
+public class ModifyCourse extends MyFrame {
 
 	private JPanel contentPane;
-	private ModificaCorso thisframe;
+	private ModifyCourse thisframe;
 
-	public ModificaCorso(PaginaCorso pc, Session ses, Course cor) {
+	public ModifyCourse(CoursePage pc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -48,31 +48,31 @@ public class ModificaCorso extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel nome = new JLabel("Nome: ");
-		contentPane.add(nome);
+		JLabel name = new JLabel("Nome: ");
+		contentPane.add(name);
 		
-		JTextField nomeCorso = new JTextField(cor.name);
-		contentPane.add(nomeCorso);
-		nomeCorso.setColumns(10);
+		JTextField courseName = new JTextField(cor.name);
+		contentPane.add(courseName);
+		courseName.setColumns(10);
 		
-		JLabel anno = new JLabel("Anno: ");
-		contentPane.add(anno);
+		JLabel year = new JLabel("Anno: ");
+		contentPane.add(year);
 		
-		JTextField annoo = new JTextField(String.valueOf(cor.activation_year));
-		contentPane.add(annoo);
-		annoo.setColumns(10);
+		JTextField yearr = new JTextField(String.valueOf(cor.activation_year));
+		contentPane.add(yearr);
+		yearr.setColumns(10);
 		
-		JLabel codCorso = new JLabel("Codice corso: "+String.valueOf(cor.courseCode));
-		contentPane.add(codCorso);
+		JLabel courseCode = new JLabel("Codice corso: "+String.valueOf(cor.courseCode));
+		contentPane.add(courseCode);
 		
-		JLabel creatore = new JLabel("Creatore: "+String.valueOf(cor.creator));
-		contentPane.add(creatore);
+		JLabel creator = new JLabel("Creatore: "+String.valueOf(cor.creator));
+		contentPane.add(creator);
 		
-		JLabel descrizione = new JLabel("Descrizione: "+cor.description);
+		JLabel description = new JLabel("Descrizione: "+cor.description);
 		if(ses.getUser().getInfo().userType==3) {
-			descrizione.setText("Descrizione: ");
+			description.setText("Descrizione: ");
 		}
-		contentPane.add(descrizione);
+		contentPane.add(description);
 		
 		JTextField descr = new JTextField(cor.description);
 		descr.setColumns(10);
@@ -80,33 +80,33 @@ public class ModificaCorso extends MyFrame {
 			contentPane.add(descr);
 		}
 		
-		JLabel laurea = new JLabel("Facolta: ");
-		contentPane.add(laurea);
+		JLabel faculty = new JLabel("Facolta: ");
+		contentPane.add(faculty);
 		
-		JTextField facolta = new JTextField(cor.faculty);
-		contentPane.add(facolta);
-		facolta.setColumns(10);
+		JTextField faclty = new JTextField(cor.faculty);
+		contentPane.add(faclty);
+		faclty.setColumns(10);
 		
-		JLabel pesoCFU = new JLabel("CFU: ");
-		contentPane.add(pesoCFU);
+		JLabel cfuWeight = new JLabel("CFU: ");
+		contentPane.add(cfuWeight);
 		
-		JTextField peso = new JTextField(String.valueOf(cor.weight));
-		contentPane.add(peso);
-		peso.setColumns(10);
+		JTextField weight = new JTextField(String.valueOf(cor.weight));
+		contentPane.add(weight);
+		weight.setColumns(10);
 		
-		JButton modifica = new JButton("Modifica");
-		modifica.addActionListener(new ActionListener() {
+		JButton modify = new JButton("Modifica");
+		modify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cor.setYear(Integer.parseInt(annoo.getText()));
+				cor.setYear(Integer.parseInt(yearr.getText()));
 				if(ses.getUser().getInfo().userType==3) {
 					cor.setDescription(descr.getText());
 				}
 				else {
-					cor.setDescription(descrizione.getText());
+					cor.setDescription(description.getText());
 				}
-				cor.setFaculty(facolta.getText());
-				cor.setName(nomeCorso.getText());
-				cor.setWeight(Integer.parseInt(peso.getText()));
+				cor.setFaculty(faclty.getText());
+				cor.setName(courseName.getText());
+				cor.setWeight(Integer.parseInt(weight.getText()));
 				CourseManagement gc;
 				try {
 					gc = new CourseManagement();
@@ -117,7 +117,7 @@ public class ModificaCorso extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(modifica);
+		contentPane.add(modify);
 		
 		FindCourse rc;
 		try {
@@ -128,27 +128,27 @@ public class ModificaCorso extends MyFrame {
 				
 				for(Section s : c.sections) {
 					
-					JTextField sezione = new JTextField(s.title);
-					contentPane.add(sezione);
-					nomeCorso.setColumns(10);
-					JButton modificaSezione = new JButton("Modifica sezione");
-					modificaSezione.addActionListener(new ActionListener() {
+					JTextField section = new JTextField(s.title);
+					contentPane.add(section);
+					courseName.setColumns(10);
+					JButton modifySection = new JButton("Modifica sezione");
+					modifySection.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
-							ModificaSezione ms = new ModificaSezione(thisframe, ses, cor, s.sectionCode);
+							ModifySection ms = new ModifySection(thisframe, ses, cor, s.sectionCode);
 						}
 					});
-					contentPane.add(modificaSezione);
+					contentPane.add(modifySection);
 					for(Resource r : s.resources) {
-						JTextField risorsa = new JTextField(r.name);
-						contentPane.add(risorsa);
-						nomeCorso.setColumns(10);
-						JButton modificaRisorsa = new JButton("Modifica risorsa");
-						modificaRisorsa.addActionListener(new ActionListener() {
+						JTextField resource = new JTextField(r.name);
+						contentPane.add(resource);
+						courseName.setColumns(10);
+						JButton modifyResource = new JButton("Modifica risorsa");
+						modifyResource.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								ModificaRisorsa ms = new ModificaRisorsa(thisframe, r.resourceCode);
+								ModifyResource ms = new ModifyResource(thisframe, r.resourceCode);
 							}
 						});
-						contentPane.add(modificaRisorsa);
+						contentPane.add(modifyResource);
 					}
 				}
 			} catch (ClassNotFoundException | SQLException e1) {
@@ -160,18 +160,18 @@ public class ModificaCorso extends MyFrame {
 			e2.printStackTrace();
 		}
 		
-		JButton creaSezione = new JButton("Crea sezione");
-		creaSezione.addActionListener(new ActionListener() {
+		JButton createSection = new JButton("Crea sezione");
+		createSection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreaSezione ms = new CreaSezione(thisframe, ses, cor);
+				CreateSection ms = new CreateSection(thisframe, ses, cor);
 			}
 		});
-		contentPane.add(creaSezione);
+		contentPane.add(createSection);
 		
 		setVisible(true);
 	}
 	
-	public ModificaCorso(GestisciCorsi gc, Session ses, Course cor) {
+	public ModifyCourse(ManageCourses gc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -190,31 +190,31 @@ public class ModificaCorso extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel nome = new JLabel("Nome: ");
-		contentPane.add(nome);
+		JLabel name = new JLabel("Nome: ");
+		contentPane.add(name);
 		
-		JTextField nomeCorso = new JTextField(cor.name);
-		contentPane.add(nomeCorso);
-		nomeCorso.setColumns(10);
+		JTextField courseName = new JTextField(cor.name);
+		contentPane.add(courseName);
+		courseName.setColumns(10);
 		
-		JLabel anno = new JLabel("Anno: ");
-		contentPane.add(anno);
+		JLabel year = new JLabel("Anno: ");
+		contentPane.add(year);
 		
-		JTextField annoo = new JTextField(String.valueOf(cor.activation_year));
-		contentPane.add(annoo);
-		annoo.setColumns(10);
+		JTextField yearr = new JTextField(String.valueOf(cor.activation_year));
+		contentPane.add(yearr);
+		yearr.setColumns(10);
 		
-		JLabel codCorso = new JLabel("Codice corso: "+String.valueOf(cor.courseCode));
-		contentPane.add(codCorso);
+		JLabel courseCode = new JLabel("Codice corso: "+String.valueOf(cor.courseCode));
+		contentPane.add(courseCode);
 		
-		JLabel creatore = new JLabel("Creatore: "+String.valueOf(cor.creator));
-		contentPane.add(creatore);
+		JLabel creator = new JLabel("Creatore: "+String.valueOf(cor.creator));
+		contentPane.add(creator);
 		
-		JLabel descrizione = new JLabel("Descrizione: "+cor.description);
+		JLabel description = new JLabel("Descrizione: "+cor.description);
 		if(ses.getUser().getInfo().userType==3) {
-			descrizione.setText("Descrizione: ");
+			description.setText("Descrizione: ");
 		}
-		contentPane.add(descrizione);
+		contentPane.add(description);
 		
 		JTextField descr = new JTextField(cor.description);
 		descr.setColumns(10);
@@ -222,33 +222,33 @@ public class ModificaCorso extends MyFrame {
 			contentPane.add(descr);
 		}
 		
-		JLabel laurea = new JLabel("Facolta: ");
-		contentPane.add(laurea);
+		JLabel faculty = new JLabel("Facolta: ");
+		contentPane.add(faculty);
 		
-		JTextField facolta = new JTextField(cor.faculty);
-		contentPane.add(facolta);
-		facolta.setColumns(10);
+		JTextField fculty = new JTextField(cor.faculty);
+		contentPane.add(fculty);
+		fculty.setColumns(10);
 		
-		JLabel pesoCFU = new JLabel("CFU: ");
-		contentPane.add(pesoCFU);
+		JLabel cfuWeight = new JLabel("CFU: ");
+		contentPane.add(cfuWeight);
 		
-		JTextField peso = new JTextField(String.valueOf(cor.weight));
-		contentPane.add(peso);
-		peso.setColumns(10);
+		JTextField weight = new JTextField(String.valueOf(cor.weight));
+		contentPane.add(weight);
+		weight.setColumns(10);
 		
-		JButton modifica = new JButton("Modifica");
-		modifica.addActionListener(new ActionListener() {
+		JButton modify = new JButton("Modifica");
+		modify.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cor.setYear(Integer.parseInt(annoo.getText()));
+				cor.setYear(Integer.parseInt(yearr.getText()));
 				if(ses.getUser().getInfo().userType==3) {
 					cor.setDescription(descr.getText());
 				}
 				else {
-					cor.setDescription(descrizione.getText());
+					cor.setDescription(description.getText());
 				}
-				cor.setFaculty(facolta.getText());
-				cor.setName(nomeCorso.getText());
-				cor.setWeight(Integer.parseInt(peso.getText()));
+				cor.setFaculty(fculty.getText());
+				cor.setName(courseName.getText());
+				cor.setWeight(Integer.parseInt(weight.getText()));
 				CourseManagement gc;
 				try {
 					gc = new CourseManagement();
@@ -259,7 +259,7 @@ public class ModificaCorso extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(modifica);
+		contentPane.add(modify);
 		
 		FindCourse rc;
 		try {
@@ -273,27 +273,27 @@ public class ModificaCorso extends MyFrame {
 			}
 		for(Section s : c.sections) {
 			
-			JTextField sezione = new JTextField(s.title);
-			contentPane.add(sezione);
-			nomeCorso.setColumns(10);
-			JButton modificaSezione = new JButton("Modifica sezione");
-			modificaSezione.addActionListener(new ActionListener() {
+			JTextField section = new JTextField(s.title);
+			contentPane.add(section);
+			courseName.setColumns(10);
+			JButton modifySection = new JButton("Modifica sezione");
+			modifySection.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					ModificaSezione ms = new ModificaSezione(thisframe, ses, cor, s.sectionCode);
+					ModifySection ms = new ModifySection(thisframe, ses, cor, s.sectionCode);
 				}
 			});
-			contentPane.add(modificaSezione);
+			contentPane.add(modifySection);
 			for(Resource r : s.resources) {
-				JTextField risorsa = new JTextField(r.name);
-				contentPane.add(risorsa);
-				nomeCorso.setColumns(10);
-				JButton modificaRisorsa = new JButton("Modifica risorsa");
-				modificaRisorsa.addActionListener(new ActionListener() {
+				JTextField resource = new JTextField(r.name);
+				contentPane.add(resource);
+				courseName.setColumns(10);
+				JButton modifyResource = new JButton("Modifica risorsa");
+				modifyResource.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						ModificaRisorsa ms = new ModificaRisorsa(thisframe, r.resourceCode);
+						ModifyResource ms = new ModifyResource(thisframe, r.resourceCode);
 					}
 				});
-				contentPane.add(modificaRisorsa);
+				contentPane.add(modifyResource);
 			}
 		}
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {
@@ -301,13 +301,13 @@ public class ModificaCorso extends MyFrame {
 			e2.printStackTrace();
 		}
 		
-		JButton creaSezione = new JButton("Crea sezione");
-		creaSezione.addActionListener(new ActionListener() {
+		JButton createSection = new JButton("Crea sezione");
+		createSection.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreaSezione ms = new CreaSezione(thisframe, ses, cor);
+				CreateSection ms = new CreateSection(thisframe, ses, cor);
 			}
 		});
-		contentPane.add(creaSezione);
+		contentPane.add(createSection);
 		
 		setVisible(true);
 	}

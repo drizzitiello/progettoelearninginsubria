@@ -16,16 +16,16 @@ import courseManagement.CourseManagement;
 import session.Session;
 import userManager.UserManager;
 
-public class RegistrazioneUtentiCorsi extends MyFrame {
+public class UsersCoursesRegistration extends MyFrame {
 
 	private JPanel contentPane;
-	private RegistrazioneUtentiCorsi thisFrame;
+	private UsersCoursesRegistration thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param ses 
 	 */
-	public RegistrazioneUtentiCorsi(HomePage hp, Session ses) {
+	public UsersCoursesRegistration(HomePage hp, Session ses) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -44,15 +44,15 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel inserisci = new JLabel("Inserisci percorso file csv da caricare");
-		contentPane.add(inserisci);
+		JLabel insert = new JLabel("Inserisci percorso file csv da caricare");
+		contentPane.add(insert);
 		
 		JTextField path = new JTextField();
 		contentPane.add(path);
 		path.setColumns(10);
 		
-		JButton aggiungiUtenti = new JButton("Aggiungi utenti");
-		aggiungiUtenti.addActionListener(new ActionListener() {
+		JButton addUsers = new JButton("Aggiungi utenti");
+		addUsers.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					UserManager um = new UserManager();
@@ -63,10 +63,10 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(aggiungiUtenti);
+		contentPane.add(addUsers);
 		
-		JButton aggiungiCorsi = new JButton("Aggiungi corsi");
-		aggiungiCorsi.addActionListener(new ActionListener() {
+		JButton addCourses = new JButton("Aggiungi corsi");
+		addCourses.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					CourseManagement gc = new CourseManagement();
@@ -77,7 +77,7 @@ public class RegistrazioneUtentiCorsi extends MyFrame {
 				}
 			}
 		});
-		contentPane.add(aggiungiCorsi);
+		contentPane.add(addCourses);
 		
 		setVisible(true);
 	}

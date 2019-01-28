@@ -64,7 +64,7 @@ public class AdminLogin extends JFrame{
 				//server = new Server(SocketDb.getAdminInstanceDb(host.getText(), email.getText(), String.valueOf(pwd.getPassword())));
 				server=Server.getInstance(SocketDb.getAdminInstanceDb(host.getText(), email.getText(), String.valueOf(pwd.getPassword())));
 				System.out.println(server);
-				server.starting();
+				server.sta();
 				UserManager um = new UserManager(server);
 				if(!um.dbContainsAdmin()) {
 					RegistraAdmin ra = new RegistraAdmin(thisFrame);

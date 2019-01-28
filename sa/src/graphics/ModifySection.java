@@ -16,19 +16,23 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
+import courseContentManagement.Course;
 import courseContentManagement.CourseContentManagement;
-import courseContentManagement.Resource;
+import courseContentManagement.Section;
+import session.Session;
 
-public class ModificaRisorsa extends MyFrame {
+public class ModifySection extends MyFrame {
 
 	private JPanel contentPane;
-	private ModificaRisorsa thisframe;
+	private ModifySection thisframe;
 
 	/**
 	 * Create the frame.
-	 * @param i 
+	 * @param cor 
+	 * @param ses 
+	 * @param string 
 	 */
-	public ModificaRisorsa(ModificaCorso mc, int codRisorsa) {
+	public ModifySection(ModifyCourse mc, Session ses, Course cor, int sectionCode) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -47,68 +51,56 @@ public class ModificaRisorsa extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		Resource r = null;
+		Section s = null;
 		CourseContentManagement gc;
 		try {
 			gc = new CourseContentManagement();
 			try {
-				r=gc.getResource(codRisorsa);
-				final int codSezione=r.sectionCode;
+				s=gc.getSection(sectionCode);
+				final int creator=s.creator;
+				final int courseCode=s.courseCode;
+				final Integer sonOf=s.sonOf;
 				
-				JLabel no = new JLabel("Nome: ");
-				contentPane.add(no);
-				
-				JTextField nome = new JTextField(r.name);
-				contentPane.add(nome);
-				nome.setColumns(10);
 				
 				JLabel descr = new JLabel("Descrizione: ");
 				contentPane.add(descr);
 				
-				JTextField descrizione = new JTextField(r.description);
-				contentPane.add(descrizione);
-				descrizione.setColumns(10);
+				JTextField description = new JTextField(s.description);
+				contentPane.add(description);
+				description.setColumns(10);
 				
-				JLabel percorso = new JLabel("Percorso: ");
-				contentPane.add(percorso);
+				JLabel tit = new JLabel("Titolo: ");
+				contentPane.add(tit);
 				
-				JTextField path = new JTextField(r.path);
-				contentPane.add(path);
-				path.setColumns(10);
+				JTextField title = new JTextField(s.title);
+				contentPane.add(title);
+				title.setColumns(10);
 				
 				JLabel vis = new JLabel("Visibilita: ");
 				contentPane.add(vis);
 				
-				JTextField visibilita = new JTextField(String.valueOf(r.visibility));
-				contentPane.add(visibilita);
-				visibilita.setColumns(10);
+				JTextField visibility = new JTextField(String.valueOf(s.visibility));
+				contentPane.add(visibility);
+				visibility.setColumns(10);
 				
-				JLabel type = new JLabel("Tipo: ");
-				contentPane.add(type);
-				
-				JTextField tipo = new JTextField(r.type);
-				contentPane.add(tipo);
-				tipo.setColumns(10);
-				
-				JButton modificaRisorsa = new JButton("Modifica risorsa");
-				modificaRisorsa.addActionListener(new ActionListener() {
+				JButton modifySection = new JButton("Modifica sezione");
+				modifySection.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
-							boolean pubblica=false;
-							if(visibilita.getText().equals("pubblica")) {
-								pubblica=true;
+							boolean pubblic=false;
+							if(visibility.getText().equals("pubblica")) {
+								pubblic=true;
 							}
-							Resource risorsa = new Resource(nome.getText(),  descrizione.getText(), path.getText(), 
-									codSezione, codRisorsa, 
-									pubblica, tipo.getText());
-							gc.modifyResource(risorsa);
+							Section sezione = new Section(title.getText(),description.getText(),
+									pubblic, sectionCode, creator, courseCode, sonOf);
+							gc.modifySection(sezione);
 						} catch (Exception e1) {
 							JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 							e1.printStackTrace();
 						}
 					}
 				});
-				contentPane.add(modificaRisorsa);
+				contentPane.add(modifySection);
 			} catch (ClassNotFoundException | SQLException e1) {
 				JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
 				e1.printStackTrace();
@@ -118,27 +110,29 @@ public class ModificaRisorsa extends MyFrame {
 			e2.printStackTrace();
 		}
 		
-		JButton cancellaQuestaRisorsa = new JButton("Cancella questa risorsa");
-		cancellaQuestaRisorsa.addActionListener(new ActionListener() {
+		JButton createResource = new JButton("Crea risorsa");
+		createResource.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CourseContentManagement gc;
+				CreateResource ms = new CreateResource(thisframe, ses, cor, sectionCode);
+			}
+		});
+		contentPane.add(createResource);
+		
+		JButton cancelThisSection = new JButton("Cancella questa sezione");
+		cancelThisSection.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 				try {
-					gc = new CourseContentManagement();
-					try {
-						gc.cancelResource(codRisorsa);
-						mc.setVisible(true);
-						thisframe.setVisible(false);
-					} catch (ClassNotFoundException | SQLException e1) {
-						JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
-						e1.printStackTrace();
-					}
-				} catch (MalformedURLException | RemoteException | NotBoundException e2) {
+					CourseContentManagement gc = new CourseContentManagement();
+					gc.cancelSection(sectionCode);
+					mc.setVisible(true);
+					thisframe.setVisible(false);
+				} catch (ClassNotFoundException | SQLException | MalformedURLException | RemoteException | NotBoundException e1) {
 					JOptionPane.showMessageDialog(contentPane,"Errore di connessione");
-					e2.printStackTrace();
+					e1.printStackTrace();
 				}
 			}
 		});
-		contentPane.add(cancellaQuestaRisorsa);
+		contentPane.add(cancelThisSection);
 		
 		setVisible(true);
 	}

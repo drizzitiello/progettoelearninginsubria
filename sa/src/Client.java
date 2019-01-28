@@ -18,6 +18,13 @@ import user.User;
 public class Client {
 	public static void main(String[] args)
 	 {//20
+		for(int i=0; i<1;i++) {
+			try {
+				Login l = new Login();
+			} catch (ClassNotFoundException | SQLException e) {
+				e.printStackTrace();
+			}
+		}
 			/*for(int i=0; i<50; i++) {
 				Session ses;
 				try {
@@ -28,8 +35,8 @@ public class Client {
 					e.printStackTrace();
 				}
 				
-			}*/
-		try
+			}§/
+		/*try
 		  {
 			AnotherInterface s = Server.getInstance(SocketDb.getAdminInstanceDb("localhost", "postgres", "makaay"));
 			Naming.rebind("rmi://localhost/Server",s);
@@ -53,7 +60,7 @@ public class Client {
 				e.printStackTrace();
 			}
 		}*/
-		for(int i=0; i<50; i++) {
+		/*for(int i=0; i<50; i++) {
 			Session ses;
 			try {
 				ses = Session.getInstance();
@@ -63,6 +70,6 @@ public class Client {
 				e.printStackTrace();
 			}
 			
-		}
+		}*/
 	 }
 }

@@ -24,21 +24,21 @@ import courseContentManagement.CourseContentManagement;
 import courseContentManagement.Resource;
 import session.Session;
 
-public class StatisticheCorso extends MyFrame {
+public class CourseStatistics extends MyFrame {
 	
 	/* Mostrare il numero complessivo di utenti connessi che stanno visualizzando/interagendo con i contenuti del corso 
 	 2. Mostrare il numero complessivo di utenti che hanno effettuato il download di una o più risorse in intervalli temporali dati 
 	 3. Derivare il tempo medio di connessione degli studenti alle pagine del corso */
 
 	private JPanel contentPane;
-	private StatisticheCorso thisframe;
+	private CourseStatistics thisframe;
 
 	/**
 	 * Create the frame.
 	 * @param cor 
 	 * @param ses 
 	 */
-	public StatisticheCorso(PaginaCorso pc, Session ses, Course cor) {
+	public CourseStatistics(CoursePage pc, Session ses, Course cor) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -60,19 +60,19 @@ public class StatisticheCorso extends MyFrame {
 		try {
 			CourseAnalytics ca = new CourseAnalytics(cor.courseCode);
 			
-			JLabel numeroAccessiCorso = new JLabel("N. utenti su questa pagina: "+ca.onlineUsers());
-			contentPane.add(numeroAccessiCorso);
+			JLabel numberCourseAccess = new JLabel("N. utenti su questa pagina: "+ca.onlineUsers());
+			contentPane.add(numberCourseAccess);
 			
 			JLabel date = new JLabel("Inserire data inizio e data fine: ");
 			contentPane.add(date);
 			
-			JTextField dataInizio = new JTextField();
-			contentPane.add(dataInizio);
-			dataInizio.setColumns(10);
+			JTextField startDate = new JTextField();
+			contentPane.add(startDate);
+			startDate.setColumns(10);
 			
-			JTextField dataFine = new JTextField();
-			contentPane.add(dataFine);
-			dataFine.setColumns(10);
+			JTextField endDate = new JTextField();
+			contentPane.add(endDate);
+			endDate.setColumns(10);
 			
 			Box ab = Box.createVerticalBox();
 			
@@ -84,14 +84,13 @@ public class StatisticheCorso extends MyFrame {
 						if(ab.getComponentCount()!=0) {
 							ab.removeAll();
 						}
-						downloads = ca.downloadByInterval(dataInizio.getText(), dataFine.getText());
+						downloads = ca.downloadByInterval(startDate.getText(), endDate.getText());
 						for(Integer m : downloads.keySet()) {
 							CourseContentManagement gcc = new CourseContentManagement();
 							Resource r = gcc.getResource(m);
-							JLabel nDownloadRisorsaPerTempo = new JLabel("N. utenti che hanno effettuato il download"
+							JLabel nDownloadResourceForTimeBand = new JLabel("N. utenti che hanno effettuato il download"
 									+ "della risorsa "+r.name+" : "+downloads.get(m));
-							//contentPane.add(nDownloadRisorsaPerTempo);
-							ab.add(nDownloadRisorsaPerTempo);
+							ab.add(nDownloadResourceForTimeBand);
 							contentPane.revalidate();
 							validate();
 							repaint();
@@ -105,9 +104,9 @@ public class StatisticheCorso extends MyFrame {
 			contentPane.add(downloadButton);
 			contentPane.add(ab);
 			
-			JLabel tempoMedioConnessioniPagina = new JLabel("Tempo medio connessioni alla pagina: "+
+			JLabel avgTimePageConnection = new JLabel("Tempo medio connessioni alla pagina: "+
 			ca.avgMinsOnline());
-			contentPane.add(tempoMedioConnessioniPagina);
+			contentPane.add(avgTimePageConnection);
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(contentPane,"Errore");
 			e.printStackTrace();

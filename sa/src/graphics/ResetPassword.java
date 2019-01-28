@@ -44,8 +44,8 @@ public class ResetPassword extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		JLabel codice = new JLabel("Inserire codice di attivazione");
-		contentPane.add(codice);
+		JLabel code = new JLabel("Inserire codice di attivazione");
+		contentPane.add(code);
 		
 		codAttivazione = new JTextField();
 		contentPane.add(codAttivazione);

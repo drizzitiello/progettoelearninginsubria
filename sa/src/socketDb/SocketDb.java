@@ -21,7 +21,7 @@ implements RemoteInterface {
 	private static int nAttempts;
 	private static PreparedStatement stmt;
 	private static boolean isActive;
-	private final static int max=30;
+	private final static int max=50;
 	private static int users;
 	
 	private SocketDb() throws ClassNotFoundException, SQLException, RemoteException{
@@ -33,8 +33,7 @@ implements RemoteInterface {
 	}
 	
 	public static synchronized SocketDb getAdminInstanceDb(String host, String user, String password) throws ClassNotFoundException {
-		users++;
-		if(socketDb==null&&users<max) {
+		if(socketDb==null) {
 			try {
 				socketDb=new SocketDb(host, user, password);
 				nAttempts=0;
@@ -52,8 +51,7 @@ implements RemoteInterface {
 	}
 	
 	public static synchronized SocketDb getInstanceDb() throws ClassNotFoundException {
-		users++;
-		if(socketDb==null&&users<max) {
+		if(socketDb==null) {
 			try {
 				socketDb=new SocketDb();
 				nAttempts=0;
@@ -76,7 +74,10 @@ implements RemoteInterface {
 		SocketDb.DB_URL="jdbc:postgresql://localhost:5432/sss";
 		SocketDb.USER="postgres";
 		SocketDb.PASS="makaay";
-		if(users<max) conn = DriverManager.getConnection(DB_URL,USER,PASS);
+		if(users<max) {
+			conn = DriverManager.getConnection(DB_URL,USER,PASS);
+			users++;
+		}
 		isActive=true;
 	}
 	
@@ -86,13 +87,17 @@ implements RemoteInterface {
 		SocketDb.DB_URL="jdbc:postgresql://"+host+":5432/sss";
 		SocketDb.USER=user;
 		SocketDb.PASS=password;
-		if(users<max) conn = DriverManager.getConnection(SocketDb.DB_URL,user,password);
+		if(users<max) {
+			conn = DriverManager.getConnection(SocketDb.DB_URL,user,password);
+			users++;
+		}
 		isActive=true;
 	}
 	
 	public synchronized void destroySql() throws ClassNotFoundException, SQLException, RemoteException {
 		stmt.close();
 		conn.close();
+		users--;
 		isActive=false;
 	}
 	
@@ -106,9 +111,9 @@ implements RemoteInterface {
 	}
 	
 	public synchronized ArrayList<Map<String,Object>> query(String sql, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {			
-		users++;
 		createSql();
-		stmt=conn.prepareStatement(sql);
+		if(conn!=null) stmt=conn.prepareStatement(sql);
+		else return null;
 		bindParams(params);
 		return executeSql(sql);
 	}
@@ -118,12 +123,12 @@ implements RemoteInterface {
 	}
 	
 	public synchronized ArrayList<Map<String,Object>> function(String funcName, Object[] params) throws ClassNotFoundException, SQLException, RemoteException {
-		users++;
 		createSql();
 		String[] qmarks=new String[params.length];
 		Arrays.fill(qmarks, "?");
 		String sql= "SELECT * FROM "+funcName+"(" + String.join(", ", qmarks)+")";
-		stmt=conn.prepareStatement(sql);
+		if(conn!=null) stmt=conn.prepareStatement(sql);
+		else return null;
 		bindParams(params);
 		return executeSql(sql);
 	}

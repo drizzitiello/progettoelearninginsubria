@@ -20,17 +20,17 @@ import courseContentManagement.CourseContentManagement;
 import courseContentManagement.FindCourse;
 import courseContentManagement.Resource;
 
-public class PaginaCartella extends MyFrame {
+public class FolderPage extends MyFrame {
 
 	private JPanel contentPane;
-	private PaginaCartella thisFrame;
+	private FolderPage thisFrame;
 
 	/**
 	 * Create the frame.
 	 * @param r 
 	 * @param pc 
 	 */
-	public PaginaCartella(Resource r, PaginaCorso pc) {
+	public FolderPage(Resource r, CoursePage pc) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -56,8 +56,8 @@ public class PaginaCartella extends MyFrame {
 			ccm = new CourseContentManagement();
 			ArrayList<Resource> resources = ccm.getFolderContent(r.resourceCode, r.name);
 			for(Resource res : resources) {
-				JButton risorsa = new JButton(res.name);
-				risorsa.addActionListener(new ActionListener() {
+				JButton resource = new JButton(res.name);
+				resource.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
 							FindCourse rc = new FindCourse();
@@ -68,7 +68,7 @@ public class PaginaCartella extends MyFrame {
 						}
 					}
 				});
-				ver.add(risorsa);
+				ver.add(resource);
 			}
 			contentPane.add(ver);
 		} catch (MalformedURLException | RemoteException | NotBoundException e2) {

@@ -17,10 +17,10 @@ import javax.swing.border.EmptyBorder;
 import session.Session;
 import userManager.UserManager;
 
-public class ModificaDatiUtenti extends MyFrame {
+public class ModifyUsersData extends MyFrame {
 
 	private JPanel contentPane;
-	private ModificaDatiUtenti thisFrame;
+	private ModifyUsersData thisFrame;
 
 
 	/**
@@ -28,7 +28,7 @@ public class ModificaDatiUtenti extends MyFrame {
 	 * @param pwd 
 	 * @param ses 
 	 */
-	public ModificaDatiUtenti(HomePage hp, Session ses, String pwd) {
+	public ModifyUsersData(HomePage hp, Session ses, String pwd) {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 500);
 		contentPane = new JPanel();
@@ -47,22 +47,22 @@ public class ModificaDatiUtenti extends MyFrame {
 		});
 		contentPane.add(backButton);
 		
-		Box matricole = Box.createVerticalBox();
-		Box modifiche = Box.createVerticalBox();
+		Box studentNumbers = Box.createVerticalBox();
+		Box changes = Box.createVerticalBox();
 		Object[] params= {};
 		try {
 			UserManager um = new UserManager();
-			ArrayList<Integer> kk = um.getRegisteredUsers();
-			ArrayList<JButton> ajb = new ArrayList<JButton>();
-			for(Integer u : kk) {
-				JButton modifica = new JButton("Matricola n. "+u+": modifica dati utente");
-				modifica.addActionListener(new ActionListener() {
+			ArrayList<Integer> users = um.getRegisteredUsers();
+			ArrayList<JButton> buttons = new ArrayList<JButton>();
+			for(Integer u : users) {
+				JButton modify = new JButton("Matricola n. "+u+": modifica dati utente");
+				modify.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						InfoUtente iu = new InfoUtente(thisFrame, ses,u);
+						UserInfo iu = new UserInfo(thisFrame, ses,u);
 					}
 				});
-				modifiche.add(modifica);
-				ajb.add(modifica);
+				changes.add(modify);
+				buttons.add(modify);
 			}
 		} catch (ClassNotFoundException | SQLException e) {
 			JOptionPane.showMessageDialog(contentPane,"Errore di connessione al database");
@@ -71,8 +71,8 @@ public class ModificaDatiUtenti extends MyFrame {
 			JOptionPane.showMessageDialog(contentPane,"Errore");
 			e1.printStackTrace();
 		}
-		contentPane.add(matricole);
-		contentPane.add(modifiche);
+		contentPane.add(studentNumbers);
+		contentPane.add(changes);
 		setVisible(true);
 	}
 }

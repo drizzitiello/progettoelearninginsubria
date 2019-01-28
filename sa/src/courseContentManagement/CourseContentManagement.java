@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Map;
 
 import graphics.HomePage;
-import graphics.PaginaCorso;
+import graphics.CoursePage;
 import interfaces.AnotherInterface;
 import interfaces.RemoteInterface;
 import session.Session;
@@ -138,7 +138,7 @@ public class CourseContentManagement {
 	
 	public static void viewAsStudent(HomePage thisFrame, String course) throws MalformedURLException, RemoteException, NotBoundException {
 		try {
-			PaginaCorso mc = new PaginaCorso(thisFrame, Session.getInstance(), course, true);
+			CoursePage mc = new CoursePage(thisFrame, Session.getInstance(), course, true);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
